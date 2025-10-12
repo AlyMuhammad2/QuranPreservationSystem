@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة لجنة التلاوة - فرع الكورة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --primary-dark: #1b5e20;
+            --primary-light: #4caf50;
+            --secondary-color: #8bc34a;
+            --light-bg: #f8f9f7;
+            --dark-text: #333;
+            --light-text: #fff;
+            --border-color: #e0e0e0;
+            --danger-color: #e53935;
+            --warning-color: #ff9800;
+            --success-color: #43a047;
+            --gold-color: #FFD700;
+            --brown-color: #8B4513;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f9f5;
+            color: var(--dark-text);
+            direction: rtl;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f0f7f0"/><path d="M20,20 Q50,5 80,20 T100,50 T80,80 T50,100 T20,80 T0,50 T20,20 Z" fill="none" stroke="%234caf50" stroke-width="0.5" opacity="0.3"/></svg>');
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Login Page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,288L48,272C96,256,192,224,288,197.3C384,171,480,149,576,165.3C672,181,768,235,864,250.7C960,267,1056,245,1152,224C1248,203,1344,181,1392,170.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .login-card {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+            z-index: 1;
+            position: relative;
+        }
+        
+        .login-header {
+            background: var(--primary-color);
+            color: var(--light-text);
+            text-align: center;
+            padding: 25px;
+            position: relative;
+        }
+        
+        .platform-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold-color);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .logo-subtext {
+            font-size: 1.1rem;
+            color: var(--light-text);
+            font-weight: 500;
+            line-height: 1.4;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .logo-subtext span {
+            display: block;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .login-header i {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            color: var(--gold-color);
+        }
+        
+        .login-body {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-light);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: var(--danger-color);
+            color: #fff;
+        }
+        
+        .btn-danger:hover {
+            background: #c62828;
+            transform: translateY(-2px);
+        }
+        
+        .btn-warning {
+            background: var(--warning-color);
+            color: #fff;
+        }
+        
+        .btn-warning:hover {
+            background: #ef6c00;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            color: #fff;
+        }
+        
+        .btn-success:hover {
+            background: #2e7d32;
+            transform: translateY(-2px);
+        }
+        
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: var(--light-text);
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .main-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .main-logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+            color: var(--gold-color);
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold-color);
+            margin-bottom: 3px;
+        }
+        
+        .logo span {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: #fff;
+        }
+        
+        /* Navigation */
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        nav a:hover, nav a.active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: var(--light-text);
+            padding: 20px 0;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            color: var(--light-text);
+            text-decoration: none;
+            padding: 12px 25px;
+            transition: all 0.3s ease;
+            gap: 12px;
+            font-size: 1.05rem;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-right: 4px solid var(--secondary-color);
+        }
+        
+        .sidebar-menu i {
+            font-size: 1.2rem;
+            width: 25px;
+            color: var(--gold-color);
+        }
+        
+        .menu-title {
+            padding: 15px 25px 5px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--gold-color);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 25px;
+            background-color: var(--light-bg);
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+        
+        .page-header h2 {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        /* Cards */
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            border: none;
+            overflow: hidden;
+            border-top: 3px solid var(--primary-color);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            color: var(--light-text);
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-light);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: #fff;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        
+        .data-table th {
+            background-color: var(--primary-light);
+            color: #fff;
+            padding: 15px;
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .data-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .data-table tr:hover {
+            background-color: #f0f7f0;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 0 5px;
+            padding: 5px;
+        }
+        
+        .action-btn:hover {
+            color: var(--primary-dark);
+        }
+        
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-right: 4px solid var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(46, 125, 50, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+        
+        .stat-info h3 {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+        }
+        
+        .stat-info p {
+            color: #666;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--primary-dark);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 20px 0;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 40px;
+            position: relative;
+        }
+        
+        .footer-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .footer-logo-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--gold-color);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .footer-subtext {
+            font-size: 0.9rem;
+            color: var(--light-text);
+            font-weight: 500;
+            line-height: 1.4;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: #fff;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            background: var(--primary-color);
+            color: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            font-size: 1.3rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast-success {
+            background: var(--success-color);
+        }
+        
+        .toast-error {
+            background: var(--danger-color);
+        }
+        
+        .toast-warning {
+            background: var(--warning-color);
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 10px 0;
+            }
+            
+            .sidebar-menu {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+                justify-content: center;
+            }
+            
+            .sidebar-menu a {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .menu-title {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .logo h1 {
+                font-size: 1.3rem;
+            }
+            
+            .logo span {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="platform-logo">
+                    <div class="logo-text">جمعية المحافظة على القرآن الكريم</div>
+                    <div class="logo-subtext">
+                        <span>لجنة التلاوة</span>
+                        <span>فرع الكورة   </span>
+                    </div>
+                </div>
+                <i class="fas fa-book-quran"></i>
+                <h1>منصة لجنة التلاوة</h1>
+                <p>فرع الكورة</p>
+            </div>
+            <div class="login-body">
+                <div class="form-group">
+                    <label>اسم المستخدم</label>
+                    <input type="text" class="form-control" id="username" placeholder="أدخل اسم المستخدم" value="admin">
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" class="form-control" id="password" placeholder="أدخل كلمة المرور" value="admin123">
+                </div>
+                <div class="form-group">
+                    <label>نوع الحساب</label>
+                    <select class="form-control" id="userType">
+                        <option value="admin">مدير النظام</option>
+                        <option value="supervisor">مشرف</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <!-- Header -->
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <div class="main-logo">
+                            <i class="fas fa-book-quran"></i>
+                            <div class="main-logo-text">
+                                <h1>جمعية المحافظة على القرآن الكريم</h1>
+                                <span> لجنة التلاوة والتجويد</span>
+                            </div>
+                        </div>
+                    </div>
+                    <nav>
+                        <ul>
+                            <li><a href="#" class="active"><i class="fas fa-home"></i> الرئيسية</a></li>
+                            <li><a href="#"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                            <li><a href="#"><i class="fas fa-cog"></i> الإعدادات</a></li>
+                        </ul>
+                    </nav>
+                    <div class="user-info">
+                        <img src="https://ui-avatars.com/api/?name=مدير+النظام&background=2e7d32&color=fff" alt="مدير النظام" id="userAvatar">
+                        <div>
+                            <div id="userName">مدير النظام</div>
+                            <small id="userRole">Admin</small>
+                            <button class="btn btn-sm btn-danger" id="logoutBtn" style="padding: 5px 10px; margin-top: 5px; font-size: 0.8rem;">
+                                <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> لوحة التحكم</a></li>
+                    
+                    <div class="menu-title">إدارة البيانات</div>
+                    <li><a href="#"><i class="fas fa-user-graduate"></i> الطلاب</a></li>
+                    <li><a href="#"><i class="fas fa-mosque"></i> المراكز</a></li>
+                    <li><a href="#"><i class="fas fa-chalkboard-teacher"></i> المدرسين</a></li>
+                    
+                    <div class="menu-title">إدارة الدورات</div>
+                    <li><a href="#"><i class="fas fa-book"></i> إدخال بيانات الدورة</a></li>
+                    <li><a href="#"><i class="fas fa-list"></i> الدورات والاختبارات</a></li>
+                    
+                    <div class="menu-title">الاختبارات والمواد</div>
+                    <li><a href="#"><i class="fas fa-file-pdf"></i> اختبارات التجويد</a></li>
+                    <li><a href="#"><i class="fas fa-book-open"></i> المواد النظرية</a></li>
+                    
+                    <div class="menu-title">التقارير والإحصائيات</div>
+                    <li><a href="#"><i class="fas fa-chart-pie"></i> الإحصائيات</a></li>
+                    <li><a href="#"><i class="fas fa-file-excel"></i> تصدير البيانات</a></li>
+                    
+                    <div class="menu-title">إدارة النظام</div>
+                    <li><a href="#"><i class="fas fa-users-cog"></i> المستخدمين</a></li>
+                    <li><a href="#"><i class="fas fa-cogs"></i> إعدادات النظام</a></li>
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="page-header">
+                    <h2><i class="fas fa-tachometer-alt"></i> لوحة التحكم</h2>
+                    <div class="btn-group">
+                        <button class="btn btn-outline" id="refreshBtn"><i class="fas fa-sync-alt"></i> تحديث</button>
+                        <button class="btn btn-primary" id="addStudentBtn"><i class="fas fa-plus"></i> إضافة طالب جديد</button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalStudents">248</h3>
+                            <p>إجمالي الطلاب</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-mosque"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>17</h3>
+                            <p>المراكز القرآنية</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>32</h3>
+                            <p>المدرسين</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>84</h3>
+                            <p>الدورات المنتهية</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab active" data-tab="students">إدارة الطلاب</div>
+                    <div class="tab" data-tab="centers">إدارة المراكز</div>
+                    <div class="tab" data-tab="exams">اختبارات التجويد</div>
+                    <div class="tab" data-tab="materials">المواد النظرية</div>
+                </div>
+
+                <!-- Students Tab -->
+                <div class="tab-content active" id="studentsTab">
+                    <!-- Data Entry Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-user-plus"></i> إدخال بيانات طالب جديد
+                        </div>
+                        <div class="card-body">
+                            <form id="studentForm">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>اسم الطالب/ الطالبة الرباعي</label>
+                                        <input type="text" class="form-control" id="studentName" placeholder="أدخل الاسم الرباعي" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>اسم المركز</label>
+                                        <select class="form-control" id="center" required>
+                                            <option value="">اختر المركز</option>
+                                            <option>مركز كفرأبيل القرآني</option>
+                                            <option>مركز كفرعوان القرآني</option>
+                                            <option>مركز المقداد بن عمرو القرآني</option>
+                                            <option>مركز مصعب بن عمير القرآني/ جديتا</option>
+                                            <option>مركز حذيفة بن اليمان القرآني/ الأشرفية</option>
+                                            <option>مركز أبوشنب القرآني/ الأشرفية</option>
+                                            <option>مركز ازمال القرآني</option>
+                                            <option>مركز سموع القرآني</option>
+                                            <option>مركز كفرالماء القرآني</option>
+                                            <option>مركز العز بن عبدالسلام القرآني</option>
+                                            <option>مركز الصديق القرآني</option>
+                                            <option>مركز جفين القرآني</option>
+                                            <option>مركز جنين الصفا القرآني</option>
+                                            <option>مركز عائشة أم المؤمنين القرآني</option>
+                                            <option>مركز الريان القرآني</option>
+                                            <option>مركز طلحة بن عبيد الله القرآني</option>
+                                            <option>مركز كفرراكب القرآن</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>الجنس</label>
+                                        <select class="form-control" id="gender" required>
+                                            <option value="">اختر الجنس</option>
+                                            <option>ذكر</option>
+                                            <option>أنثى</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>الدورة التي حصل عليها</label>
+                                        <select class="form-control" id="course" required>
+                                            <option value="">اختر الدورة</option>
+                                            <option>تلاوة وتجويد</option>
+                                            <option>تمهيدية</option>
+                                            <option>متوسطة</option>
+                                            <option>متقدمة</option>
+                                            <option>إتقان</option>
+                                            <option>إجازة نظرا</option>
+                                            <option>سند غيبي</option>
+                                            <option>دورة طيبة</option>
+                                            <option>إجازة طيبة</option>
+                                            <option>روايات أخرى</option>
+                                            <option>القراءات العشر</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>اسم الشيخ/مدرس الدورة</label>
+                                        <input type="text" class="form-control" id="teacher" placeholder="اسم المدرس" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>تاريخ اجتياز الدورة</label>
+                                        <input type="date" class="form-control" id="examDate" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>اللجنة الممتحنة (الشخص الأول)</label>
+                                        <input type="text" class="form-control" id="examiner1" placeholder="اسم المحكم الأول" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>اللجنة الممتحنة (الشخص الثاني)</label>
+                                        <input type="text" class="form-control" id="examiner2" placeholder="اسم المحكم الثاني" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>العلامة التي حصل عليها</label>
+                                        <input type="number" class="form-control" id="score" placeholder="العلامة من 100" min="0" max="100" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>رفع مستند الدورة (PDF - 2MB كحد أقصى)</label>
+                                        <input type="file" class="form-control" id="document" accept=".pdf">
+                                    </div>
+                                </div>
+                                
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> حفظ البيانات</button>
+                                    <button type="reset" class="btn btn-outline"><i class="fas fa-times"></i> إلغاء</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Students Table -->
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-users"></i> قائمة الطلاب المسجلين
+                        </div>
+                        <div class="card-body">
+                            <div class="btn-group" style="margin-bottom: 20px;">
+                                <button class="btn btn-outline"><i class="fas fa-filter"></i> تصفية البيانات</button>
+                                <button class="btn btn-success" id="exportExcelBtn"><i class="fas fa-file-excel"></i> تصدير إلى Excel</button>
+                            </div>
+                            
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>اسم الطالب</th>
+                                            <th>المركز</th>
+                                            <th>الدورة</th>
+                                            <th>التاريخ</th>
+                                            <th>العلامة</th>
+                                            <th>المستند</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentsTable">
+                                        <tr>
+                                            <td>1</td>
+                                            <td>أحمد محمد حسن</td>
+                                            <td>مركز كفرأبيل القرآني</td>
+                                            <td>إتقان</td>
+                                            <td>15/03/2023</td>
+                                            <td>96%</td>
+                                            <td><i class="fas fa-file-pdf" style="color:#e74c3c"></i></td>
+                                            <td>
+                                                <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                                <button class="action-btn"><i class="fas fa-trash"></i></button>
+                                                <button class="action-btn"><i class="fas fa-download"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>فاطمة علي محمود</td>
+                                            <td>مركز العز بن عبدالسلام</td>
+                                            <td>متقدمة</td>
+                                            <td>22/04/2023</td>
+                                            <td>89%</td>
+                                            <td><i class="fas fa-file-pdf" style="color:#e74c3c"></i></td>
+                                            <td>
+                                                <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                                <button class="action-btn"><i class="fas fa-trash"></i></button>
+                                                <button class="action-btn"><i class="fas fa-download"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>خالد عمر عبد الرحمن</td>
+                                            <td>مركز الصديق القرآني</td>
+                                            <td>إجازة نظرا</td>
+                                            <td>10/05/2023</td>
+                                            <td>93%</td>
+                                            <td><i class="fas fa-file-pdf" style="color:#e74c3c"></i></td>
+                                            <td>
+                                                <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                                <button class="action-btn"><i class="fas fa-trash"></i></button>
+                                                <button class="action-btn"><i class="fas fa-download"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-logo">
+                    <div class="footer-logo-text">لجنة التلاوة والتجويد</div>
+                    <div class="footer-subtext">
+                        جمعية المحافظة على القرآن الكريم 
+                    </div>
+                </div>
+                <p>منصة لجنة التلاوة - فرع الكورة &copy; 2025 | نظام إدارة المراكز القرآنية</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer"></div>
+
+    <script>
+        // DOM Elements
+        const loginPage = document.getElementById('loginPage');
+        const dashboard = document.getElementById('dashboard');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const exportExcelBtn = document.getElementById('exportExcelBtn');
+        const addStudentBtn = document.getElementById('addStudentBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const studentForm = document.getElementById('studentForm');
+        const studentsTable = document.getElementById('studentsTable');
+        const totalStudentsElement = document.getElementById('totalStudents');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const toastContainer = document.getElementById('toastContainer');
+        
+        // Sample data for students
+        let students = [
+            {
+                id: 1,
+                name: "أحمد محمد حسن",
+                center: "مركز كفرأبيل القرآني",
+                course: "إتقان",
+                date: "15/03/2023",
+                score: "96%",
+                document: true
+            },
+            {
+                id: 2,
+                name: "فاطمة علي محمود",
+                center: "مركز العز بن عبدالسلام",
+                course: "متقدمة",
+                date: "22/04/2023",
+                score: "89%",
+                document: true
+            },
+            {
+                id: 3,
+                name: "خالد عمر عبد الرحمن",
+                center: "مركز الصديق القرآني",
+                course: "إجازة نظرا",
+                date: "10/05/2023",
+                score: "93%",
+                document: true
+            }
+        ];
+        
+        // Current student ID counter
+        let currentStudentId = students.length + 1;
+        
+        // Login functionality
+        loginBtn.addEventListener('click', function() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const userType = document.getElementById('userType').value;
+            
+            if (username && password) {
+                loginPage.style.display = 'none';
+                dashboard.style.display = 'block';
+                
+                // Update user info
+                document.getElementById('userName').textContent = username;
+                document.getElementById('userRole').textContent = userType === 'admin' ? 'مدير النظام' : 'مشرف';
+                
+                // Update user avatar
+                document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?name=${username}&background=2e7d32&color=fff`;
+                
+                showToast('تم تسجيل الدخول بنجاح!', 'success');
+            } else {
+                showToast('الرجاء إدخال اسم المستخدم وكلمة المرور', 'error');
+            }
+        });
+        
+        // Logout functionality
+        logoutBtn.addEventListener('click', function() {
+            dashboard.style.display = 'none';
+            loginPage.style.display = 'flex';
+            showToast('تم تسجيل الخروج بنجاح', 'success');
+        });
+        
+        // Add student button
+        addStudentBtn.addEventListener('click', function() {
+            document.getElementById('studentForm').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+        
+        // Refresh button
+        refreshBtn.addEventListener('click', function() {
+            showToast('تم تحديث البيانات', 'success');
+            renderStudentsTable();
+        });
+        
+        // Export to Excel
+        exportExcelBtn.addEventListener('click', function() {
+            try {
+                // Create workbook
+                const wb = XLSX.utils.book_new();
+                
+                // Prepare data
+                const data = [
+                    ['#', 'اسم الطالب', 'المركز', 'الدورة', 'التاريخ', 'العلامة'],
+                    ...students.map((student, index) => [
+                        index + 1,
+                        student.name,
+                        student.center,
+                        student.course,
+                        student.date,
+                        student.score
+                    ])
+                ];
+                
+                // Create worksheet
+                const ws = XLSX.utils.aoa_to_sheet(data);
+                
+                // Add worksheet to workbook
+                XLSX.utils.book_append_sheet(wb, ws, 'الطلاب');
+                
+                // Export to Excel file
+                XLSX.writeFile(wb, 'طلاب_لجنة_التلاوة.xlsx');
+                
+                showToast('تم تصدير البيانات بنجاح إلى ملف Excel', 'success');
+            } catch (error) {
+                showToast('حدث خطأ أثناء التصدير: ' + error.message, 'error');
+            }
+        });
+        
+        // Form submission
+        studentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('studentName').value;
+            const center = document.getElementById('center').value;
+            const gender = document.getElementById('gender').value;
+            const course = document.getElementById('course').value;
+            const teacher = document.getElementById('teacher').value;
+            const examDate = document.getElementById('examDate').value;
+            const examiner1 = document.getElementById('examiner1').value;
+            const examiner2 = document.getElementById('examiner2').value;
+            const score = document.getElementById('score').value;
+            const documentFile = document.getElementById('document').files[0];
+            
+            // Format date
+            const formattedDate = formatDate(examDate);
+            
+            // Create new student object
+            const newStudent = {
+                id: currentStudentId++,
+                name: name,
+                center: center,
+                course: course,
+                date: formattedDate,
+                score: score + '%',
+                document: documentFile ? true : false
+            };
+            
+            // Add to students array
+            students.push(newStudent);
+            
+            // Update total students count
+            updateTotalStudents();
+            
+            // Render updated table
+            renderStudentsTable();
+            
+            // Show success message
+            showToast(`تم إضافة الطالب ${name} بنجاح!`, 'success');
+            
+            // Reset form
+            this.reset();
+        });
+        
+        // Tabs functionality
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Hide all tab contents
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Show the corresponding tab content
+                const tabId = tab.getAttribute('data-tab') + 'Tab';
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Initialize table and stats
+        renderStudentsTable();
+        
+        // Function to render students table
+        function renderStudentsTable() {
+            studentsTable.innerHTML = '';
+            
+            students.forEach((student, index) => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${student.name}</td>
+                    <td>${student.center}</td>
+                    <td>${student.course}</td>
+                    <td>${student.date}</td>
+                    <td>${student.score}</td>
+                    <td>${student.document ? '<i class="fas fa-file-pdf" style="color:#e74c3c"></i>' : ''}</td>
+                    <td>
+                        <button class="action-btn edit-btn" data-id="${student.id}"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn delete-btn" data-id="${student.id}"><i class="fas fa-trash"></i></button>
+                        <button class="action-btn download-btn" data-id="${student.id}"><i class="fas fa-download"></i></button>
+                    </td>
+                `;
+                
+                studentsTable.appendChild(row);
+            });
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const studentId = parseInt(this.getAttribute('data-id'));
+                    editStudent(studentId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const studentId = parseInt(this.getAttribute('data-id'));
+                    deleteStudent(studentId);
+                });
+            });
+            
+            document.querySelectorAll('.download-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const studentId = parseInt(this.getAttribute('data-id'));
+                    showToast(`تم بدء تنزيل ملف الطالب #${studentId}`, 'success');
+                });
+            });
+        }
+        
+        // Function to edit student
+        function editStudent(studentId) {
+            const student = students.find(s => s.id === studentId);
+            
+            if (student) {
+                // Scroll to form
+                document.getElementById('studentForm').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+                
+                // Fill form with student data
+                document.getElementById('studentName').value = student.name;
+                document.getElementById('center').value = student.center;
+                document.getElementById('course').value = student.course;
+                document.getElementById('score').value = parseInt(student.score);
+                
+                showToast(`يمكنك تعديل بيانات الطالب: ${student.name}`, 'warning');
+            }
+        }
+        
+        // Function to delete student
+        function deleteStudent(studentId) {
+            if (confirm('هل أنت متأكد من حذف هذا الطالب؟')) {
+                const studentIndex = students.findIndex(s => s.id === studentId);
+                
+                if (studentIndex !== -1) {
+                    const studentName = students[studentIndex].name;
+                    students.splice(studentIndex, 1);
+                    
+                    // Update table and stats
+                    renderStudentsTable();
+                    updateTotalStudents();
+                    
+                    showToast(`تم حذف الطالب ${studentName} بنجاح`, 'success');
+                }
+            }
+        }
+        
+        // Function to update total students count
+        function updateTotalStudents() {
+            totalStudentsElement.textContent = students.length;
+        }
+        
+        // Function to format date
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            
+            const date = new Date(dateString);
+            return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+        }
+        
+        // Function to show toast notifications
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                ${message}
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Show toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                
+                // Remove toast from DOM after animation
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+        
+        // Initialize with sample data
+        updateTotalStudents();
+    </script>
+</body>
+</html>
