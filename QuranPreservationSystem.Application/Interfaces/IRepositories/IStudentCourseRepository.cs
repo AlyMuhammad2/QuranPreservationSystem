@@ -12,6 +12,8 @@ namespace QuranPreservationSystem.Application.Interfaces.IRepositories
         Task<StudentCourse?> GetEnrollmentAsync(int studentId, int courseId);
         Task<bool> IsStudentEnrolledAsync(int studentId, int courseId);
         Task<int> GetCourseEnrollmentCountAsync(int courseId);
+        Task<IEnumerable<StudentCourse>> GetAllWithDetailsAsync();
+        Task<StudentCourse?> GetStudentCourseWithDetailsAsync(int studentCourseId);
     }
 }
 

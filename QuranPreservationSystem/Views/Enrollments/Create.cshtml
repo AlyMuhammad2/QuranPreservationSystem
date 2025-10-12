@@ -1,15 +1,16 @@
-@model QuranPreservationSystem.Application.DTOs.CreateStudentDto
+@model QuranPreservationSystem.Application.DTOs.CreateEnrollmentDto
 @{
-    ViewData["Title"] = "إضافة طالب جديد";
+    ViewData["Title"] = "تسجيل طالب في دورة";
     Layout = "_DashboardLayout";
-    var centers = ViewBag.Centers as IEnumerable<QuranPreservationSystem.Domain.Entities.Center>;
+    var students = ViewBag.Students as IEnumerable<QuranPreservationSystem.Domain.Entities.Student>;
+    var courses = ViewBag.Courses as IEnumerable<QuranPreservationSystem.Domain.Entities.Course>;
 }
 
 <!-- Page Header -->
 <div class="page-header">
     <div class="page-title">
-        <i class="fas fa-user-graduate"></i>
-        <h2>إضافة طالب جديد</h2>
+        <i class="fas fa-user-check"></i>
+        <h2>تسجيل طالب في دورة</h2>
     </div>
     <div class="page-actions">
         <a href="@Url.Action("Index")" class="btn btn-outline">
@@ -22,80 +23,98 @@
 <div class="card">
     <div class="card-header">
         <i class="fas fa-plus"></i>
-        <span>بيانات الطالب</span>
+        <span>بيانات التسجيل</span>
     </div>
     <div class="card-body">
         <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
             
-            <h4 class="section-title"><i class="fas fa-user"></i> البيانات الشخصية</h4>
+            <h4 class="section-title"><i class="fas fa-user-graduate"></i> بيانات التسجيل الأساسية</h4>
             <div class="form-grid">
                 <div class="form-group">
-                    <label asp-for="FirstName" class="form-label"></label>
-                    <input asp-for="FirstName" class="form-control" placeholder="أدخل الاسم الأول" />
-                    <span asp-validation-for="FirstName" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="LastName" class="form-label"></label>
-                    <input asp-for="LastName" class="form-control" placeholder="أدخل اسم العائلة" />
-                    <span asp-validation-for="LastName" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="PhoneNumber" class="form-label"></label>
-                    <input asp-for="PhoneNumber" class="form-control" placeholder="أدخل رقم الهاتف" />
-                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="Email" class="form-label"></label>
-                    <input asp-for="Email" type="email" class="form-control" placeholder="أدخل البريد الإلكتروني" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="DateOfBirth" class="form-label"></label>
-                    <input asp-for="DateOfBirth" type="date" class="form-control" />
-                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="Gender" class="form-label"></label>
-                    <select asp-for="Gender" class="form-control" asp-items="Html.GetEnumSelectList<QuranPreservationSystem.Domain.Enums.Gender>()">
-                        <option value="">اختر الجنس</option>
-                    </select>
-                    <span asp-validation-for="Gender" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Address" class="form-label"></label>
-                <input asp-for="Address" class="form-control" placeholder="أدخل العنوان" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-
-            <h4 class="section-title"><i class="fas fa-mosque"></i> معلومات إضافية</h4>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label asp-for="IdentityNumber" class="form-label"></label>
-                    <input asp-for="IdentityNumber" class="form-control" placeholder="رقم الهوية" />
-                    <span asp-validation-for="IdentityNumber" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="CenterId" class="form-label"></label>
-                    <select asp-for="CenterId" class="form-control">
-                        <option value="">اختر المركز</option>
-                        @if (centers != null)
+                    <label asp-for="StudentId" class="form-label"></label>
+                    <select asp-for="StudentId" class="form-control">
+                        <option value="">اختر الطالب</option>
+                        @if (students != null)
                         {
-                            @foreach (var center in centers)
+                            @foreach (var student in students)
                             {
-                                <option value="@center.CenterId">@center.Name</option>
+                                <option value="@student.StudentId">@student.FullName - @student.PhoneNumber</option>
                             }
                         }
                     </select>
-                    <span asp-validation-for="CenterId" class="text-danger"></span>
+                    <span asp-validation-for="StudentId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CourseId" class="form-label"></label>
+                    <select asp-for="CourseId" class="form-control">
+                        <option value="">اختر الدورة</option>
+                        @if (courses != null)
+                        {
+                            @foreach (var course in courses)
+                            {
+                                <option value="@course.CourseId">@course.CourseName (@course.CourseType.GetDisplayName())</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="CourseId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="EnrollmentDate" class="form-label"></label>
+                    <input asp-for="EnrollmentDate" type="date" class="form-control" />
+                    <span asp-validation-for="EnrollmentDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Status" class="form-label"></label>
+                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<QuranPreservationSystem.Domain.Enums.StudentCourseStatus>()">
+                        <option value="">اختر الحالة</option>
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+            </div>
+
+            <h4 class="section-title"><i class="fas fa-clipboard-list"></i> معلومات الاختبار والأداء</h4>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label asp-for="ExamDate" class="form-label"></label>
+                    <input asp-for="ExamDate" type="date" class="form-control" />
+                    <span asp-validation-for="ExamDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CompletionDate" class="form-label"></label>
+                    <input asp-for="CompletionDate" type="date" class="form-control" />
+                    <span asp-validation-for="CompletionDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Grade" class="form-label"></label>
+                    <input asp-for="Grade" type="number" step="0.01" min="0" max="100" class="form-control" placeholder="الدرجة (0-100)" />
+                    <span asp-validation-for="Grade" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="AttendancePercentage" class="form-label"></label>
+                    <input asp-for="AttendancePercentage" type="number" min="0" max="100" class="form-control" placeholder="نسبة الحضور %" />
+                    <span asp-validation-for="AttendancePercentage" class="text-danger"></span>
+                </div>
+            </div>
+
+            <h4 class="section-title"><i class="fas fa-user-tie"></i> اللجنة الممتحنة</h4>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label asp-for="Examiner1" class="form-label"></label>
+                    <input asp-for="Examiner1" class="form-control" placeholder="اسم الممتحن الأول" />
+                    <span asp-validation-for="Examiner1" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Examiner2" class="form-label"></label>
+                    <input asp-for="Examiner2" class="form-control" placeholder="اسم الممتحن الثاني" />
+                    <span asp-validation-for="Examiner2" class="text-danger"></span>
                 </div>
             </div>
 
@@ -108,13 +127,13 @@
             <div class="form-group">
                 <div class="form-check">
                     <input asp-for="IsActive" type="checkbox" class="form-check-input" id="IsActive" />
-                    <label asp-for="IsActive" for="IsActive" class="form-check-label">الطالب نشط</label>
+                    <label asp-for="IsActive" for="IsActive" class="form-check-label">التسجيل نشط</label>
                 </div>
             </div>
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> حفظ
+                    <i class="fas fa-save"></i> حفظ التسجيل
                 </button>
                 <a href="@Url.Action("Index")" class="btn btn-outline">
                     <i class="fas fa-times"></i> إلغاء

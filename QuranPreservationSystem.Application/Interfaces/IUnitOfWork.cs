@@ -13,6 +13,7 @@ namespace QuranPreservationSystem.Application.Interfaces
         IStudentRepository Students { get; }
         ICourseRepository Courses { get; }
         IStudentCourseRepository StudentCourses { get; }
+        IExamRepository Exams { get; }
 
         // حفظ التغييرات
         Task<int> SaveChangesAsync();

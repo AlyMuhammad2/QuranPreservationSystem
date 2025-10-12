@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace QuranPreservationSystem.Domain.Enums
 {
     /// <summary>
@@ -5,14 +7,10 @@ namespace QuranPreservationSystem.Domain.Enums
     /// </summary>
     public enum Gender
     {
-        /// <summary>
-        /// ذكر
-        /// </summary>
+        [Display(Name = "ذكر")]
         Male = 1,
 
-        /// <summary>
-        /// أنثى
-        /// </summary>
+        [Display(Name = "أنثى")]
         Female = 2
     }
 }

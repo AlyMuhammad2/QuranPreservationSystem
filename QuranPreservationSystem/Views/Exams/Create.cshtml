@@ -1,0 +1,286 @@
+@model QuranPreservationSystem.Application.DTOs.CreateExamDto
+@{
+    ViewData["Title"] = "إضافة اختبار جديد";
+    Layout = "_DashboardLayout";
+    var centers = ViewBag.Centers as IEnumerable<QuranPreservationSystem.Domain.Entities.Center>;
+    var courses = ViewBag.Courses as IEnumerable<QuranPreservationSystem.Domain.Entities.Course>;
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-plus"></i>
+        <h2>إضافة اختبار جديد</h2>
+    </div>
+    <div class="page-actions">
+        <a href="@Url.Action("Index")" class="btn btn-outline">
+            <i class="fas fa-arrow-right"></i> العودة للقائمة
+        </a>
+    </div>
+</div>
+
+<!-- Create Form -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-clipboard-list"></i>
+        <span>بيانات الاختبار</span>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+            
+            <h4 class="section-title"><i class="fas fa-info-circle"></i> معلومات الاختبار الأساسية</h4>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label asp-for="ExamName" class="form-label required"></label>
+                    <input asp-for="ExamName" class="form-control" placeholder="اسم الاختبار" />
+                    <span asp-validation-for="ExamName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ExamType" class="form-label required"></label>
+                    <select asp-for="ExamType" class="form-control">
+                        <option value="">اختر نوع الاختبار</option>
+                        <option value="شفوي">شفوي</option>
+                        <option value="تحريري">تحريري</option>
+                        <option value="عملي">عملي</option>
+                        <option value="شفوي وتحريري">شفوي وتحريري</option>
+                    </select>
+                    <span asp-validation-for="ExamType" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Level" class="form-label required"></label>
+                    <select asp-for="Level" class="form-control">
+                        <option value="">اختر المستوى</option>
+                        <option value="تمهيدي">تمهيدي</option>
+                        <option value="مبتدئ">مبتدئ</option>
+                        <option value="متوسط">متوسط</option>
+                        <option value="متقدم">متقدم</option>
+                        <option value="إتقان">إتقان</option>
+                    </select>
+                    <span asp-validation-for="Level" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="StartTime" class="form-label"></label>
+                    <input asp-for="StartTime" type="time" class="form-control" />
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="EndTime" class="form-label"></label>
+                    <input asp-for="EndTime" type="time" class="form-control" />
+                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Location" class="form-label"></label>
+                    <input asp-for="Location" class="form-control" placeholder="مكان الاختبار" />
+                    <span asp-validation-for="Location" class="text-danger"></span>
+                </div>
+            </div>
+
+            <h4 class="section-title"><i class="fas fa-link"></i> الربط بالمركز والدورة</h4>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label asp-for="CenterId" class="form-label required"></label>
+                    <select asp-for="CenterId" class="form-control">
+                        <option value="">اختر المركز</option>
+                        @if (centers != null)
+                        {
+                            @foreach (var center in centers)
+                            {
+                                <option value="@center.CenterId">@center.Name</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="CenterId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CourseId" class="form-label required"></label>
+                    <select asp-for="CourseId" class="form-control">
+                        <option value="">اختر الدورة</option>
+                        @if (courses != null)
+                        {
+                            @foreach (var course in courses)
+                            {
+                                <option value="@course.CourseId">@course.CourseName (@course.CourseType.GetDisplayName())</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="CourseId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <h4 class="section-title"><i class="fas fa-file-pdf"></i> ملف PDF</h4>
+            <div class="form-group">
+                <label asp-for="PdfFile" class="form-label"></label>
+                <input asp-for="PdfFile" type="file" accept=".pdf" class="form-control" />
+                <small class="form-text text-muted">الحجم الأقصى: 10 ميجابايت | النوع المسموح: PDF فقط</small>
+                <span asp-validation-for="PdfFile" class="text-danger"></span>
+            </div>
+
+            <h4 class="section-title"><i class="fas fa-info"></i> تفاصيل إضافية</h4>
+            <div class="form-group">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="وصف الاختبار"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Instructions" class="form-label"></label>
+                <textarea asp-for="Instructions" class="form-control" rows="4" placeholder="تعليمات الاختبار"></textarea>
+                <span asp-validation-for="Instructions" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Notes" class="form-label"></label>
+                <textarea asp-for="Notes" class="form-control" rows="3" placeholder="ملاحظات إضافية"></textarea>
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input asp-for="IsActive" type="checkbox" class="form-check-input" id="IsActive" />
+                    <label asp-for="IsActive" for="IsActive" class="form-check-label">الاختبار نشط</label>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> حفظ الاختبار
+                </button>
+                <a href="@Url.Action("Index")" class="btn btn-outline">
+                    <i class="fas fa-times"></i> إلغاء
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .section-title {
+            color: var(--primary-dark);
+            margin: 25px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: var(--primary-color);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .form-label.required::after {
+            content: " *";
+            color: var(--danger-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-light);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+            background-color: white;
+        }
+        
+        select.form-control {
+            cursor: pointer;
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        .form-text {
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: var(--light-bg);
+            border-radius: 8px;
+        }
+        
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .form-check-label {
+            cursor: pointer;
+            font-weight: 500;
+            margin: 0;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .text-danger {
+            color: var(--danger-color);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-danger {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef5350;
+        }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

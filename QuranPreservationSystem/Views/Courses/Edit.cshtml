@@ -1,15 +1,16 @@
-@model QuranPreservationSystem.Application.DTOs.CreateStudentDto
+@model QuranPreservationSystem.Application.DTOs.UpdateCourseDto
 @{
-    ViewData["Title"] = "إضافة طالب جديد";
+    ViewData["Title"] = "تعديل دورة";
     Layout = "_DashboardLayout";
     var centers = ViewBag.Centers as IEnumerable<QuranPreservationSystem.Domain.Entities.Center>;
+    var teachers = ViewBag.Teachers as IEnumerable<QuranPreservationSystem.Domain.Entities.Teacher>;
 }
 
 <!-- Page Header -->
 <div class="page-header">
     <div class="page-title">
-        <i class="fas fa-user-graduate"></i>
-        <h2>إضافة طالب جديد</h2>
+        <i class="fas fa-edit"></i>
+        <h2>تعديل دورة</h2>
     </div>
     <div class="page-actions">
         <a href="@Url.Action("Index")" class="btn btn-outline">
@@ -18,71 +19,66 @@
     </div>
 </div>
 
-<!-- Create Form -->
+<!-- Edit Form -->
 <div class="card">
     <div class="card-header">
-        <i class="fas fa-plus"></i>
-        <span>بيانات الطالب</span>
+        <i class="fas fa-edit"></i>
+        <span>تعديل بيانات الدورة</span>
     </div>
     <div class="card-body">
-        <form asp-action="Create" method="post">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="CourseId" />
             <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
             
-            <h4 class="section-title"><i class="fas fa-user"></i> البيانات الشخصية</h4>
+            <h4 class="section-title"><i class="fas fa-info-circle"></i> المعلومات الأساسية</h4>
             <div class="form-grid">
                 <div class="form-group">
-                    <label asp-for="FirstName" class="form-label"></label>
-                    <input asp-for="FirstName" class="form-control" placeholder="أدخل الاسم الأول" />
-                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                    <label asp-for="CourseName" class="form-label"></label>
+                    <input asp-for="CourseName" class="form-control" />
+                    <span asp-validation-for="CourseName" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="LastName" class="form-label"></label>
-                    <input asp-for="LastName" class="form-control" placeholder="أدخل اسم العائلة" />
-                    <span asp-validation-for="LastName" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="PhoneNumber" class="form-label"></label>
-                    <input asp-for="PhoneNumber" class="form-control" placeholder="أدخل رقم الهاتف" />
-                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="Email" class="form-label"></label>
-                    <input asp-for="Email" type="email" class="form-control" placeholder="أدخل البريد الإلكتروني" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="DateOfBirth" class="form-label"></label>
-                    <input asp-for="DateOfBirth" type="date" class="form-control" />
-                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="Gender" class="form-label"></label>
-                    <select asp-for="Gender" class="form-control" asp-items="Html.GetEnumSelectList<QuranPreservationSystem.Domain.Enums.Gender>()">
-                        <option value="">اختر الجنس</option>
+                    <label asp-for="CourseType" class="form-label"></label>
+                    <select asp-for="CourseType" class="form-control" asp-items="Html.GetEnumSelectList<QuranPreservationSystem.Domain.Enums.CourseType>()">
+                        <option value="">اختر نوع الدورة</option>
                     </select>
-                    <span asp-validation-for="Gender" class="text-danger"></span>
+                    <span asp-validation-for="CourseType" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Level" class="form-label"></label>
+                    <input asp-for="Level" class="form-control" />
+                    <span asp-validation-for="Level" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="StartDate" class="form-label"></label>
+                    <input asp-for="StartDate" type="date" class="form-control" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="EndDate" class="form-label"></label>
+                    <input asp-for="EndDate" type="date" class="form-control" />
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Schedule" class="form-label"></label>
+                    <input asp-for="Schedule" class="form-control" />
+                    <span asp-validation-for="Schedule" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="form-group">
-                <label asp-for="Address" class="form-label"></label>
-                <input asp-for="Address" class="form-control" placeholder="أدخل العنوان" />
-                <span asp-validation-for="Address" class="text-danger"></span>
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
-            <h4 class="section-title"><i class="fas fa-mosque"></i> معلومات إضافية</h4>
+            <h4 class="section-title"><i class="fas fa-users"></i> التفاصيل الإدارية</h4>
             <div class="form-grid">
-                <div class="form-group">
-                    <label asp-for="IdentityNumber" class="form-label"></label>
-                    <input asp-for="IdentityNumber" class="form-control" placeholder="رقم الهوية" />
-                    <span asp-validation-for="IdentityNumber" class="text-danger"></span>
-                </div>
-
                 <div class="form-group">
                     <label asp-for="CenterId" class="form-label"></label>
                     <select asp-for="CenterId" class="form-control">
@@ -97,24 +93,51 @@
                     </select>
                     <span asp-validation-for="CenterId" class="text-danger"></span>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label asp-for="Notes" class="form-label"></label>
-                <textarea asp-for="Notes" class="form-control" rows="4" placeholder="ملاحظات إضافية"></textarea>
-                <span asp-validation-for="Notes" class="text-danger"></span>
+                <div class="form-group">
+                    <label asp-for="TeacherId" class="form-label"></label>
+                    <select asp-for="TeacherId" class="form-control">
+                        <option value="">اختر المدرس</option>
+                        @if (teachers != null)
+                        {
+                            @foreach (var teacher in teachers)
+                            {
+                                <option value="@teacher.TeacherId">@teacher.FullName</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="TeacherId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="MaxStudents" class="form-label"></label>
+                    <input asp-for="MaxStudents" type="number" class="form-control" />
+                    <span asp-validation-for="MaxStudents" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DurationHours" class="form-label"></label>
+                    <input asp-for="DurationHours" type="number" class="form-control" />
+                    <span asp-validation-for="DurationHours" class="text-danger"></span>
+                </div>
             </div>
 
             <div class="form-group">
                 <div class="form-check">
                     <input asp-for="IsActive" type="checkbox" class="form-check-input" id="IsActive" />
-                    <label asp-for="IsActive" for="IsActive" class="form-check-label">الطالب نشط</label>
+                    <label asp-for="IsActive" for="IsActive" class="form-check-label">الدورة نشطة</label>
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Notes" class="form-label"></label>
+                <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Notes" class="text-danger"></span>
             </div>
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> حفظ
+                    <i class="fas fa-save"></i> حفظ التعديلات
                 </button>
                 <a href="@Url.Action("Index")" class="btn btn-outline">
                     <i class="fas fa-times"></i> إلغاء
@@ -134,6 +157,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 1.2rem;
         }
         
         .section-title i {
@@ -238,3 +262,4 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+

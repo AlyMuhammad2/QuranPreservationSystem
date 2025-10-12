@@ -19,6 +19,7 @@ namespace QuranPreservationSystem.Infrastructure.Data
         public DbSet<Student> Students { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<StudentCourse> StudentCourses { get; set; }
+        public DbSet<Exam> Exams { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -79,6 +80,20 @@ namespace QuranPreservationSystem.Infrastructure.Data
                 .HasIndex(sc => new { sc.StudentId, sc.CourseId })
                 .IsUnique(); // منع تسجيل الطالب في نفس الدورة مرتين
 
+            // علاقة Exam -> Center (Many-to-One)
+            modelBuilder.Entity<Exam>()
+                .HasOne(e => e.Center)
+                .WithMany()
+                .HasForeignKey(e => e.CenterId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // علاقة Exam -> Course (Many-to-One)
+            modelBuilder.Entity<Exam>()
+                .HasOne(e => e.Course)
+                .WithMany()
+                .HasForeignKey(e => e.CourseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // تكوين الأنواع والقيود الإضافية
             modelBuilder.Entity<Center>()
                 .HasIndex(c => c.Name);
@@ -91,6 +106,9 @@ namespace QuranPreservationSystem.Infrastructure.Data
 
             modelBuilder.Entity<Course>()
                 .HasIndex(c => c.CourseName);
+
+            modelBuilder.Entity<Exam>()
+                .HasIndex(e => e.ExamName);
 
             // تكوين الأنواع العددية
             modelBuilder.Entity<StudentCourse>()

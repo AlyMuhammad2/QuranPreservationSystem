@@ -1,0 +1,156 @@
+@model QuranPreservationSystem.Application.DTOs.ExamDto
+@{
+    ViewData["Title"] = "حذف الاختبار";
+    Layout = "_DashboardLayout";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-trash"></i>
+        <h2>حذف الاختبار</h2>
+    </div>
+    <div class="page-actions">
+        <a href="@Url.Action("Index")" class="btn btn-outline">
+            <i class="fas fa-arrow-right"></i> العودة للقائمة
+        </a>
+    </div>
+</div>
+
+<!-- Delete Confirmation -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>تأكيد الحذف</span>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>تحذير:</strong> هل أنت متأكد من رغبتك في حذف هذا الاختبار؟ لا يمكن التراجع عن هذا الإجراء.
+        </div>
+
+        <h4 class="section-title">تفاصيل الاختبار المراد حذفه:</h4>
+        
+        <div class="details-grid">
+            <div class="detail-item">
+                <label class="detail-label">اسم الاختبار</label>
+                <div class="detail-value">@Model.ExamName</div>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">نوع الاختبار</label>
+                <div class="detail-value">
+                    <span class="badge badge-info">@Model.ExamType</span>
+                </div>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">المستوى</label>
+                <div class="detail-value">
+                    <span class="badge badge-secondary">@Model.Level</span>
+                </div>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">الدرجة الكاملة</label>
+                <div class="detail-value">
+                    <strong class="text-success">@Model.TotalMarks</strong>
+                </div>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">المركز</label>
+                <div class="detail-value">@Model.CenterName</div>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">الدورة</label>
+                <div class="detail-value">@Model.CourseName</div>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">ملف PDF</label>
+                <div class="detail-value">
+                    @if (!string.IsNullOrEmpty(Model.PdfFileName))
+                    {
+                        <span class="text-success">
+                            <i class="fas fa-file-pdf"></i> @Model.PdfFileName
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">لا يوجد ملف</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <div class="detail-item full-width">
+                <label class="detail-label">وصف الاختبار</label>
+                <div class="detail-value">@Model.Description</div>
+            </div>
+        }
+
+        <form asp-action="Delete" method="post" class="delete-form">
+            <input asp-for="ExamId" type="hidden" />
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> تأكيد الحذف
+                </button>
+                <a href="@Url.Action("Index")" class="btn btn-outline">
+                    <i class="fas fa-times"></i> إلغاء
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-warning i {
+            margin-left: 8px;
+        }
+        
+        .section-title {
+            color: var(--primary-dark);
+            margin: 20px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+        
+        .delete-form {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .badge-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .badge-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .text-success {
+            color: var(--success-color);
+        }
+        
+        .text-muted {
+            color: #6c757d;
+        }
+    </style>
+}

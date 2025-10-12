@@ -2,6 +2,9 @@
 @{
     ViewData["Title"] = "الطلاب";
     Layout = "_DashboardLayout";
+    var centers = ViewBag.Centers as IEnumerable<QuranPreservationSystem.Domain.Entities.Center>;
+    var currentSearch = ViewBag.CurrentSearch as string;
+    var currentCenterId = ViewBag.CurrentCenterId as int?;
 }
 
 <!-- Page Header -->
@@ -14,6 +17,54 @@
         <a href="@Url.Action("Create")" class="btn btn-primary">
             <i class="fas fa-user-plus"></i> إضافة طالب جديد
         </a>
+    </div>
+</div>
+
+<!-- Search and Filter Section -->
+<div class="card" style="margin-bottom: 20px;">
+    <div class="card-body" style="padding: 20px;">
+        <form method="get" asp-action="Index" class="search-filter-form">
+            <div class="filter-grid">
+                <div class="search-box">
+                    <label for="searchTerm" class="filter-label">
+                        <i class="fas fa-search"></i> البحث بالاسم أو الهاتف
+                    </label>
+                    <input type="text" 
+                           id="searchTerm" 
+                           name="searchTerm" 
+                           class="form-control" 
+                           placeholder="ابحث بالاسم أو رقم الهاتف..." 
+                           value="@currentSearch" />
+                </div>
+
+                <div class="filter-box">
+                    <label for="centerId" class="filter-label">
+                        <i class="fas fa-mosque"></i> المركز
+                    </label>
+                    <select id="centerId" name="centerId" class="form-control">
+                        <option value="">جميع المراكز</option>
+                        @if (centers != null)
+                        {
+                            foreach (var center in centers)
+                            {
+                                <option value="@center.CenterId" selected="@(currentCenterId == center.CenterId)">
+                                    @center.Name
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-filter"></i> تطبيق
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-outline">
+                        <i class="fas fa-redo"></i> إعادة تعيين
+                    </a>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -151,4 +202,64 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/dashboard.css" />
+    <style>
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 20px;
+            align-items: end;
+        }
+        
+        .search-box, .filter-box {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-label i {
+            color: var(--primary-color);
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-filter-form .form-control {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-filter-form .form-control:focus {
+            border-color: var(--primary-light);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+        }
+        
+        @@media (max-width: 992px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-actions {
+                width: 100%;
+            }
+            
+            .filter-actions .btn {
+                flex: 1;
+            }
+        }
+    </style>
 }

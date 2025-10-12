@@ -20,6 +20,7 @@ namespace QuranPreservationSystem.Infrastructure.UnitOfWork
         public IStudentRepository Students { get; private set; }
         public ICourseRepository Courses { get; private set; }
         public IStudentCourseRepository StudentCourses { get; private set; }
+        public IExamRepository Exams { get; private set; }
 
         public UnitOfWork(AppDbContext context)
         {
@@ -31,6 +32,7 @@ namespace QuranPreservationSystem.Infrastructure.UnitOfWork
             Students = new StudentRepository(_context);
             Courses = new CourseRepository(_context);
             StudentCourses = new StudentCourseRepository(_context);
+            Exams = new ExamRepository(_context);
         }
 
         // حفظ التغييرات

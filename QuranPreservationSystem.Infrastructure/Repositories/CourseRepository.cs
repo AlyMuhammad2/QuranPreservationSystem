@@ -14,7 +14,11 @@ namespace QuranPreservationSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<Course>> GetActiveCoursesAsync()
         {
-            return await _dbSet.Where(c => c.IsActive).ToListAsync();
+            return await _dbSet
+                .Include(c => c.Center)
+                .Include(c => c.Teacher)
+                .Include(c => c.StudentCourses)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Course>> GetCoursesByCenterAsync(int centerId)
@@ -46,7 +50,7 @@ namespace QuranPreservationSystem.Infrastructure.Repositories
         public async Task<IEnumerable<Course>> GetUpcomingCoursesAsync()
         {
             return await _dbSet
-                .Where(c => c.StartDate > DateTime.Now && c.IsActive)
+                .Where(c => c.StartDate > DateTime.Now)
                 .OrderBy(c => c.StartDate)
                 .ToListAsync();
         }

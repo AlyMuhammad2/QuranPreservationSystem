@@ -63,10 +63,8 @@
 
                 <div class="form-group">
                     <label asp-for="Gender" class="form-label"></label>
-                    <select asp-for="Gender" class="form-control">
+                    <select asp-for="Gender" class="form-control" asp-items="Html.GetEnumSelectList<QuranPreservationSystem.Domain.Enums.Gender>()">
                         <option value="">اختر الجنس</option>
-                        <option value="1">ذكر</option>
-                        <option value="2">أنثى</option>
                     </select>
                     <span asp-validation-for="Gender" class="text-danger"></span>
                 </div>

@@ -23,9 +23,26 @@ namespace QuranPreservationSystem.Controllers
         }
 
         // GET: Students
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchTerm, int? centerId)
         {
             var students = await _unitOfWork.Students.GetActiveStudentsAsync();
+            
+            // تطبيق الفلترة حسب المركز
+            if (centerId.HasValue && centerId.Value > 0)
+            {
+                students = students.Where(s => s.CenterId == centerId.Value).ToList();
+            }
+
+            // تطبيق البحث بالاسم
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                students = students.Where(s => 
+                    s.FirstName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    s.LastName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    s.PhoneNumber.Contains(searchTerm)
+                ).ToList();
+            }
+            
             var studentDtos = students.Select(s => new StudentDto
             {
                 StudentId = s.StudentId,
@@ -46,6 +63,11 @@ namespace QuranPreservationSystem.Controllers
                 CreatedDate = s.EnrollmentDate, // Using EnrollmentDate as CreatedDate
                 LastModifiedDate = null // Not available in current entity
             }).ToList();
+            
+            // إرسال قائمة المراكز للفلتر
+            ViewBag.Centers = await _unitOfWork.Centers.GetActiveCentersAsync();
+            ViewBag.CurrentSearch = searchTerm;
+            ViewBag.CurrentCenterId = centerId;
             
             return View(studentDtos);
         }

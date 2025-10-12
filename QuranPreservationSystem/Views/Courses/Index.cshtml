@@ -1,27 +1,78 @@
-@model IEnumerable<QuranPreservationSystem.Domain.Entities.Course>
+@model IEnumerable<QuranPreservationSystem.Application.DTOs.CourseDto>
 @{
     ViewData["Title"] = "الدورات";
     Layout = "_DashboardLayout";
+    var centers = ViewBag.Centers as IEnumerable<QuranPreservationSystem.Domain.Entities.Center>;
+    var currentSearch = ViewBag.CurrentSearch as string;
+    var currentCenterId = ViewBag.CurrentCenterId as int?;
 }
 
 <!-- Page Header -->
 <div class="page-header">
     <div class="page-title">
-        <i class="fas fa-book"></i>
+        <i class="fas fa-book-open"></i>
         <h2>إدارة الدورات</h2>
     </div>
     <div class="page-actions">
         <a href="@Url.Action("Create")" class="btn btn-primary">
-            <i class="fas fa-plus"></i> إنشاء دورة جديدة
+            <i class="fas fa-plus"></i> إضافة دورة جديدة
         </a>
+    </div>
+</div>
+
+<!-- Search and Filter Section -->
+<div class="card" style="margin-bottom: 20px;">
+    <div class="card-body" style="padding: 20px;">
+        <form method="get" asp-action="Index" class="search-filter-form">
+            <div class="filter-grid">
+                <div class="search-box">
+                    <label for="searchTerm" class="filter-label">
+                        <i class="fas fa-search"></i> البحث بالاسم
+                    </label>
+                    <input type="text" 
+                           id="searchTerm" 
+                           name="searchTerm" 
+                           class="form-control" 
+                           placeholder="ابحث باسم الدورة..." 
+                           value="@currentSearch" />
+                </div>
+
+                <div class="filter-box">
+                    <label for="centerId" class="filter-label">
+                        <i class="fas fa-mosque"></i> المركز
+                    </label>
+                    <select id="centerId" name="centerId" class="form-control">
+                        <option value="">جميع المراكز</option>
+                        @if (centers != null)
+                        {
+                            foreach (var center in centers)
+                            {
+                                <option value="@center.CenterId" selected="@(currentCenterId == center.CenterId)">
+                                    @center.Name
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-filter"></i> تطبيق
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-outline">
+                        <i class="fas fa-redo"></i> إعادة تعيين
+                    </a>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 
 <!-- Stats Summary -->
 <div class="stats-container" style="margin-bottom: 25px;">
-    <div class="stat-card stat-warning">
+    <div class="stat-card stat-success">
         <div class="stat-icon">
-            <i class="fas fa-book"></i>
+            <i class="fas fa-book-open"></i>
         </div>
         <div class="stat-info">
             <h3>@Model.Count()</h3>
@@ -29,13 +80,33 @@
         </div>
     </div>
     
-    <div class="stat-card stat-success">
+    <div class="stat-card stat-info">
         <div class="stat-icon">
             <i class="fas fa-check-circle"></i>
         </div>
         <div class="stat-info">
             <h3>@Model.Count(c => c.IsActive)</h3>
             <p>الدورات النشطة</p>
+        </div>
+    </div>
+    
+    <div class="stat-card stat-warning">
+        <div class="stat-icon">
+            <i class="fas fa-user-graduate"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@Model.Sum(c => c.EnrolledStudentsCount)</h3>
+            <p>إجمالي الطلاب</p>
+        </div>
+    </div>
+    
+    <div class="stat-card stat-danger">
+        <div class="stat-icon">
+            <i class="fas fa-chair"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@Model.Sum(c => c.AvailableSeats)</h3>
+            <p>المقاعد المتاحة</p>
         </div>
     </div>
 </div>
@@ -55,10 +126,11 @@
                         <tr>
                             <th>#</th>
                             <th>اسم الدورة</th>
-                            <th>نوع الدورة</th>
+                            <th>النوع</th>
                             <th>المدرس</th>
                             <th>المركز</th>
                             <th>تاريخ البداية</th>
+                            <th>الطلاب</th>
                             <th>الحالة</th>
                             <th>الإجراءات</th>
                         </tr>
@@ -72,18 +144,23 @@
                             <tr>
                                 <td>@index</td>
                                 <td><strong>@course.CourseName</strong></td>
-                                <td>@course.CourseType.ToString()</td>
-                                <td>@course.Teacher?.FullName</td>
-                                <td>@course.Center?.Name</td>
+                                <td>@course.CourseType.GetDisplayName()</td>
+                                <td>@course.TeacherName</td>
+                                <td>@course.CenterName</td>
                                 <td>@course.StartDate.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <span class="badge badge-info">
+                                        @course.EnrolledStudentsCount / @(course.MaxStudents ?? 0)
+                                    </span>
+                                </td>
                                 <td>
                                     @if (course.IsActive)
                                     {
-                                        <span class="badge badge-success">نشطة</span>
+                                        <span class="badge badge-success">نشط</span>
                                     }
                                     else
                                     {
-                                        <span class="badge badge-danger">غير نشطة</span>
+                                        <span class="badge badge-danger">غير نشط</span>
                                     }
                                 </td>
                                 <td>
@@ -109,11 +186,11 @@
         else
         {
             <div class="empty-state">
-                <i class="fas fa-book"></i>
+                <i class="fas fa-book-open"></i>
                 <h3>لا توجد دورات</h3>
-                <p>ابدأ بإنشاء دورة جديدة</p>
+                <p>ابدأ بإضافة دورة جديدة</p>
                 <a href="@Url.Action("Create")" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> إنشاء دورة
+                    <i class="fas fa-plus"></i> إضافة دورة
                 </a>
             </div>
         }
@@ -122,5 +199,64 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/dashboard.css" />
+    <style>
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 20px;
+            align-items: end;
+        }
+        
+        .search-box, .filter-box {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-label i {
+            color: var(--primary-color);
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-filter-form .form-control {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-filter-form .form-control:focus {
+            border-color: var(--primary-light);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+        }
+        
+        @@media (max-width: 992px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-actions {
+                width: 100%;
+            }
+            
+            .filter-actions .btn {
+                flex: 1;
+            }
+        }
+    </style>
 }
-

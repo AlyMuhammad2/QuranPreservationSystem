@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuranPreservationSystem.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using QuranPreservationSystem.Infrastructure.Data;
 namespace QuranPreservationSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251012194106_AddExamEntity")]
+    partial class AddExamEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -456,8 +459,14 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int");
+
                     b.Property<TimeSpan?>("EndTime")
                         .HasColumnType("time");
+
+                    b.Property<DateTime>("ExamDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ExamName")
                         .IsRequired()
@@ -513,7 +522,7 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                     b.Property<TimeSpan?>("StartTime")
                         .HasColumnType("time");
 
-                    b.Property<int?>("TotalMarks")
+                    b.Property<int>("TotalMarks")
                         .HasColumnType("int");
 
                     b.HasKey("ExamId");
@@ -521,6 +530,8 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                     b.HasIndex("CenterId");
 
                     b.HasIndex("CourseId");
+
+                    b.HasIndex("ExamDate");
 
                     b.HasIndex("ExamName");
 

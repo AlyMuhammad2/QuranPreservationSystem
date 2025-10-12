@@ -1,0 +1,258 @@
+@model QuranPreservationSystem.Application.DTOs.CourseDto
+@{
+    ViewData["Title"] = "تفاصيل الدورة";
+    Layout = "_DashboardLayout";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-book-open"></i>
+        <h2>تفاصيل الدورة</h2>
+    </div>
+    <div class="page-actions">
+        <a href="@Url.Action("Edit", new { id = Model.CourseId })" class="btn btn-warning">
+            <i class="fas fa-edit"></i> تعديل
+        </a>
+        <a href="@Url.Action("Index")" class="btn btn-outline">
+            <i class="fas fa-arrow-right"></i> العودة للقائمة
+        </a>
+    </div>
+</div>
+
+<!-- Course Info Card -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-info-circle"></i>
+        <span>المعلومات الأساسية</span>
+    </div>
+    <div class="card-body">
+        <div class="details-grid">
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-book"></i>
+                    <span>اسم الدورة</span>
+                </div>
+                <div class="detail-value"><strong>@Model.CourseName</strong></div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-tag"></i>
+                    <span>نوع الدورة</span>
+                </div>
+                <div class="detail-value">@Model.CourseType.GetDisplayName()</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-layer-group"></i>
+                    <span>المستوى</span>
+                </div>
+                <div class="detail-value">@(Model.Level ?? "-")</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>تاريخ البداية</span>
+                </div>
+                <div class="detail-value">@Model.StartDate.ToString("dd/MM/yyyy")</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>تاريخ النهاية</span>
+                </div>
+                <div class="detail-value">@(Model.EndDate?.ToString("dd/MM/yyyy") ?? "-")</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-clock"></i>
+                    <span>الجدول الزمني</span>
+                </div>
+                <div class="detail-value">@(Model.Schedule ?? "-")</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-hourglass-half"></i>
+                    <span>عدد الساعات</span>
+                </div>
+                <div class="detail-value">@(Model.DurationHours?.ToString() ?? "-") ساعة</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-toggle-on"></i>
+                    <span>الحالة</span>
+                </div>
+                <div class="detail-value">
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge badge-success">نشط</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-danger">غير نشط</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <div class="detail-item full-width" style="margin-top: 20px;">
+                <div class="detail-label">
+                    <i class="fas fa-align-left"></i>
+                    <span>الوصف</span>
+                </div>
+                <div class="detail-value">@Model.Description</div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Administrative Info Card -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-users-cog"></i>
+        <span>التفاصيل الإدارية</span>
+    </div>
+    <div class="card-body">
+        <div class="details-grid">
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-mosque"></i>
+                    <span>المركز</span>
+                </div>
+                <div class="detail-value">@Model.CenterName</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>المدرس</span>
+                </div>
+                <div class="detail-value">@Model.TeacherName</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>عدد الطلاب المسجلين</span>
+                </div>
+                <div class="detail-value"><strong>@Model.EnrolledStudentsCount</strong></div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-users"></i>
+                    <span>الحد الأقصى للطلاب</span>
+                </div>
+                <div class="detail-value">@(Model.MaxStudents?.ToString() ?? "-")</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-chair"></i>
+                    <span>المقاعد المتاحة</span>
+                </div>
+                <div class="detail-value">
+                    <strong class="@(Model.AvailableSeats > 0 ? "text-success" : "text-danger")">
+                        @Model.AvailableSeats
+                    </strong>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-calendar-plus"></i>
+                    <span>تاريخ الإنشاء</span>
+                </div>
+                <div class="detail-value">@Model.CreatedDate.ToString("dd/MM/yyyy")</div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Notes))
+        {
+            <div class="detail-item full-width" style="margin-top: 20px;">
+                <div class="detail-label">
+                    <i class="fas fa-sticky-note"></i>
+                    <span>ملاحظات</span>
+                </div>
+                <div class="detail-value">@Model.Notes</div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .detail-item {
+            padding: 15px;
+            background: var(--light-bg);
+            border-radius: 8px;
+            border-right: 3px solid var(--primary-light);
+        }
+        
+        .detail-item.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .detail-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .detail-label i {
+            color: var(--primary-color);
+            width: 20px;
+        }
+        
+        .detail-value {
+            font-size: 1.05rem;
+            color: var(--dark-text);
+            padding-right: 30px;
+        }
+        
+        .badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background: rgba(67, 160, 71, 0.15);
+            color: var(--success-color);
+        }
+        
+        .badge-danger {
+            background: rgba(229, 57, 53, 0.15);
+            color: var(--danger-color);
+        }
+        
+        .text-success {
+            color: #43a047;
+        }
+        
+        .text-danger {
+            color: #e53935;
+        }
+    </style>
+}
+

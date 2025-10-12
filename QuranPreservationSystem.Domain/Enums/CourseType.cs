@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace QuranPreservationSystem.Domain.Enums
 {
     /// <summary>
@@ -5,59 +7,37 @@ namespace QuranPreservationSystem.Domain.Enums
     /// </summary>
     public enum CourseType
     {
-        /// <summary>
-        /// تلاوة وتجويد
-        /// </summary>
+        [Display(Name = "تلاوة وتجويد")]
         TilawahAndTajweed = 1,
 
-        /// <summary>
-        /// تمهيدية
-        /// </summary>
+        [Display(Name = "تمهيدية")]
         Introductory = 2,
 
-        /// <summary>
-        /// متوسطة
-        /// </summary>
+        [Display(Name = "متوسطة")]
         Intermediate = 3,
 
-        /// <summary>
-        /// متقدمة
-        /// </summary>
+        [Display(Name = "متقدمة")]
         Advanced = 4,
 
-        /// <summary>
-        /// إتقان
-        /// </summary>
+        [Display(Name = "إتقان")]
         Mastery = 5,
 
-        /// <summary>
-        /// إجازة نظراً
-        /// </summary>
+        [Display(Name = "إجازة نظراً")]
         IjazahNazaran = 6,
 
-        /// <summary>
-        /// سند غيبي
-        /// </summary>
+        [Display(Name = "سند غيبي")]
         SanadGhaybi = 7,
 
-        /// <summary>
-        /// دورة طيبة
-        /// </summary>
+        [Display(Name = "دورة طيبة")]
         Tayyibah = 8,
 
-        /// <summary>
-        /// إجازة طيبة
-        /// </summary>
+        [Display(Name = "إجازة طيبة")]
         IjazahTayyibah = 9,
 
-        /// <summary>
-        /// روايات أخرى
-        /// </summary>
+        [Display(Name = "روايات أخرى")]
         OtherRiwayat = 10,
 
-        /// <summary>
-        /// القراءات العشر
-        /// </summary>
+        [Display(Name = "القراءات العشر")]
         TenQiraah = 11
     }
 }

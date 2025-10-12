@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace QuranPreservationSystem.Domain.Enums
 {
     /// <summary>
@@ -5,29 +7,19 @@ namespace QuranPreservationSystem.Domain.Enums
     /// </summary>
     public enum StudentCourseStatus
     {
-        /// <summary>
-        /// نشط
-        /// </summary>
+        [Display(Name = "نشط")]
         Active = 1,
 
-        /// <summary>
-        /// مكتمل
-        /// </summary>
+        [Display(Name = "مكتمل")]
         Completed = 2,
 
-        /// <summary>
-        /// منسحب
-        /// </summary>
+        [Display(Name = "منسحب")]
         Withdrawn = 3,
 
-        /// <summary>
-        /// متأخر
-        /// </summary>
+        [Display(Name = "متأخر")]
         Late = 4,
 
-        /// <summary>
-        /// معلق
-        /// </summary>
+        [Display(Name = "معلق")]
         Suspended = 5
     }
 }

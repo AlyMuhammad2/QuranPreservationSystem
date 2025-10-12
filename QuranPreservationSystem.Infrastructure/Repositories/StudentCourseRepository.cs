@@ -47,7 +47,32 @@ namespace QuranPreservationSystem.Infrastructure.Repositories
         public async Task<int> GetCourseEnrollmentCountAsync(int courseId)
         {
             return await _dbSet
-                .CountAsync(sc => sc.CourseId == courseId && sc.IsActive);
+                .CountAsync(sc => sc.CourseId == courseId );
+        }
+
+        public async Task<IEnumerable<StudentCourse>> GetAllWithDetailsAsync()
+        {
+            return await _dbSet
+                .Include(sc => sc.Student)
+                    .ThenInclude(s => s.Center)
+                .Include(sc => sc.Course)
+                    .ThenInclude(c => c.Teacher)
+                .Include(sc => sc.Course)
+                    .ThenInclude(c => c.Center)
+                .OrderByDescending(sc => sc.EnrollmentDate)
+                .ToListAsync();
+        }
+
+        public async Task<StudentCourse?> GetStudentCourseWithDetailsAsync(int studentCourseId)
+        {
+            return await _dbSet
+                .Include(sc => sc.Student)
+                    .ThenInclude(s => s.Center)
+                .Include(sc => sc.Course)
+                    .ThenInclude(c => c.Teacher)
+                .Include(sc => sc.Course)
+                    .ThenInclude(c => c.Center)
+                .FirstOrDefaultAsync(sc => sc.StudentCourseId == studentCourseId);
         }
     }
 }

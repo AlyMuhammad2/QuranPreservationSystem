@@ -13,7 +13,9 @@ namespace QuranPreservationSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<Teacher>> GetActiveTeachersAsync()
         {
-            return await _dbSet.Where(t => t.IsActive).ToListAsync();
+            return await _dbSet
+                .Include(t => t.Center)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Teacher>> GetTeachersByCenterAsync(int centerId)
