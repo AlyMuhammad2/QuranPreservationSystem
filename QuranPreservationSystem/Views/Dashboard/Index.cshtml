@@ -1,0 +1,170 @@
+@{
+    ViewData["Title"] = "لوحة التحكم";
+    Layout = "_DashboardLayout";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-tachometer-alt"></i>
+        <h2>لوحة التحكم</h2>
+    </div>
+    <div class="page-actions">
+        <button class="btn btn-outline" id="refreshBtn">
+            <i class="fas fa-sync-alt"></i> تحديث
+        </button>
+    </div>
+</div>
+
+<!-- Welcome Card -->
+<div class="welcome-card">
+    <div class="welcome-icon">
+        <i class="fas fa-hand-holding-heart"></i>
+    </div>
+    <div class="welcome-text">
+        <h2>مرحباً @ViewBag.UserName 👋</h2>
+        <p>أهلاً بك في منصة لجنة التلاوة - فرع الكورة</p>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="stats-container">
+    <div class="stat-card stat-primary">
+        <div class="stat-icon">
+            <i class="fas fa-mosque"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@ViewBag.Stats.TotalCenters</h3>
+            <p>المراكز القرآنية</p>
+        </div>
+        <div class="stat-badge">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+    </div>
+
+    <div class="stat-card stat-success">
+        <div class="stat-icon">
+            <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@ViewBag.Stats.TotalTeachers</h3>
+            <p>المدرسين</p>
+        </div>
+        <div class="stat-badge">
+            <i class="fas fa-check-circle"></i>
+        </div>
+    </div>
+
+    <div class="stat-card stat-info">
+        <div class="stat-icon">
+            <i class="fas fa-user-graduate"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@ViewBag.Stats.TotalStudents</h3>
+            <p>الطلاب</p>
+        </div>
+        <div class="stat-badge">
+            <i class="fas fa-users"></i>
+        </div>
+    </div>
+
+    <div class="stat-card stat-warning">
+        <div class="stat-icon">
+            <i class="fas fa-book"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@ViewBag.Stats.TotalCourses</h3>
+            <p>الدورات</p>
+        </div>
+        <div class="stat-badge">
+            <i class="fas fa-graduation-cap"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+    <h3><i class="fas fa-bolt"></i> إجراءات سريعة</h3>
+    <div class="actions-grid">
+        <a href="@Url.Action("Create", "Students")" class="action-card">
+            <i class="fas fa-user-plus"></i>
+            <span>إضافة طالب جديد</span>
+        </a>
+        
+        <a href="@Url.Action("Create", "Teachers")" class="action-card">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <span>إضافة مدرس جديد</span>
+        </a>
+        
+        <a href="@Url.Action("Create", "Courses")" class="action-card">
+            <i class="fas fa-book-open"></i>
+            <span>إنشاء دورة جديدة</span>
+        </a>
+        
+        <a href="@Url.Action("Create", "Enrollments")" class="action-card">
+            <i class="fas fa-user-check"></i>
+            <span>تسجيل طالب في دورة</span>
+        </a>
+        
+        <a href="@Url.Action("Index", "Reports")" class="action-card">
+            <i class="fas fa-chart-bar"></i>
+            <span>عرض التقارير</span>
+        </a>
+        
+        <a href="@Url.Action("Export", "Reports")" class="action-card">
+            <i class="fas fa-file-excel"></i>
+            <span>تصدير البيانات</span>
+        </a>
+    </div>
+</div>
+
+<!-- Recent Activities -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-clock"></i>
+        <span>النشاطات الأخيرة</span>
+    </div>
+    <div class="card-body">
+        <div class="activity-list">
+            <div class="activity-item">
+                <div class="activity-icon activity-success">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="activity-content">
+                    <p class="activity-title">تم إضافة طالب جديد</p>
+                    <p class="activity-time">منذ 5 دقائق</p>
+                </div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon activity-info">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="activity-content">
+                    <p class="activity-title">تم إنشاء دورة جديدة</p>
+                    <p class="activity-time">منذ ساعة</p>
+                </div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon activity-warning">
+                    <i class="fas fa-edit"></i>
+                </div>
+                <div class="activity-content">
+                    <p class="activity-title">تم تحديث بيانات مركز</p>
+                    <p class="activity-time">منذ 3 ساعات</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Refresh button
+        document.getElementById('refreshBtn')?.addEventListener('click', function() {
+            location.reload();
+        });
+    </script>
+}
+

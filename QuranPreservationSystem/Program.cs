@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QuranPreservationSystem.Application.Interfaces;
 using QuranPreservationSystem.Application.Interfaces.IRepositories;
 using QuranPreservationSystem.Infrastructure.Data;
+using QuranPreservationSystem.Infrastructure.Identity;
 using QuranPreservationSystem.Infrastructure.Repositories;
 using QuranPreservationSystem.Infrastructure.UnitOfWork;
 
@@ -9,7 +11,7 @@ namespace QuranPreservationSystem
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,43 @@ namespace QuranPreservationSystem
             // إضافة DbContext للتطبيق
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("QuranPreservationSystem")));
+
+            // إضافة Identity للتطبيق
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = true;
+
+                // SignIn settings
+                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+            })
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
+
+            // Cookie settings
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromHours(24);
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+                options.SlidingExpiration = true;
+            });
 
             // تسجيل Repositories
             builder.Services.AddScoped<ICenterRepository, CenterRepository>();
@@ -32,6 +71,25 @@ namespace QuranPreservationSystem
 
             var app = builder.Build();
 
+            // تهيئة قاعدة البيانات والبيانات الأولية
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<AppDbContext>();
+                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    
+                    await DbInitializer.InitializeAsync(context, userManager, roleManager);
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred while seeding the database.");
+                }
+            }
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -43,12 +101,13 @@ namespace QuranPreservationSystem
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Account}/{action=Login}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

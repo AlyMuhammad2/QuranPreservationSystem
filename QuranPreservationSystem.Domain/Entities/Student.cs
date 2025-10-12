@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using QuranPreservationSystem.Domain.Enums;
 
 namespace QuranPreservationSystem.Domain.Entities
 {
@@ -37,8 +38,8 @@ namespace QuranPreservationSystem.Domain.Entities
         [Required(ErrorMessage = "تاريخ الميلاد مطلوب")]
         public DateTime DateOfBirth { get; set; }
 
-        [StringLength(20)]
-        public string? Gender { get; set; } // "ذكر" أو "أنثى"
+        [Required(ErrorMessage = "الجنس مطلوب")]
+        public Gender Gender { get; set; } // ذكر أو أنثى
 
         [StringLength(100)]
         public string? GuardianName { get; set; } // اسم ولي الأمر
@@ -56,6 +57,9 @@ namespace QuranPreservationSystem.Domain.Entities
 
         [StringLength(1000)]
         public string? Notes { get; set; }
+
+        [StringLength(500)]
+        public string? DocumentPath { get; set; } // مسار ملف PDF الخاص بالطالب
 
         // Foreign Keys
         [Required(ErrorMessage = "المركز مطلوب")]

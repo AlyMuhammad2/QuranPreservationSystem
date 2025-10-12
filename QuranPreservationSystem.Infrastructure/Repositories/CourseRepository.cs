@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using QuranPreservationSystem.Application.Interfaces.IRepositories;
 using QuranPreservationSystem.Domain.Entities;
+using QuranPreservationSystem.Domain.Enums;
 using QuranPreservationSystem.Infrastructure.Data;
 
 namespace QuranPreservationSystem.Infrastructure.Repositories
@@ -52,9 +53,15 @@ namespace QuranPreservationSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<Course>> GetCoursesByTypeAsync(string courseType)
         {
-            return await _dbSet
-                .Where(c => c.CourseType == courseType)
-                .ToListAsync();
+            // محاولة تحويل string إلى enum
+            if (Enum.TryParse<CourseType>(courseType, true, out var courseTypeEnum))
+            {
+                return await _dbSet
+                    .Where(c => c.CourseType == courseTypeEnum)
+                    .ToListAsync();
+            }
+            
+            return new List<Course>();
         }
     }
 }

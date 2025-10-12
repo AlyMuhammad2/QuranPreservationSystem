@@ -1,0 +1,237 @@
+@model QuranPreservationSystem.Application.DTOs.TeacherDto
+@{
+    ViewData["Title"] = "تفاصيل المدرس";
+    Layout = "_DashboardLayout";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <h2>تفاصيل المدرس</h2>
+    </div>
+    <div class="page-actions">
+        <a href="@Url.Action("Edit", new { id = Model.TeacherId })" class="btn btn-warning">
+            <i class="fas fa-edit"></i> تعديل
+        </a>
+        <a href="@Url.Action("Index")" class="btn btn-outline">
+            <i class="fas fa-arrow-right"></i> العودة للقائمة
+        </a>
+    </div>
+</div>
+
+<!-- Teacher Info Card -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-user"></i>
+        <span>البيانات الشخصية</span>
+    </div>
+    <div class="card-body">
+        <div class="details-grid">
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-user"></i>
+                    <span>الاسم الكامل</span>
+                </div>
+                <div class="detail-value"><strong>@Model.FullName</strong></div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-phone"></i>
+                    <span>رقم الهاتف</span>
+                </div>
+                <div class="detail-value">@Model.PhoneNumber</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-envelope"></i>
+                    <span>البريد الإلكتروني</span>
+                </div>
+                <div class="detail-value">@(Model.Email ?? "-")</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>العنوان</span>
+                </div>
+                <div class="detail-value">@(Model.Address ?? "-")</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-birthday-cake"></i>
+                    <span>تاريخ الميلاد</span>
+                </div>
+                <div class="detail-value">
+                    @if (Model.DateOfBirth.HasValue)
+                    {
+                        @Model.DateOfBirth.Value.ToString("dd/MM/yyyy")
+                    }
+                    else
+                    {
+                        <text>-</text>
+                    }
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-venus-mars"></i>
+                    <span>الجنس</span>
+                </div>
+                <div class="detail-value">
+                    @if (Model.Gender.HasValue)
+                    {
+                        @(Model.Gender.Value == Gender.Male ? "ذكر" : "أنثى")
+                    }
+                    else
+                    {
+                        <text>-</text>
+                    }
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-mosque"></i>
+                    <span>المركز</span>
+                </div>
+                <div class="detail-value">@Model.CenterName</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-calendar"></i>
+                    <span>تاريخ التعيين</span>
+                </div>
+                <div class="detail-value">@Model.HireDate.ToString("dd/MM/yyyy")</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-toggle-on"></i>
+                    <span>الحالة</span>
+                </div>
+                <div class="detail-value">
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge badge-success">نشط</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-danger">غير نشط</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Academic Info Card -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-graduation-cap"></i>
+        <span>المعلومات الأكاديمية</span>
+    </div>
+    <div class="card-body">
+        <div class="details-grid">
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-certificate"></i>
+                    <span>المؤهل العلمي</span>
+                </div>
+                <div class="detail-value">@(Model.Qualification ?? "-")</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-book-reader"></i>
+                    <span>التخصص</span>
+                </div>
+                <div class="detail-value">@(Model.Specialization ?? "-")</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-book"></i>
+                    <span>عدد الدورات</span>
+                </div>
+                <div class="detail-value"><strong>@Model.CoursesCount</strong></div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Notes))
+        {
+            <div class="detail-item full-width" style="margin-top: 20px;">
+                <div class="detail-label">
+                    <i class="fas fa-sticky-note"></i>
+                    <span>ملاحظات</span>
+                </div>
+                <div class="detail-value">@Model.Notes</div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .detail-item {
+            padding: 15px;
+            background: var(--light-bg);
+            border-radius: 8px;
+            border-right: 3px solid var(--primary-light);
+        }
+        
+        .detail-item.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .detail-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .detail-label i {
+            color: var(--primary-color);
+            width: 20px;
+        }
+        
+        .detail-value {
+            font-size: 1.05rem;
+            color: var(--dark-text);
+            padding-right: 30px;
+        }
+        
+        .badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background: rgba(67, 160, 71, 0.15);
+            color: var(--success-color);
+        }
+        
+        .badge-danger {
+            background: rgba(229, 57, 53, 0.15);
+            color: var(--danger-color);
+        }
+    </style>
+}
+

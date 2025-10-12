@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using QuranPreservationSystem.Domain.Enums;
 
 namespace QuranPreservationSystem.Domain.Entities
 {
@@ -18,8 +19,8 @@ namespace QuranPreservationSystem.Domain.Entities
         [StringLength(1000)]
         public string? Description { get; set; }
 
-        [StringLength(100)]
-        public string? CourseType { get; set; } // نوع الدورة (حفظ، تجويد، مراجعة، إلخ)
+        [Required(ErrorMessage = "نوع الدورة مطلوب")]
+        public CourseType CourseType { get; set; } // نوع الدورة
 
         [StringLength(50)]
         public string? Level { get; set; } // المستوى (مبتدئ، متوسط، متقدم)

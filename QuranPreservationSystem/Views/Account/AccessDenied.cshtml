@@ -1,0 +1,104 @@
+@{
+    ViewData["Title"] = "ممنوع الوصول";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - منصة لجنة التلاوة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --primary-dark: #1b5e20;
+            --danger-color: #e53935;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .access-denied-card {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            text-align: center;
+            padding: 50px 30px;
+        }
+        
+        .icon {
+            font-size: 5rem;
+            color: var(--danger-color);
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+        
+        p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="access-denied-card">
+        <i class="fas fa-ban icon"></i>
+        <h1>ممنوع الوصول</h1>
+        <p>
+            عذراً، ليس لديك الصلاحيات الكافية للوصول إلى هذه الصفحة.
+            <br>
+            يرجى الاتصال بمدير النظام إذا كنت تعتقد أن هذا خطأ.
+        </p>
+        <a href="@Url.Action("Index", "Dashboard")" class="btn">
+            <i class="fas fa-home"></i>
+            العودة للصفحة الرئيسية
+        </a>
+    </div>
+</body>
+</html>
+

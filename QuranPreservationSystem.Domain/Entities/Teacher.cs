@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using QuranPreservationSystem.Domain.Enums;
 
 namespace QuranPreservationSystem.Domain.Entities
 {
@@ -36,8 +37,7 @@ namespace QuranPreservationSystem.Domain.Entities
 
         public DateTime? DateOfBirth { get; set; }
 
-        [StringLength(20)]
-        public string? Gender { get; set; } // "ذكر" أو "أنثى"
+        public Gender? Gender { get; set; } // ذكر أو أنثى
 
         [StringLength(100)]
         public string? Qualification { get; set; } // المؤهل العلمي

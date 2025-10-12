@@ -1,0 +1,187 @@
+@{
+    ViewData["Title"] = "الإحصائيات العامة";
+    Layout = "_DashboardLayout";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-chart-line"></i>
+        <h2>الإحصائيات العامة</h2>
+    </div>
+    <div class="page-actions">
+        <button class="btn btn-outline" onclick="window.print()">
+            <i class="fas fa-print"></i> طباعة
+        </button>
+    </div>
+</div>
+
+<!-- Overall Stats -->
+<div class="stats-container">
+    <div class="stat-card stat-primary">
+        <div class="stat-icon">
+            <i class="fas fa-mosque"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@ViewBag.Stats.TotalCenters</h3>
+            <p>إجمالي المراكز</p>
+        </div>
+        <small style="color: var(--success-color); font-weight: 600;">
+            @ViewBag.Stats.ActiveCenters نشط
+        </small>
+    </div>
+
+    <div class="stat-card stat-success">
+        <div class="stat-icon">
+            <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@ViewBag.Stats.TotalTeachers</h3>
+            <p>إجمالي المدرسين</p>
+        </div>
+        <small style="color: var(--success-color); font-weight: 600;">
+            @ViewBag.Stats.ActiveTeachers نشط
+        </small>
+    </div>
+
+    <div class="stat-card stat-info">
+        <div class="stat-icon">
+            <i class="fas fa-user-graduate"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@ViewBag.Stats.TotalStudents</h3>
+            <p>إجمالي الطلاب</p>
+        </div>
+        <small style="color: var(--success-color); font-weight: 600;">
+            @ViewBag.Stats.ActiveStudents نشط
+        </small>
+    </div>
+
+    <div class="stat-card stat-warning">
+        <div class="stat-icon">
+            <i class="fas fa-book"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@ViewBag.Stats.TotalCourses</h3>
+            <p>إجمالي الدورات</p>
+        </div>
+        <small style="color: var(--success-color); font-weight: 600;">
+            @ViewBag.Stats.ActiveCourses نشطة
+        </small>
+    </div>
+</div>
+
+<!-- Detailed Stats -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-chart-bar"></i>
+        <span>إحصائيات تفصيلية</span>
+    </div>
+    <div class="card-body">
+        <div class="stats-details">
+            <div class="stat-row">
+                <div class="stat-label">
+                    <i class="fas fa-user-plus"></i>
+                    <span>إجمالي التسجيلات</span>
+                </div>
+                <div class="stat-value">@ViewBag.Stats.TotalEnrollments</div>
+            </div>
+
+            <div class="stat-row">
+                <div class="stat-label">
+                    <i class="fas fa-percentage"></i>
+                    <span>نسبة المراكز النشطة</span>
+                </div>
+                <div class="stat-value">
+                    @if (ViewBag.Stats.TotalCenters > 0)
+                    {
+                        <text>@(Math.Round((double)ViewBag.Stats.ActiveCenters / ViewBag.Stats.TotalCenters * 100, 1))%</text>
+                    }
+                    else
+                    {
+                        <text>0%</text>
+                    }
+                </div>
+            </div>
+
+            <div class="stat-row">
+                <div class="stat-label">
+                    <i class="fas fa-percentage"></i>
+                    <span>نسبة المدرسين النشطين</span>
+                </div>
+                <div class="stat-value">
+                    @if (ViewBag.Stats.TotalTeachers > 0)
+                    {
+                        <text>@(Math.Round((double)ViewBag.Stats.ActiveTeachers / ViewBag.Stats.TotalTeachers * 100, 1))%</text>
+                    }
+                    else
+                    {
+                        <text>0%</text>
+                    }
+                </div>
+            </div>
+
+            <div class="stat-row">
+                <div class="stat-label">
+                    <i class="fas fa-percentage"></i>
+                    <span>نسبة الطلاب النشطين</span>
+                </div>
+                <div class="stat-value">
+                    @if (ViewBag.Stats.TotalStudents > 0)
+                    {
+                        <text>@(Math.Round((double)ViewBag.Stats.ActiveStudents / ViewBag.Stats.TotalStudents * 100, 1))%</text>
+                    }
+                    else
+                    {
+                        <text>0%</text>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .stats-details {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--light-bg);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .stat-row:hover {
+            background: #e8f5e9;
+        }
+        
+        .stat-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+        
+        .stat-label i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            width: 25px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+    </style>
+}
+

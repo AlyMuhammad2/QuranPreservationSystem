@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using QuranPreservationSystem.Domain.Entities;
+using QuranPreservationSystem.Infrastructure.Data.SeedData;
+using QuranPreservationSystem.Infrastructure.Identity;
 
 namespace QuranPreservationSystem.Infrastructure.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
@@ -16,6 +19,13 @@ namespace QuranPreservationSystem.Infrastructure.Data
         public DbSet<Student> Students { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<StudentCourse> StudentCourses { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            // تجاهل warning الـ pending model changes
+            optionsBuilder.ConfigureWarnings(warnings => 
+                warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -86,6 +96,40 @@ namespace QuranPreservationSystem.Infrastructure.Data
             modelBuilder.Entity<StudentCourse>()
                 .Property(sc => sc.Grade)
                 .HasPrecision(5, 2);
+
+            // تكوين Enum Types
+            modelBuilder.Entity<Student>()
+                .Property(s => s.Gender)
+                .HasConversion<int>();
+
+            modelBuilder.Entity<Teacher>()
+                .Property(t => t.Gender)
+                .HasConversion<int>();
+
+            modelBuilder.Entity<Course>()
+                .Property(c => c.CourseType)
+                .HasConversion<int>();
+
+            modelBuilder.Entity<StudentCourse>()
+                .Property(sc => sc.Status)
+                .HasConversion<int>();
+
+            // تكوين علاقات ApplicationUser
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne(u => u.Center)
+                .WithMany()
+                .HasForeignKey(u => u.CenterId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne(u => u.Teacher)
+                .WithMany()
+                .HasForeignKey(u => u.TeacherId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // إضافة البيانات الأولية (Seed Data)
+            CenterSeedData.SeedCenters(modelBuilder);
+            IdentitySeedData.SeedRolesAndUsers(modelBuilder);
         }
     }
 }

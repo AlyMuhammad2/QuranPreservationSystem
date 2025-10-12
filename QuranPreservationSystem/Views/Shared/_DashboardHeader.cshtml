@@ -1,0 +1,64 @@
+@using Microsoft.AspNetCore.Identity
+@using QuranPreservationSystem.Infrastructure.Identity
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var userRoles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();
+    var userRole = userRoles.FirstOrDefault() ?? "مستخدم";
+    var userName = user?.FullName ?? "مستخدم";
+}
+
+<header class="dashboard-header">
+    <div class="header-container">
+        <!-- Logo & Title -->
+        <div class="header-logo">
+            <i class="fas fa-book-quran"></i>
+            <div class="logo-text">
+                <h1>جمعية المحافظة على القرآن الكريم</h1>
+                <span>لجنة التلاوة والتجويد - فرع الكورة</span>
+            </div>
+        </div>
+
+        <!-- User Info & Actions -->
+        <div class="header-actions">
+            <!-- Notifications -->
+            <div class="header-item notifications">
+                <button class="icon-btn" id="notificationsBtn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </button>
+            </div>
+
+            <!-- User Menu -->
+            <div class="header-item user-menu">
+                <div class="user-info" id="userMenuBtn">
+                    <img src="https://ui-avatars.com/api/?name=@userName&background=2e7d32&color=fff" alt="@userName" class="user-avatar">
+                    <div class="user-details">
+                        <span class="user-name">@userName</span>
+                        <span class="user-role">@userRole</span>
+                    </div>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <!-- Dropdown Menu -->
+                <div class="dropdown-menu" id="userDropdown">
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-user"></i> الملف الشخصي
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-cog"></i> الإعدادات
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <form asp-action="Logout" asp-controller="Account" method="post" class="dropdown-form">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="dropdown-item logout">
+                            <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+

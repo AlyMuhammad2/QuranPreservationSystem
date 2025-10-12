@@ -1,0 +1,126 @@
+@model IEnumerable<QuranPreservationSystem.Domain.Entities.Course>
+@{
+    ViewData["Title"] = "الدورات";
+    Layout = "_DashboardLayout";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-book"></i>
+        <h2>إدارة الدورات</h2>
+    </div>
+    <div class="page-actions">
+        <a href="@Url.Action("Create")" class="btn btn-primary">
+            <i class="fas fa-plus"></i> إنشاء دورة جديدة
+        </a>
+    </div>
+</div>
+
+<!-- Stats Summary -->
+<div class="stats-container" style="margin-bottom: 25px;">
+    <div class="stat-card stat-warning">
+        <div class="stat-icon">
+            <i class="fas fa-book"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@Model.Count()</h3>
+            <p>إجمالي الدورات</p>
+        </div>
+    </div>
+    
+    <div class="stat-card stat-success">
+        <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@Model.Count(c => c.IsActive)</h3>
+            <p>الدورات النشطة</p>
+        </div>
+    </div>
+</div>
+
+<!-- Courses Table -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-list"></i>
+        <span>قائمة الدورات</span>
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم الدورة</th>
+                            <th>نوع الدورة</th>
+                            <th>المدرس</th>
+                            <th>المركز</th>
+                            <th>تاريخ البداية</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = 1;
+                        }
+                        @foreach (var course in Model)
+                        {
+                            <tr>
+                                <td>@index</td>
+                                <td><strong>@course.CourseName</strong></td>
+                                <td>@course.CourseType.ToString()</td>
+                                <td>@course.Teacher?.FullName</td>
+                                <td>@course.Center?.Name</td>
+                                <td>@course.StartDate.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    @if (course.IsActive)
+                                    {
+                                        <span class="badge badge-success">نشطة</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">غير نشطة</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="@Url.Action("Details", new { id = course.CourseId })" class="btn-icon btn-info" title="التفاصيل">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="@Url.Action("Edit", new { id = course.CourseId })" class="btn-icon btn-warning" title="تعديل">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="@Url.Action("Delete", new { id = course.CourseId })" class="btn-icon btn-danger" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-book"></i>
+                <h3>لا توجد دورات</h3>
+                <p>ابدأ بإنشاء دورة جديدة</p>
+                <a href="@Url.Action("Create")" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> إنشاء دورة
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+}
+

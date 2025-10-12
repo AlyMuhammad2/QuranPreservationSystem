@@ -1,0 +1,109 @@
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<aside class="dashboard-sidebar">
+    <div class="sidebar-content">
+        <!-- Dashboard Home -->
+        <div class="sidebar-section">
+            <a href="@Url.Action("Index", "Dashboard")" class="sidebar-item @(controller == "Dashboard" && action == "Index" ? "active" : "")">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>لوحة التحكم</span>
+            </a>
+        </div>
+
+        <!-- إدارة البيانات الأساسية -->
+        <div class="sidebar-section">
+            <div class="sidebar-title">
+                <i class="fas fa-database"></i>
+                <span>إدارة البيانات</span>
+            </div>
+            
+            <a href="@Url.Action("Index", "Centers")" class="sidebar-item @(controller == "Centers" ? "active" : "")">
+                <i class="fas fa-mosque"></i>
+                <span>المراكز القرآنية</span>
+            </a>
+            
+            <a href="@Url.Action("Index", "Teachers")" class="sidebar-item @(controller == "Teachers" ? "active" : "")">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>المدرسين</span>
+            </a>
+            
+            <a href="@Url.Action("Index", "Students")" class="sidebar-item @(controller == "Students" ? "active" : "")">
+                <i class="fas fa-user-graduate"></i>
+                <span>الطلاب</span>
+            </a>
+        </div>
+
+        <!-- إدارة الدورات -->
+        <div class="sidebar-section">
+            <div class="sidebar-title">
+                <i class="fas fa-book"></i>
+                <span>إدارة الدورات</span>
+            </div>
+            
+            <a href="@Url.Action("Index", "Courses")" class="sidebar-item @(controller == "Courses" ? "active" : "")">
+                <i class="fas fa-book-open"></i>
+                <span>الدورات</span>
+            </a>
+            
+            <a href="@Url.Action("Index", "Enrollments")" class="sidebar-item @(controller == "Enrollments" ? "active" : "")">
+                <i class="fas fa-user-plus"></i>
+                <span>التسجيلات</span>
+            </a>
+            
+            <a href="@Url.Action("Index", "Exams")" class="sidebar-item @(controller == "Exams" ? "active" : "")">
+                <i class="fas fa-file-alt"></i>
+                <span>الاختبارات</span>
+            </a>
+        </div>
+
+        <!-- التقارير والإحصائيات -->
+        <div class="sidebar-section">
+            <div class="sidebar-title">
+                <i class="fas fa-chart-bar"></i>
+                <span>التقارير والإحصائيات</span>
+            </div>
+            
+            <a href="@Url.Action("Index", "Reports")" class="sidebar-item @(controller == "Reports" ? "active" : "")">
+                <i class="fas fa-chart-pie"></i>
+                <span>التقارير</span>
+            </a>
+            
+            <a href="@Url.Action("Statistics", "Reports")" class="sidebar-item @(controller == "Reports" && action == "Statistics" ? "active" : "")">
+                <i class="fas fa-chart-line"></i>
+                <span>الإحصائيات</span>
+            </a>
+            
+            <a href="@Url.Action("Export", "Reports")" class="sidebar-item @(controller == "Reports" && action == "Export" ? "active" : "")">
+                <i class="fas fa-file-excel"></i>
+                <span>تصدير البيانات</span>
+            </a>
+        </div>
+
+        <!-- إدارة النظام -->
+        <div class="sidebar-section">
+            <div class="sidebar-title">
+                <i class="fas fa-cogs"></i>
+                <span>إدارة النظام</span>
+            </div>
+            
+            <a href="@Url.Action("Index", "Users")" class="sidebar-item @(controller == "Users" ? "active" : "")">
+                <i class="fas fa-users-cog"></i>
+                <span>المستخدمين</span>
+            </a>
+            
+            <a href="@Url.Action("Index", "Settings")" class="sidebar-item @(controller == "Settings" ? "active" : "")">
+                <i class="fas fa-sliders-h"></i>
+                <span>الإعدادات</span>
+            </a>
+            
+            <a href="@Url.Action("Index", "Logs")" class="sidebar-item @(controller == "Logs" ? "active" : "")">
+                <i class="fas fa-history"></i>
+                <span>سجل النشاطات</span>
+            </a>
+        </div>
+    </div>
+</aside>
+

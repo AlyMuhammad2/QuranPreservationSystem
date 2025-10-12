@@ -1,0 +1,154 @@
+@model IEnumerable<QuranPreservationSystem.Application.DTOs.StudentDto>
+@{
+    ViewData["Title"] = "الطلاب";
+    Layout = "_DashboardLayout";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-user-graduate"></i>
+        <h2>إدارة الطلاب</h2>
+    </div>
+    <div class="page-actions">
+        <a href="@Url.Action("Create")" class="btn btn-primary">
+            <i class="fas fa-user-plus"></i> إضافة طالب جديد
+        </a>
+    </div>
+</div>
+
+<!-- Stats Summary -->
+<div class="stats-container" style="margin-bottom: 25px;">
+    <div class="stat-card stat-success">
+        <div class="stat-icon">
+            <i class="fas fa-user-graduate"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@Model.Count()</h3>
+            <p>إجمالي الطلاب</p>
+        </div>
+    </div>
+    
+    <div class="stat-card stat-info">
+        <div class="stat-icon">
+            <i class="fas fa-user-check"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@Model.Count(s => s.IsActive)</h3>
+            <p>الطلاب النشطين</p>
+        </div>
+    </div>
+    
+    <div class="stat-card stat-warning">
+        <div class="stat-icon">
+            <i class="fas fa-male"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@Model.Count(s => s.Gender == QuranPreservationSystem.Domain.Enums.Gender.Male)</h3>
+            <p>الطلاب الذكور</p>
+        </div>
+    </div>
+    
+    <div class="stat-card stat-danger">
+        <div class="stat-icon">
+            <i class="fas fa-female"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@Model.Count(s => s.Gender == QuranPreservationSystem.Domain.Enums.Gender.Female)</h3>
+            <p>الطالبات الإناث</p>
+        </div>
+    </div>
+</div>
+
+<!-- Students Table -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-list"></i>
+        <span>قائمة الطلاب</span>
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>الاسم الكامل</th>
+                            <th>رقم الهاتف</th>
+                            <th>البريد الإلكتروني</th>
+                            <th>الجنس</th>
+                            <th>المركز</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = 1;
+                        }
+                        @foreach (var student in Model)
+                        {
+                            <tr>
+                                <td>@index</td>
+                                <td><strong>@student.FullName</strong></td>
+                                <td>@student.PhoneNumber</td>
+                                <td>@(student.Email ?? "-")</td>
+                                <td>
+                                    @if (student.Gender == QuranPreservationSystem.Domain.Enums.Gender.Male)
+                                    {
+                                        <span class="badge badge-info">ذكر</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-warning">أنثى</span>
+                                    }
+                                </td>
+                                <td>@(student.CenterName ?? "-")</td>
+                                <td>
+                                    @if (student.IsActive)
+                                    {
+                                        <span class="badge badge-success">نشط</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">غير نشط</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="@Url.Action("Details", new { id = student.StudentId })" class="btn-icon btn-info" title="التفاصيل">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="@Url.Action("Edit", new { id = student.StudentId })" class="btn-icon btn-warning" title="تعديل">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="@Url.Action("Delete", new { id = student.StudentId })" class="btn-icon btn-danger" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-user-graduate"></i>
+                <h3>لا يوجد طلاب</h3>
+                <p>ابدأ بإضافة طالب جديد</p>
+                <a href="@Url.Action("Create")" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> إضافة طالب
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+}

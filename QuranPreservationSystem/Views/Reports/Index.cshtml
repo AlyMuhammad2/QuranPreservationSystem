@@ -1,0 +1,135 @@
+@{
+    ViewData["Title"] = "التقارير";
+    Layout = "_DashboardLayout";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-chart-pie"></i>
+        <h2>التقارير والإحصائيات</h2>
+    </div>
+</div>
+
+<!-- Reports Grid -->
+<div class="reports-grid">
+    <!-- Statistical Reports -->
+    <div class="report-card">
+        <div class="report-icon" style="background: rgba(33, 150, 243, 0.1);">
+            <i class="fas fa-chart-line" style="color: #2196f3;"></i>
+        </div>
+        <h3>الإحصائيات العامة</h3>
+        <p>عرض إحصائيات شاملة للنظام</p>
+        <a href="@Url.Action("Statistics")" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i> عرض التقرير
+        </a>
+    </div>
+
+    <!-- Centers Report -->
+    <div class="report-card">
+        <div class="report-icon" style="background: rgba(46, 125, 50, 0.1);">
+            <i class="fas fa-mosque" style="color: var(--primary-color);"></i>
+        </div>
+        <h3>تقرير المراكز</h3>
+        <p>تقرير مفصل عن المراكز القرآنية</p>
+        <a href="#" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i> عرض التقرير
+        </a>
+    </div>
+
+    <!-- Students Report -->
+    <div class="report-card">
+        <div class="report-icon" style="background: rgba(255, 152, 0, 0.1);">
+            <i class="fas fa-user-graduate" style="color: var(--warning-color);"></i>
+        </div>
+        <h3>تقرير الطلاب</h3>
+        <p>تقرير شامل عن الطلاب والتسجيلات</p>
+        <a href="#" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i> عرض التقرير
+        </a>
+    </div>
+
+    <!-- Courses Report -->
+    <div class="report-card">
+        <div class="report-icon" style="background: rgba(229, 57, 53, 0.1);">
+            <i class="fas fa-book" style="color: var(--danger-color);"></i>
+        </div>
+        <h3>تقرير الدورات</h3>
+        <p>تقرير عن الدورات والاختبارات</p>
+        <a href="#" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i> عرض التقرير
+        </a>
+    </div>
+
+    <!-- Attendance Report -->
+    <div class="report-card">
+        <div class="report-icon" style="background: rgba(156, 39, 176, 0.1);">
+            <i class="fas fa-clipboard-check" style="color: #9c27b0;"></i>
+        </div>
+        <h3>تقرير الحضور</h3>
+        <p>متابعة حضور الطلاب في الدورات</p>
+        <a href="#" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i> عرض التقرير
+        </a>
+    </div>
+
+    <!-- Export Data -->
+    <div class="report-card">
+        <div class="report-icon" style="background: rgba(67, 160, 71, 0.1);">
+            <i class="fas fa-file-excel" style="color: var(--success-color);"></i>
+        </div>
+        <h3>تصدير البيانات</h3>
+        <p>تصدير البيانات إلى Excel</p>
+        <a href="@Url.Action("Export")" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i> تصدير
+        </a>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .report-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .report-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+        }
+        
+        .report-card h3 {
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .report-card p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+    </style>
+}
+
