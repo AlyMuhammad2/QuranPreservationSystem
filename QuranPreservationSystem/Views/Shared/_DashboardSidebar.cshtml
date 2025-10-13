@@ -76,10 +76,7 @@
                 <span>الإحصائيات</span>
             </a>
             
-            <a href="@Url.Action("Index", "Exams")" class="sidebar-item @(controller == "Exams" ? "active" : "")">
-                <i class="fas fa-clipboard-list"></i>
-                <span>الاختبارات</span>
-            </a>
+          
             
             <a href="@Url.Action("Export", "Reports")" class="sidebar-item @(controller == "Reports" && action == "Export" ? "active" : "")">
                 <i class="fas fa-file-excel"></i>
