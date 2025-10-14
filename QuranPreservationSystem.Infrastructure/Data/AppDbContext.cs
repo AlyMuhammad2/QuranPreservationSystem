@@ -20,6 +20,9 @@ namespace QuranPreservationSystem.Infrastructure.Data
         public DbSet<Course> Courses { get; set; }
         public DbSet<StudentCourse> StudentCourses { get; set; }
         public DbSet<Exam> Exams { get; set; }
+        public DbSet<HafizRegistry> HafizRegistry { get; set; }
+        public DbSet<TempCenterImport> TempCenterImports { get; set; }
+        public DbSet<TempTeacherImport> TempTeacherImports { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -94,6 +97,13 @@ namespace QuranPreservationSystem.Infrastructure.Data
                 .HasForeignKey(e => e.CourseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // علاقة HafizRegistry -> Center (Many-to-One)
+            modelBuilder.Entity<HafizRegistry>()
+                .HasOne(h => h.Center)
+                .WithMany()
+                .HasForeignKey(h => h.CenterId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             // تكوين الأنواع والقيود الإضافية
             modelBuilder.Entity<Center>()
                 .HasIndex(c => c.Name);
@@ -109,6 +119,26 @@ namespace QuranPreservationSystem.Infrastructure.Data
 
             modelBuilder.Entity<Exam>()
                 .HasIndex(e => e.ExamName);
+
+            modelBuilder.Entity<HafizRegistry>()
+                .HasIndex(h => h.StudentName);
+
+            modelBuilder.Entity<HafizRegistry>()
+                .HasIndex(h => h.CompletionYear);
+
+            // Indexes للـ TempCenterImport
+            modelBuilder.Entity<TempCenterImport>()
+                .HasIndex(t => t.Status);
+
+            modelBuilder.Entity<TempCenterImport>()
+                .HasIndex(t => t.BatchId);
+
+            // Indexes للـ TempTeacherImport
+            modelBuilder.Entity<TempTeacherImport>()
+                .HasIndex(t => t.Status);
+
+            modelBuilder.Entity<TempTeacherImport>()
+                .HasIndex(t => t.BatchId);
 
             // تكوين الأنواع العددية
             modelBuilder.Entity<StudentCourse>()
@@ -126,6 +156,18 @@ namespace QuranPreservationSystem.Infrastructure.Data
 
             modelBuilder.Entity<Course>()
                 .Property(c => c.CourseType)
+                .HasConversion<int>();
+
+            modelBuilder.Entity<HafizRegistry>()
+                .Property(h => h.MemorizationLevel)
+                .HasConversion<int?>();
+
+            modelBuilder.Entity<TempCenterImport>()
+                .Property(t => t.Status)
+                .HasConversion<int>();
+
+            modelBuilder.Entity<TempTeacherImport>()
+                .Property(t => t.Status)
                 .HasConversion<int>();
 
             modelBuilder.Entity<StudentCourse>()

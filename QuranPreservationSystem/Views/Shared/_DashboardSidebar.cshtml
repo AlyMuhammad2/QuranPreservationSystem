@@ -34,6 +34,11 @@
                 <i class="fas fa-user-graduate"></i>
                 <span>الطلاب</span>
             </a>
+            
+            <a href="@Url.Action("Index", "HafizRegistry")" class="sidebar-item @(controller == "HafizRegistry" ? "active" : "")">
+                <i class="fas fa-book-quran"></i>
+                <span>ديوان الحفاظ</span>
+            </a>
         </div>
 
         <!-- إدارة الدورات -->
@@ -66,7 +71,7 @@
                 <span>التقارير والإحصائيات</span>
             </div>
             
-            <a href="@Url.Action("Index", "Reports")" class="sidebar-item @(controller == "Reports" ? "active" : "")">
+            <a href="@Url.Action("Index", "Reports")" class="sidebar-item @(controller == "Reports" && action == "Index"  ? "active" : "")">
                 <i class="fas fa-chart-pie"></i>
                 <span>التقارير</span>
             </a>
@@ -81,6 +86,11 @@
             <a href="@Url.Action("Export", "Reports")" class="sidebar-item @(controller == "Reports" && action == "Export" ? "active" : "")">
                 <i class="fas fa-file-excel"></i>
                 <span>تصدير البيانات</span>
+            </a>
+            
+            <a href="@Url.Action("Index", "ImportData")" class="sidebar-item @(controller == "ImportData" ? "active" : "")">
+                <i class="fas fa-file-import"></i>
+                <span>استيراد البيانات</span>
             </a>
         </div>
 

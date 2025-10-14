@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.Interfaces;
 using QuranPreservationSystem.Application.DTOs;
 using QuranPreservationSystem.Domain.Entities;
+using QuranPreservationSystem.Helpers;
+using ClosedXML.Excel;
 
 namespace QuranPreservationSystem.Controllers
 {
@@ -74,6 +76,75 @@ namespace QuranPreservationSystem.Controllers
             ViewBag.CurrentCenterId = centerId;
 
             return View(examDtos);
+        }
+
+        // GET: Exams/ExportToExcel
+        public async Task<IActionResult> ExportToExcel(string searchTerm, int? centerId)
+        {
+            var exams = await _unitOfWork.Exams.GetActiveExamsAsync();
+            
+            // تطبيق الفلترة
+            if (centerId.HasValue && centerId.Value > 0)
+            {
+                exams = exams.Where(e => e.CenterId == centerId.Value).ToList();
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                exams = exams.Where(e => 
+                    e.ExamName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    (e.Description != null && e.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                ).ToList();
+            }
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("الاختبارات");
+
+            // Header
+            worksheet.Cell(1, 1).Value = "#";
+            worksheet.Cell(1, 2).Value = "اسم الاختبار";
+            worksheet.Cell(1, 3).Value = "المركز";
+            worksheet.Cell(1, 4).Value = "الدورة";
+            worksheet.Cell(1, 5).Value = "النوع";
+            worksheet.Cell(1, 6).Value = "المستوى";
+            worksheet.Cell(1, 7).Value = "الدرجة الكاملة";
+            worksheet.Cell(1, 8).Value = "درجة النجاح";
+            worksheet.Cell(1, 9).Value = "المكان";
+            worksheet.Cell(1, 10).Value = "الحالة";
+
+            // Styling Header
+            var headerRange = worksheet.Range(1, 1, 1, 10);
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#2e7d32");
+            headerRange.Style.Font.FontColor = XLColor.White;
+            headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            // Data
+            int row = 2;
+            int index = 1;
+            foreach (var exam in exams)
+            {
+                worksheet.Cell(row, 1).Value = index++;
+                worksheet.Cell(row, 2).Value = exam.ExamName;
+                worksheet.Cell(row, 3).Value = exam.Center?.Name ?? "-";
+                worksheet.Cell(row, 4).Value = exam.Course?.CourseName ?? "-";
+                worksheet.Cell(row, 5).Value = exam.ExamType ?? "-";
+                worksheet.Cell(row, 6).Value = exam.Level ?? "-";
+                worksheet.Cell(row, 7).Value = exam.TotalMarks?.ToString() ?? "-";
+                worksheet.Cell(row, 8).Value = exam.PassingMarks?.ToString() ?? "-";
+                worksheet.Cell(row, 9).Value = exam.Location ?? "-";
+                worksheet.Cell(row, 10).Value = exam.IsActive ? "نشط" : "غير نشط";
+                row++;
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            var content = stream.ToArray();
+
+            var fileName = $"الاختبارات_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
 
         // GET: Exams/Details/5

@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.Interfaces;
 using QuranPreservationSystem.Application.DTOs;
+using QuranPreservationSystem.Helpers;
+using ClosedXML.Excel;
 
 namespace QuranPreservationSystem.Controllers
 {
@@ -70,6 +72,74 @@ namespace QuranPreservationSystem.Controllers
             ViewBag.CurrentCenterId = centerId;
             
             return View(studentDtos);
+        }
+
+        // GET: Students/ExportToExcel
+        public async Task<IActionResult> ExportToExcel(string searchTerm, int? centerId)
+        {
+            var students = await _unitOfWork.Students.GetActiveStudentsAsync();
+            
+            // تطبيق الفلترة
+            if (centerId.HasValue && centerId.Value > 0)
+            {
+                students = students.Where(s => s.CenterId == centerId.Value).ToList();
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                students = students.Where(s => 
+                    s.FirstName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    s.LastName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    s.PhoneNumber.Contains(searchTerm)
+                ).ToList();
+            }
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("الطلاب");
+
+            // Header
+            worksheet.Cell(1, 1).Value = "#";
+            worksheet.Cell(1, 2).Value = "الاسم الكامل";
+            worksheet.Cell(1, 3).Value = "المركز";
+            worksheet.Cell(1, 4).Value = "الهاتف";
+            worksheet.Cell(1, 5).Value = "البريد الإلكتروني";
+            worksheet.Cell(1, 6).Value = "الجنس";
+            worksheet.Cell(1, 7).Value = "تاريخ الميلاد";
+            worksheet.Cell(1, 8).Value = "العنوان";
+            worksheet.Cell(1, 9).Value = "الحالة";
+
+            // Styling Header
+            var headerRange = worksheet.Range(1, 1, 1, 9);
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#2e7d32");
+            headerRange.Style.Font.FontColor = XLColor.White;
+            headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            // Data
+            int row = 2;
+            int index = 1;
+            foreach (var student in students)
+            {
+                worksheet.Cell(row, 1).Value = index++;
+                worksheet.Cell(row, 2).Value = $"{student.FirstName} {student.LastName}";
+                worksheet.Cell(row, 3).Value = student.Center?.Name ?? "-";
+                worksheet.Cell(row, 4).Value = student.PhoneNumber;
+                worksheet.Cell(row, 5).Value = student.Email ?? "-";
+                worksheet.Cell(row, 6).Value = student.Gender.GetDisplayName();
+                worksheet.Cell(row, 7).Value = student.DateOfBirth.ToString("dd/MM/yyyy");
+                worksheet.Cell(row, 8).Value = student.Address ?? "-";
+                worksheet.Cell(row, 9).Value = student.IsActive ? "نشط" : "غير نشط";
+                row++;
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            var content = stream.ToArray();
+
+            var fileName = $"الطلاب_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
 
         // GET: Students/Details/5

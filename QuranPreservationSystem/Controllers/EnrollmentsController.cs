@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.Interfaces;
 using QuranPreservationSystem.Application.DTOs;
+using QuranPreservationSystem.Helpers;
+using ClosedXML.Excel;
 
 namespace QuranPreservationSystem.Controllers
 {
@@ -73,6 +75,76 @@ namespace QuranPreservationSystem.Controllers
             ViewBag.CurrentCenterId = centerId;
 
             return View(enrollmentDtos);
+        }
+
+        // GET: Enrollments/ExportToExcel
+        public async Task<IActionResult> ExportToExcel(string searchTerm, int? centerId)
+        {
+            var enrollments = await _unitOfWork.StudentCourses.GetAllWithDetailsAsync();
+            
+            // تطبيق الفلترة
+            if (centerId.HasValue && centerId.Value > 0)
+            {
+                enrollments = enrollments.Where(e => e.Course?.CenterId == centerId.Value).ToList();
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                enrollments = enrollments.Where(e => 
+                    (e.Student != null && (
+                        e.Student.FirstName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                        e.Student.LastName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                    )) ||
+                    (e.Course != null && e.Course.CourseName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                ).ToList();
+            }
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("التسجيلات");
+
+            // Header
+            worksheet.Cell(1, 1).Value = "#";
+            worksheet.Cell(1, 2).Value = "اسم الطالب";
+            worksheet.Cell(1, 3).Value = "الدورة";
+            worksheet.Cell(1, 4).Value = "المدرس";
+            worksheet.Cell(1, 5).Value = "المركز";
+            worksheet.Cell(1, 6).Value = "تاريخ التسجيل";
+            worksheet.Cell(1, 7).Value = "الحالة";
+            worksheet.Cell(1, 8).Value = "الدرجة";
+            worksheet.Cell(1, 9).Value = "نسبة الحضور";
+
+            // Styling Header
+            var headerRange = worksheet.Range(1, 1, 1, 9);
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#2e7d32");
+            headerRange.Style.Font.FontColor = XLColor.White;
+            headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            // Data
+            int row = 2;
+            int index = 1;
+            foreach (var enrollment in enrollments)
+            {
+                worksheet.Cell(row, 1).Value = index++;
+                worksheet.Cell(row, 2).Value = enrollment.Student?.FullName ?? "-";
+                worksheet.Cell(row, 3).Value = enrollment.Course?.CourseName ?? "-";
+                worksheet.Cell(row, 4).Value = enrollment.Course?.Teacher?.FullName ?? "-";
+                worksheet.Cell(row, 5).Value = enrollment.Course?.Center?.Name ?? "-";
+                worksheet.Cell(row, 6).Value = enrollment.EnrollmentDate.ToString("dd/MM/yyyy");
+                worksheet.Cell(row, 7).Value = enrollment.Status.GetDisplayName();
+                worksheet.Cell(row, 8).Value = enrollment.Grade?.ToString() ?? "-";
+                worksheet.Cell(row, 9).Value = enrollment.AttendancePercentage?.ToString() ?? "-";
+                row++;
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            var content = stream.ToArray();
+
+            var fileName = $"التسجيلات_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
 
         // GET: Enrollments/Details/5

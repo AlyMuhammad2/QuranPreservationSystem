@@ -1,24 +1,27 @@
-@model IEnumerable<QuranPreservationSystem.Application.DTOs.ExamDto>
+@model IEnumerable<QuranPreservationSystem.Application.DTOs.HafizRegistryDto>
 @{
-    ViewData["Title"] = "الاختبارات";
+    ViewData["Title"] = "ديوان الحفاظ";
     Layout = "_DashboardLayout";
     var centers = ViewBag.Centers as IEnumerable<QuranPreservationSystem.Domain.Entities.Center>;
     var currentSearch = ViewBag.CurrentSearch as string;
     var currentCenterId = ViewBag.CurrentCenterId as int?;
+    var currentPage = (int)ViewBag.CurrentPage;
+    var totalPages = (int)ViewBag.TotalPages;
+    var totalCount = (int)ViewBag.TotalCount;
 }
 
 <!-- Page Header -->
 <div class="page-header">
     <div class="page-title">
-        <i class="fas fa-clipboard-list"></i>
-        <h2>إدارة الاختبارات</h2>
+        <i class="fas fa-book-quran"></i>
+        <h2>إدارة ديوان الحفاظ</h2>
     </div>
     <div class="page-actions">
         <a href="@Url.Action("ExportToExcel", new { searchTerm = currentSearch, centerId = currentCenterId })" class="btn btn-success">
             <i class="fas fa-file-excel"></i> تصدير Excel
         </a>
         <a href="@Url.Action("Create")" class="btn btn-primary">
-            <i class="fas fa-plus"></i> إضافة اختبار جديد
+            <i class="fas fa-user-plus"></i> إضافة حافظ جديد
         </a>
     </div>
 </div>
@@ -36,7 +39,7 @@
                            id="searchTerm" 
                            name="searchTerm" 
                            class="form-control" 
-                           placeholder="ابحث باسم الاختبار..." 
+                           placeholder="ابحث باسم الطالب..." 
                            value="@currentSearch" />
                 </div>
 
@@ -75,40 +78,50 @@
 <div class="stats-container" style="margin-bottom: 25px;">
     <div class="stat-card stat-success">
         <div class="stat-icon">
-            <i class="fas fa-clipboard-list"></i>
+            <i class="fas fa-book-quran"></i>
         </div>
         <div class="stat-info">
-            <h3>@Model.Count()</h3>
-            <p>إجمالي الاختبارات</p>
+            <h3>@totalCount</h3>
+            <p>إجمالي الحفاظ</p>
         </div>
     </div>
     
     <div class="stat-card stat-info">
         <div class="stat-icon">
-            <i class="fas fa-check-circle"></i>
+            <i class="fas fa-user-check"></i>
         </div>
         <div class="stat-info">
-            <h3>@Model.Count(e => e.IsActive)</h3>
-            <p>الاختبارات النشطة</p>
+            <h3>@Model.Count(h => h.IsActive)</h3>
+            <p>الحفاظ النشطين</p>
         </div>
     </div>
     
     <div class="stat-card stat-warning">
         <div class="stat-icon">
-            <i class="fas fa-file-pdf"></i>
+            <i class="fas fa-certificate"></i>
         </div>
         <div class="stat-info">
-            <h3>@Model.Count(e => !string.IsNullOrEmpty(e.PdfFileName))</h3>
-            <p>اختبارات مع PDF</p>
+            <h3>@Model.Count(h => !string.IsNullOrEmpty(h.CertificateFileName))</h3>
+            <p>لديهم شهادات</p>
+        </div>
+    </div>
+    
+    <div class="stat-card stat-danger">
+        <div class="stat-icon">
+            <i class="fas fa-calendar"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@DateTime.Now.Year</h3>
+            <p>العام الحالي</p>
         </div>
     </div>
 </div>
 
-<!-- Exams Table -->
+<!-- Hafiz Table -->
 <div class="card">
     <div class="card-header">
         <i class="fas fa-list"></i>
-        <span>قائمة الاختبارات</span>
+        <span>قائمة الحفاظ</span>
     </div>
     <div class="card-body">
         @if (Model.Any())
@@ -118,33 +131,40 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>اسم الاختبار</th>
-                            <th>النوع</th>
-                            <th>المستوى</th>
+                            <th>اسم الطالب</th>
                             <th>المركز</th>
-                            <th>الدورة</th>
-                            <th>ملف PDF</th>
+                            <th>سنة الإتمام</th>
+                            <th>مستوى الحفظ</th>
+                            <th>الشهادة</th>
                             <th>الحالة</th>
                             <th>الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody>
                         @{
-                            int index = 1;
+                            int index = ((currentPage - 1) * 10) + 1;
                         }
-                        @foreach (var exam in Model)
+                        @foreach (var hafiz in Model)
                         {
                             <tr>
                                 <td>@index</td>
-                                <td><strong>@exam.ExamName</strong></td>
-                                <td>@exam.ExamType</td>
-                                <td>@exam.Level</td>
-                                <td>@(exam.CenterName ?? "-")</td>
-                                <td>@(exam.CourseName ?? "-")</td>
+                                <td><strong>@hafiz.StudentName</strong></td>
+                                <td>@(hafiz.CenterName ?? "-")</td>
+                                <td>@hafiz.CompletionYear</td>
                                 <td>
-                                    @if (!string.IsNullOrEmpty(exam.PdfFileName))
+                                    @if (hafiz.MemorizationLevel.HasValue)
                                     {
-                                        <a href="@Url.Action("Download", new { id = exam.ExamId })" class="btn-icon btn-primary" title="تحميل PDF">
+                                        <span class="badge badge-info">@hafiz.MemorizationLevel.Value.GetDisplayName()</span>
+                                    }
+                                    else
+                                    {
+                                        <text>-</text>
+                                    }
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(hafiz.CertificateFileName))
+                                    {
+                                        <a href="@Url.Action("Download", new { id = hafiz.HafizId })" class="btn-icon btn-primary" title="تحميل الشهادة">
                                             <i class="fas fa-download"></i>
                                         </a>
                                     }
@@ -154,7 +174,7 @@
                                     }
                                 </td>
                                 <td>
-                                    @if (exam.IsActive)
+                                    @if (hafiz.IsActive)
                                     {
                                         <span class="badge badge-success">نشط</span>
                                     }
@@ -165,13 +185,13 @@
                                 </td>
                                 <td>
                                     <div class="action-buttons">
-                                        <a href="@Url.Action("Details", new { id = exam.ExamId })" class="btn-icon btn-info" title="التفاصيل">
+                                        <a href="@Url.Action("Details", new { id = hafiz.HafizId })" class="btn-icon btn-info" title="التفاصيل">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="@Url.Action("Edit", new { id = exam.ExamId })" class="btn-icon btn-warning" title="تعديل">
+                                        <a href="@Url.Action("Edit", new { id = hafiz.HafizId })" class="btn-icon btn-warning" title="تعديل">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a href="@Url.Action("Delete", new { id = exam.ExamId })" class="btn-icon btn-danger" title="حذف">
+                                        <a href="@Url.Action("Delete", new { id = hafiz.HafizId })" class="btn-icon btn-danger" title="حذف">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </div>
@@ -182,15 +202,52 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
+            @if (totalPages > 1)
+            {
+                <div class="pagination-container">
+                    <nav>
+                        <ul class="pagination">
+                            @if (currentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { searchTerm = currentSearch, centerId = currentCenterId, pageNumber = currentPage - 1 })">
+                                        <i class="fas fa-chevron-right"></i> السابق
+                                    </a>
+                                </li>
+                            }
+
+                            @for (int i = 1; i <= totalPages; i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { searchTerm = currentSearch, centerId = currentCenterId, pageNumber = i })">
+                                        @i
+                                    </a>
+                                </li>
+                            }
+
+                            @if (currentPage < totalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { searchTerm = currentSearch, centerId = currentCenterId, pageNumber = currentPage + 1 })">
+                                        التالي <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            }
         }
         else
         {
             <div class="empty-state">
-                <i class="fas fa-clipboard-list"></i>
-                <h3>لا يوجد اختبارات</h3>
-                <p>ابدأ بإضافة اختبار جديد</p>
+                <i class="fas fa-book-quran"></i>
+                <h3>لا يوجد حفاظ</h3>
+                <p>ابدأ بإضافة حافظ جديد في ديوان الحفاظ</p>
                 <a href="@Url.Action("Create")" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> إضافة اختبار
+                    <i class="fas fa-plus"></i> إضافة حافظ
                 </a>
             </div>
         }
@@ -243,6 +300,41 @@
             border-color: var(--primary-light);
             outline: none;
             box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+        }
+        
+        .pagination-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 5px;
+        }
+        
+        .page-item .page-link {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .page-item.active .page-link {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .page-item .page-link:hover {
+            background: var(--primary-light);
+            color: white;
+            border-color: var(--primary-light);
         }
         
         @@media (max-width: 992px) {

@@ -21,6 +21,9 @@ namespace QuranPreservationSystem.Infrastructure.UnitOfWork
         public ICourseRepository Courses { get; private set; }
         public IStudentCourseRepository StudentCourses { get; private set; }
         public IExamRepository Exams { get; private set; }
+        public IHafizRegistryRepository HafizRegistry { get; private set; }
+        public ITempCenterImportRepository TempCenterImports { get; private set; }
+        public ITempTeacherImportRepository TempTeacherImports { get; private set; }
 
         public UnitOfWork(AppDbContext context)
         {
@@ -33,6 +36,9 @@ namespace QuranPreservationSystem.Infrastructure.UnitOfWork
             Courses = new CourseRepository(_context);
             StudentCourses = new StudentCourseRepository(_context);
             Exams = new ExamRepository(_context);
+            HafizRegistry = new HafizRegistryRepository(_context);
+            TempCenterImports = new TempCenterImportRepository(_context);
+            TempTeacherImports = new TempTeacherImportRepository(_context);
         }
 
         // حفظ التغييرات

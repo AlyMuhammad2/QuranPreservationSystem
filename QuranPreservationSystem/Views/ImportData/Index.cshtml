@@ -1,0 +1,276 @@
+@{
+    ViewData["Title"] = "استيراد البيانات";
+    Layout = "_DashboardLayout";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-file-import"></i>
+        <h2>استيراد البيانات</h2>
+    </div>
+</div>
+
+<!-- Info Card -->
+<div class="card" style="margin-top: 30px;">
+    <div class="card-header" style="background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);">
+        <i class="fas fa-info-circle"></i>
+        <span>كيفية استيراد البيانات</span>
+    </div>
+    <div class="card-body">
+        <div class="instructions">
+            <div class="instruction-item">
+                <div class="instruction-number">1</div>
+                <div class="instruction-content">
+                    <h4>تحميل القالب</h4>
+                    <p>قم بتحميل قالب Excel الجاهز من صفحة الاستيراد</p>
+                </div>
+            </div>
+
+            <div class="instruction-item">
+                <div class="instruction-number">2</div>
+                <div class="instruction-content">
+                    <h4>ملء البيانات</h4>
+                    <p>افتح القالب وأدخل البيانات المطلوبة. الحقول المطلوبة مميزة بعلامة *</p>
+                </div>
+            </div>
+
+            <div class="instruction-item">
+                <div class="instruction-number">3</div>
+                <div class="instruction-content">
+                    <h4>رفع الملف</h4>
+                    <p>ارفع ملف Excel المكتمل. سيتم التحقق من البيانات تلقائياً</p>
+                </div>
+            </div>
+
+            <div class="instruction-item">
+                <div class="instruction-number">4</div>
+                <div class="instruction-content">
+                    <h4>المعالجة التلقائية</h4>
+                    <p>سيقوم النظام بمعالجة البيانات في الخلفية ونقلها للجداول الرئيسية</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Import Options Grid -->
+<div class="import-grid">
+    <!-- Import Centers -->
+    <div class="import-card">
+        <div class="import-icon" style="background: rgba(46, 125, 50, 0.1);">
+            <i class="fas fa-mosque" style="color: var(--primary-color);"></i>
+        </div>
+        <h3>استيراد المراكز</h3>
+        <p>رفع بيانات المراكز القرآنية من ملف Excel</p>
+        <div class="import-steps">
+            <div class="step">
+                <i class="fas fa-download"></i>
+                <span>1. تحميل القالب</span>
+            </div>
+            <div class="step">
+                <i class="fas fa-edit"></i>
+                <span>2. ملء البيانات</span>
+            </div>
+            <div class="step">
+                <i class="fas fa-upload"></i>
+                <span>3. رفع الملف</span>
+            </div>
+        </div>
+        <a href="@Url.Action("Centers")" class="btn btn-primary btn-block">
+            <i class="fas fa-file-import"></i> استيراد المراكز
+        </a>
+    </div>
+
+    <!-- Import Teachers -->
+    <div class="import-card">
+        <div class="import-icon" style="background: rgba(67, 160, 71, 0.1);">
+            <i class="fas fa-chalkboard-teacher" style="color: var(--success-color);"></i>
+        </div>
+        <h3>استيراد المدرسين</h3>
+        <p>رفع بيانات المدرسين من ملف Excel</p>
+        <div class="import-steps">
+            <div class="step">
+                <i class="fas fa-download"></i>
+                <span>1. تحميل القالب</span>
+            </div>
+            <div class="step">
+                <i class="fas fa-edit"></i>
+                <span>2. ملء البيانات</span>
+            </div>
+            <div class="step">
+                <i class="fas fa-upload"></i>
+                <span>3. رفع الملف</span>
+            </div>
+        </div>
+        <a href="@Url.Action("Teachers")" class="btn btn-primary btn-block">
+            <i class="fas fa-file-import"></i> استيراد المدرسين
+        </a>
+    </div>
+
+    <div class="import-card disabled">
+        <div class="import-icon" style="background: rgba(158, 158, 158, 0.1);">
+            <i class="fas fa-user-graduate" style="color: #9e9e9e;"></i>
+        </div>
+        <h3>استيراد الطلاب</h3>
+        <p>قريباً - سيتم إضافة هذه الميزة</p>
+        <span class="coming-soon-badge">قريباً</span>
+    </div>
+
+    <div class="import-card disabled">
+        <div class="import-icon" style="background: rgba(158, 158, 158, 0.1);">
+            <i class="fas fa-book" style="color: #9e9e9e;"></i>
+        </div>
+        <h3>استيراد الدورات</h3>
+        <p>قريباً - سيتم إضافة هذه الميزة</p>
+        <span class="coming-soon-badge">قريباً</span>
+    </div>
+</div>
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <style>
+        .import-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .import-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .import-card:not(.disabled):hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            border-color: var(--primary-light);
+        }
+
+        .import-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .import-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+        }
+
+        .import-card h3 {
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .import-card p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .import-steps {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--primary-dark);
+        }
+
+        .step i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .coming-soon-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #ff9800;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .instructions {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .instruction-item {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .instruction-number {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .instruction-content h4 {
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .instruction-content p {
+            color: #666;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        @@media (max-width: 768px) {
+            .import-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .import-steps {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+}
+

@@ -1,0 +1,325 @@
+@using QuranPreservationSystem.Domain.Entities
+@{
+    ViewData["Title"] = "استيراد المدرسين";
+    Layout = "_DashboardLayout";
+    var tempRecords = ViewBag.TempRecords as IEnumerable<QuranPreservationSystem.Domain.Entities.TempTeacherImport>;
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <h2>استيراد بيانات المدرسين</h2>
+    </div>
+    <div class="page-actions">
+        <a href="@Url.Action("DownloadTeachersTemplate")" class="btn btn-success">
+            <i class="fas fa-download"></i> تحميل القالب
+        </a>
+        <a href="@Url.Action("Index")" class="btn btn-outline">
+            <i class="fas fa-arrow-right"></i> العودة
+        </a>
+    </div>
+</div>
+
+<!-- Messages -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i> @TempData["Success"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+    </div>
+}
+@if (TempData["Warning"] != null)
+{
+    <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i> @TempData["Warning"]
+    </div>
+}
+
+<!-- Upload Section -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-upload"></i>
+        <span>رفع ملف Excel</span>
+    </div>
+    <div class="card-body">
+        <form asp-action="UploadTeachers" method="post" enctype="multipart/form-data">
+            <div class="upload-area">
+                <div class="upload-icon">
+                    <i class="fas fa-file-excel"></i>
+                </div>
+                <h4>اختر ملف Excel للرفع</h4>
+                <p>قم بتحميل القالب أولاً، املأه ببيانات المدرسين، ثم ارفعه هنا</p>
+                
+                <input type="file" 
+                       name="excelFile" 
+                       id="excelFile" 
+                       accept=".xlsx,.xls" 
+                       class="file-input" 
+                       required />
+                
+                <label for="excelFile" class="file-label">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span class="file-text">اختر ملف Excel</span>
+                </label>
+
+                <div class="upload-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-upload"></i> رفع ومعالجة
+                    </button>
+                    <a href="@Url.Action("DownloadTeachersTemplate")" class="btn btn-success">
+                        <i class="fas fa-download"></i> تحميل القالب
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Template Info -->
+<div class="card" style="margin-top: 20px;">
+    <div class="card-header" style="background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);">
+        <i class="fas fa-info-circle"></i>
+        <span>معلومات القالب</span>
+    </div>
+    <div class="card-body">
+        <div class="template-info">
+            <h4><i class="fas fa-star"></i> الحقول المطلوبة:</h4>
+            <ul>
+                <li><strong>الاسم الأول</strong> - مطلوب</li>
+                <li><strong>اسم العائلة</strong> - مطلوب</li>
+                <li><strong>رقم الهاتف</strong> - مطلوب</li>
+                <li><strong>تاريخ التعيين</strong> - مطلوب (صيغة: dd/mm/yyyy)</li>
+                <li><strong>المركز</strong> - مطلوب (يجب أن يكون اسم مركز موجود بالنظام)</li>
+            </ul>
+
+            <h4 style="margin-top: 20px;"><i class="fas fa-check"></i> الحقول الاختيارية:</h4>
+            <ul>
+                <li>البريد الإلكتروني</li>
+                <li>العنوان</li>
+                <li>تاريخ الميلاد</li>
+                <li>الجنس (ذكر أو أنثى)</li>
+                <li>المؤهل</li>
+                <li>التخصص</li>
+            </ul>
+
+            <h4 style="margin-top: 20px;"><i class="fas fa-exclamation-triangle"></i> ملاحظات هامة:</h4>
+            <ul>
+                <li>الجنس: اكتب <strong>"ذكر"</strong> أو <strong>"أنثى"</strong> فقط</li>
+                <li>نشط: اكتب <strong>"نعم"</strong> أو <strong>"لا"</strong></li>
+                <li>التواريخ بصيغة: <strong>dd/mm/yyyy</strong> (مثال: 15/03/1985)</li>
+                <li>تأكد من وجود المركز في النظام قبل الرفع</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Imports -->
+@if (tempRecords != null && tempRecords.Any())
+{
+    <div class="card" style="margin-top: 20px;">
+        <div class="card-header">
+            <i class="fas fa-history"></i>
+            <span>آخر عمليات الاستيراد</span>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم المدرس</th>
+                            <th>الهاتف</th>
+                            <th>المركز</th>
+                            <th>الحالة</th>
+                            <th>تاريخ الرفع</th>
+                            <th>رفع بواسطة</th>
+                            <th>رسالة الخطأ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = 1;
+                        }
+                        @foreach (var record in tempRecords)
+                        {
+                            <tr>
+                                <td>@index</td>
+                                <td><strong>@record.FirstName @record.LastName</strong></td>
+                                <td>@record.PhoneNumber</td>
+                                <td>@record.CenterName</td>
+                                <td>
+                                    @switch (record.Status)
+                                    {
+                                        case ImportStatus.Pending:
+                                            <span class="badge badge-warning">في الانتظار</span>
+                                            break;
+                                        case ImportStatus.Processing:
+                                            <span class="badge badge-info">قيد المعالجة</span>
+                                            break;
+                                        case ImportStatus.Completed:
+                                            <span class="badge badge-success">تم بنجاح</span>
+                                            break;
+                                        case ImportStatus.Failed:
+                                            <span class="badge badge-danger">فشل</span>
+                                            break;
+                                        case ImportStatus.Duplicate:
+                                            <span class="badge badge-secondary">مكرر</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>@record.UploadedDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@(record.UploadedBy ?? "-")</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(record.ErrorMessage))
+                                    {
+                                        <span class="text-danger">@record.ErrorMessage</span>
+                                    }
+                                    else
+                                    {
+                                        <text>-</text>
+                                    }
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <style>
+        .upload-area {
+            text-align: center;
+            padding: 40px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            border: 2px dashed var(--border-color);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .upload-area h4 {
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .upload-area p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .file-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .file-label i {
+            font-size: 1.3rem;
+        }
+
+        .upload-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .template-info h4 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .template-info h4 i {
+            color: var(--primary-color);
+        }
+
+        .template-info ul {
+            margin-right: 30px;
+            margin-bottom: 15px;
+        }
+
+        .template-info li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-right: 4px solid #43a047;
+        }
+
+        .alert-danger {
+            background: #ffebee;
+            color: #c62828;
+            border-right: 4px solid #e53935;
+        }
+
+        .alert-warning {
+            background: #fff3e0;
+            color: #e65100;
+            border-right: 4px solid #ff9800;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#excelFile').on('change', function() {
+                var fileName = $(this).val().split('\\').pop();
+                if (fileName) {
+                    $('.file-text').text(fileName);
+                } else {
+                    $('.file-text').text('اختر ملف Excel');
+                }
+            });
+        });
+    </script>
+}
+

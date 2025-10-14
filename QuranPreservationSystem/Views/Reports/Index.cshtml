@@ -14,14 +14,14 @@
 <!-- Reports Grid -->
 <div class="reports-grid">
     <!-- Statistical Reports -->
-    <div class="report-card">
-        <div class="report-icon" style="background: rgba(33, 150, 243, 0.1);">
-            <i class="fas fa-chart-line" style="color: #2196f3;"></i>
+    <div class="report-card featured">
+        <div class="report-icon">
+            <i class="fas fa-chart-line"></i>
         </div>
-        <h3>الإحصائيات العامة</h3>
-        <p>عرض إحصائيات شاملة للنظام</p>
-        <a href="@Url.Action("Statistics")" class="btn btn-outline">
-            <i class="fas fa-arrow-left"></i> عرض التقرير
+        <h3>الإحصائيات الشاملة</h3>
+        <p>عرض إحصائيات تفصيلية عن جميع أقسام النظام مع الرسوم البيانية</p>
+        <a href="@Url.Action("Statistics")" class="btn btn-light btn-lg">
+            <i class="fas fa-chart-bar"></i> عرض الإحصائيات
         </a>
     </div>
 
@@ -31,62 +31,122 @@
             <i class="fas fa-mosque" style="color: var(--primary-color);"></i>
         </div>
         <h3>تقرير المراكز</h3>
-        <p>تقرير مفصل عن المراكز القرآنية</p>
-        <a href="#" class="btn btn-outline">
-            <i class="fas fa-arrow-left"></i> عرض التقرير
-        </a>
+        <p>تقرير تفصيلي عن المراكز القرآنية</p>
+        <div class="report-actions">
+            <a href="@Url.Action("CentersReport")" class="btn btn-outline">
+                <i class="fas fa-eye"></i> عرض
+            </a>
+            <a href="@Url.Action("ExportCenters")" class="btn btn-success">
+                <i class="fas fa-download"></i> تصدير
+            </a>
+        </div>
+    </div>
+
+    <!-- Teachers Report -->
+    <div class="report-card">
+        <div class="report-icon" style="background: rgba(67, 160, 71, 0.1);">
+            <i class="fas fa-chalkboard-teacher" style="color: var(--success-color);"></i>
+        </div>
+        <h3>تقرير المدرسين</h3>
+        <p>بيانات المدرسين مع التخصصات</p>
+        <div class="report-actions">
+            <a href="@Url.Action("Index", "Teachers")" class="btn btn-outline">
+                <i class="fas fa-eye"></i> عرض
+            </a>
+            <a href="@Url.Action("ExportTeachers")" class="btn btn-success">
+                <i class="fas fa-download"></i> تصدير
+            </a>
+        </div>
     </div>
 
     <!-- Students Report -->
     <div class="report-card">
-        <div class="report-icon" style="background: rgba(255, 152, 0, 0.1);">
-            <i class="fas fa-user-graduate" style="color: var(--warning-color);"></i>
+        <div class="report-icon" style="background: rgba(33, 150, 243, 0.1);">
+            <i class="fas fa-user-graduate" style="color: #2196f3;"></i>
         </div>
         <h3>تقرير الطلاب</h3>
-        <p>تقرير شامل عن الطلاب والتسجيلات</p>
-        <a href="#" class="btn btn-outline">
-            <i class="fas fa-arrow-left"></i> عرض التقرير
-        </a>
+        <p>تقرير شامل عن جميع الطلاب</p>
+        <div class="report-actions">
+            <a href="@Url.Action("Index", "Students")" class="btn btn-outline">
+                <i class="fas fa-eye"></i> عرض
+            </a>
+            <a href="@Url.Action("ExportStudents")" class="btn btn-success">
+                <i class="fas fa-download"></i> تصدير
+            </a>
+        </div>
     </div>
 
     <!-- Courses Report -->
     <div class="report-card">
-        <div class="report-icon" style="background: rgba(229, 57, 53, 0.1);">
-            <i class="fas fa-book" style="color: var(--danger-color);"></i>
+        <div class="report-icon" style="background: rgba(255, 152, 0, 0.1);">
+            <i class="fas fa-book" style="color: var(--warning-color);"></i>
         </div>
         <h3>تقرير الدورات</h3>
-        <p>تقرير عن الدورات والاختبارات</p>
-        <a href="#" class="btn btn-outline">
-            <i class="fas fa-arrow-left"></i> عرض التقرير
-        </a>
+        <p>تقرير عن الدورات والمستويات</p>
+        <div class="report-actions">
+            <a href="@Url.Action("Index", "Courses")" class="btn btn-outline">
+                <i class="fas fa-eye"></i> عرض
+            </a>
+            <a href="@Url.Action("ExportCourses")" class="btn btn-success">
+                <i class="fas fa-download"></i> تصدير
+            </a>
+        </div>
     </div>
 
-    <!-- Attendance Report -->
+    <!-- Enrollments Report -->
+    <div class="report-card">
+        <div class="report-icon" style="background: rgba(229, 57, 53, 0.1);">
+            <i class="fas fa-user-check" style="color: var(--danger-color);"></i>
+        </div>
+        <h3>تقرير التسجيلات</h3>
+        <p>متابعة تسجيلات الطلاب</p>
+        <div class="report-actions">
+            <a href="@Url.Action("Index", "Enrollments")" class="btn btn-outline">
+                <i class="fas fa-eye"></i> عرض
+            </a>
+            <a href="@Url.Action("ExportEnrollments")" class="btn btn-success">
+                <i class="fas fa-download"></i> تصدير
+            </a>
+        </div>
+    </div>
+
+    <!-- Exams Report -->
     <div class="report-card">
         <div class="report-icon" style="background: rgba(156, 39, 176, 0.1);">
-            <i class="fas fa-clipboard-check" style="color: #9c27b0;"></i>
+            <i class="fas fa-clipboard-list" style="color: #9c27b0;"></i>
         </div>
-        <h3>تقرير الحضور</h3>
-        <p>متابعة حضور الطلاب في الدورات</p>
-        <a href="#" class="btn btn-outline">
-            <i class="fas fa-arrow-left"></i> عرض التقرير
-        </a>
+        <h3>تقرير الاختبارات</h3>
+        <p>تقرير شامل عن الاختبارات</p>
+        <div class="report-actions">
+            <a href="@Url.Action("Index", "Exams")" class="btn btn-outline">
+                <i class="fas fa-eye"></i> عرض
+            </a>
+            <a href="@Url.Action("ExportExams")" class="btn btn-success">
+                <i class="fas fa-download"></i> تصدير
+            </a>
+        </div>
     </div>
 
-    <!-- Export Data -->
-    <div class="report-card">
-        <div class="report-icon" style="background: rgba(67, 160, 71, 0.1);">
-            <i class="fas fa-file-excel" style="color: var(--success-color);"></i>
+    <!-- Hafaz Report -->
+    <div class="report-card highlight">
+        <div class="report-icon" style="background: rgba(76, 175, 80, 0.1);">
+            <i class="fas fa-book-quran" style="color: var(--primary-color);"></i>
         </div>
-        <h3>تصدير البيانات</h3>
-        <p>تصدير البيانات إلى Excel</p>
-        <a href="@Url.Action("Export")" class="btn btn-outline">
-            <i class="fas fa-arrow-left"></i> تصدير
-        </a>
+        <h3>ديوان الحفاظ</h3>
+        <p>تقرير سجل حفاظ القرآن الكريم</p>
+        <div class="report-actions">
+            <a href="@Url.Action("Index", "HafizRegistry")" class="btn btn-outline">
+                <i class="fas fa-eye"></i> عرض
+            </a>
+            <a href="@Url.Action("ExportToExcel", "HafizRegistry")" class="btn btn-success">
+                <i class="fas fa-download"></i> تصدير
+            </a>
+        </div>
     </div>
 </div>
 
 @section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
     <style>
         .reports-grid {
             display: grid;
@@ -101,11 +161,46 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
             text-align: center;
             transition: all 0.3s ease;
+            border: 2px solid transparent;
         }
         
         .report-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            border-color: var(--primary-light);
+        }
+
+        .report-card.featured {
+            background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+            color: white;
+            grid-column: span 2;
+            padding: 40px;
+        }
+
+        .report-card.featured h3 {
+            color: white;
+            font-size: 1.6rem;
+        }
+
+        .report-card.featured p {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.1rem;
+        }
+
+        .report-card.featured .report-icon {
+            background: rgba(255, 255, 255, 0.2);
+            width: 100px;
+            height: 100px;
+        }
+
+        .report-card.featured .report-icon i {
+            color: white;
+            font-size: 3rem;
+        }
+
+        .report-card.highlight {
+            border: 2px solid var(--primary-color);
+            background: linear-gradient(135deg, #f1f8e9 0%, #dcedc8 100%);
         }
         
         .report-icon {
@@ -123,13 +218,84 @@
             color: var(--primary-dark);
             margin-bottom: 10px;
             font-size: 1.3rem;
+            font-weight: 700;
         }
         
         .report-card p {
             color: #666;
             margin-bottom: 20px;
             line-height: 1.6;
+            min-height: 50px;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .report-actions .btn {
+            flex: 1;
+        }
+
+        .btn-lg {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+        }
+
+        .btn-light {
+            background: white;
+            color: var(--primary-dark);
+            border: none;
+        }
+
+        .btn-light:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: scale(1.05);
+        }
+
+        .info-content {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            text-align: right;
+        }
+
+        .info-content h4 {
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .info-content p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .info-content ul {
+            margin-right: 20px;
+            color: #555;
+        }
+
+        .info-content li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        @@media (max-width: 768px) {
+            .report-card.featured {
+                grid-column: span 1;
+            }
+
+            .report-actions {
+                flex-direction: column;
+            }
+
+            .info-content {
+                flex-direction: column;
+                text-align: center;
+            }
         }
     </style>
 }
-

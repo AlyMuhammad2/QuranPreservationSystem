@@ -14,6 +14,9 @@ namespace QuranPreservationSystem.Application.Interfaces
         ICourseRepository Courses { get; }
         IStudentCourseRepository StudentCourses { get; }
         IExamRepository Exams { get; }
+        IHafizRegistryRepository HafizRegistry { get; }
+        ITempCenterImportRepository TempCenterImports { get; }
+        ITempTeacherImportRepository TempTeacherImports { get; }
 
         // حفظ التغييرات
         Task<int> SaveChangesAsync();

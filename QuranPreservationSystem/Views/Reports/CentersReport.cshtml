@@ -1,0 +1,136 @@
+@{
+    ViewData["Title"] = "تقرير المراكز";
+    Layout = "_DashboardLayout";
+    var centerStats = ViewBag.CenterStats as IEnumerable<dynamic>;
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-mosque"></i>
+        <h2>تقرير المراكز القرآنية</h2>
+    </div>
+    <div class="page-actions">
+        <a href="@Url.Action("ExportCenters")" class="btn btn-success">
+            <i class="fas fa-file-excel"></i> تصدير Excel
+        </a>
+        <button class="btn btn-outline" onclick="window.print()">
+            <i class="fas fa-print"></i> طباعة
+        </button>
+        <a href="@Url.Action("Index")" class="btn btn-outline">
+            <i class="fas fa-arrow-right"></i> العودة
+        </a>
+    </div>
+</div>
+
+<!-- Centers Report Table -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-table"></i>
+        <span>تفاصيل المراكز</span>
+    </div>
+    <div class="card-body">
+        @if (centerStats != null && centerStats.Any())
+        {
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم المركز</th>
+                            <th>العنوان</th>
+                            <th>الهاتف</th>
+                            <th>المدرسين</th>
+                            <th>الطلاب</th>
+                            <th>الدورات</th>
+                            <th>الحفاظ</th>
+                            <th>الإجمالي</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = 1;
+                            int totalTeachers = 0;
+                            int totalStudents = 0;
+                            int totalCourses = 0;
+                            int totalHafaz = 0;
+                        }
+                        @foreach (var center in centerStats)
+                        {
+                            totalTeachers += center.TeachersCount;
+                            totalStudents += center.StudentsCount;
+                            totalCourses += center.CoursesCount;
+                            totalHafaz += center.HafazCount;
+
+                            <tr>
+                                <td>@index</td>
+                                <td><strong>@center.CenterName</strong></td>
+                                <td>@(center.Address ?? "-")</td>
+                                <td>@(center.PhoneNumber ?? "-")</td>
+                                <td><span class="badge badge-success">@center.TeachersCount</span></td>
+                                <td><span class="badge badge-info">@center.StudentsCount</span></td>
+                                <td><span class="badge badge-warning">@center.CoursesCount</span></td>
+                                <td><span class="badge badge-primary">@center.HafazCount</span></td>
+                                <td><strong>@(center.TeachersCount + center.StudentsCount + center.CoursesCount + center.HafazCount)</strong></td>
+                            </tr>
+                            index++;
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td colspan="4"><strong><i class="fas fa-calculator"></i> الإجمالي الكلي</strong></td>
+                            <td><strong>@totalTeachers</strong></td>
+                            <td><strong>@totalStudents</strong></td>
+                            <td><strong>@totalCourses</strong></td>
+                            <td><strong>@totalHafaz</strong></td>
+                            <td><strong>@(totalTeachers + totalStudents + totalCourses + totalHafaz)</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-mosque"></i>
+                <h3>لا توجد بيانات</h3>
+                <p>لا توجد مراكز لعرض التقرير</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <style>
+        .total-row {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            font-weight: bold;
+            font-size: 1.05rem;
+        }
+
+        .total-row td {
+            padding: 15px !important;
+            border-top: 3px solid var(--primary-color) !important;
+        }
+
+        .badge-primary {
+            background: rgba(156, 39, 176, 0.15);
+            color: #9c27b0;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-weight: 600;
+        }
+
+        @@media print {
+            .page-actions {
+                display: none !important;
+            }
+            
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #ddd;
+            }
+        }
+    </style>
+}

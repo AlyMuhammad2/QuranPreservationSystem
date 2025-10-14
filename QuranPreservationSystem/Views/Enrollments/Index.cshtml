@@ -14,6 +14,9 @@
         <h2>إدارة التسجيلات</h2>
     </div>
     <div class="page-actions">
+        <a href="@Url.Action("ExportToExcel", new { searchTerm = currentSearch, centerId = currentCenterId })" class="btn btn-success">
+            <i class="fas fa-file-excel"></i> تصدير Excel
+        </a>
         <a href="@Url.Action("Create")" class="btn btn-primary">
             <i class="fas fa-plus"></i> تسجيل طالب جديد
         </a>
