@@ -889,59 +889,87 @@ body {
     color: #6c757d;
 }
 
-/* ==================== Responsive ==================== */
-@media (max-width: 1024px) {
-    :root {
-        --sidebar-width: 250px;
-    }
+/* ==================== Mobile Menu Toggle ==================== */
+.mobile-menu-toggle {
+    display: none;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--light-text);
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.3rem;
 }
 
-@media (max-width: 768px) {
-    .main-layout {
-        flex-direction: column;
-    }
-    
-    .dashboard-sidebar {
-        width: 100%;
-        position: relative;
-        height: auto;
-        top: 0;
-        bottom: auto;
-    }
-    
-    .main-content {
-        margin-right: 0;
-    }
-    
-    .dashboard-footer {
-        margin-right: 0;
-    }
-    
-    .sidebar-content {
-        display: flex;
-        overflow-x: auto;
-        padding: 10px;
-    }
-    
-    .sidebar-section {
-        flex-shrink: 0;
-    }
-    
-    .sidebar-title {
-        display: none;
+.mobile-menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.mobile-menu-toggle:active {
+    transform: scale(0.95);
+}
+
+/* Sidebar Overlay */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 49;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.show {
+    display: block;
+    opacity: 1;
+}
+
+/* ==================== Responsive ==================== */
+/* Tablet (1024px and below) */
+@media (max-width: 1024px) {
+    :root {
+        --sidebar-width: 240px;
     }
     
     .sidebar-item {
-        white-space: nowrap;
-        padding: 10px 15px;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+        padding: 12px 20px;
     }
     
-    .header-logo .logo-text h1 {
+    .sidebar-item i {
         font-size: 1.1rem;
     }
+}
+
+/* Tablet Portrait (768px and below) */
+@media (max-width: 768px) {
+    :root {
+        --sidebar-width: 280px;
+    }
     
-    .header-logo .logo-text span {
+    /* Show mobile menu toggle */
+    .mobile-menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Header adjustments */
+    .header-logo i {
+        font-size: 1.8rem;
+    }
+    
+    .logo-text h1 {
+        font-size: 1.2rem;
+    }
+    
+    .logo-text span {
         font-size: 0.75rem;
     }
     
@@ -949,34 +977,60 @@ body {
         display: none;
     }
     
+    .user-info {
+        padding: 8px;
+    }
+    
+    /* Sidebar as overlay */
+    .dashboard-sidebar {
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        z-index: 50;
+    }
+    
+    .dashboard-sidebar.show {
+        transform: translateX(0);
+    }
+    
+    /* Main content adjustments */
+    .main-content {
+        margin-right: 0;
+        padding: 20px;
+    }
+    
+    .dashboard-footer {
+        margin-right: 0;
+    }
+    
+    /* Page header */
     .page-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
     }
     
+    .page-title h2 {
+        font-size: 1.5rem;
+    }
+    
+    .page-title i {
+        font-size: 1.5rem;
+    }
+    
+    .page-actions {
+        width: 100%;
+    }
+    
+    .page-actions .btn {
+        flex: 1;
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+    
+    /* Stats adjustments */
     .stats-container {
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    }
-    
-    .actions-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    }
-    
-    .footer-content {
-        flex-direction: column;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .main-content {
-        padding: 15px;
-    }
-    
-    .welcome-card {
-        flex-direction: column;
-        text-align: center;
     }
     
     .stat-card {
@@ -984,13 +1038,240 @@ body {
     }
     
     .stat-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.8rem;
+    }
+    
+    .stat-info h3 {
+        font-size: 2rem;
+    }
+    
+    /* Actions grid */
+    .actions-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+    }
+    
+    /* Tables */
+    .data-table thead th {
+        font-size: 0.85rem;
+        padding: 12px 10px;
+    }
+    
+    .data-table tbody td {
+        font-size: 0.85rem;
+        padding: 10px 8px;
+    }
+    
+    /* Footer */
+    .footer-content {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+    :root {
+        --sidebar-width: 85%;
+        --header-height: 60px;
+    }
+    
+    /* Header */
+    .header-container {
+        padding: 0 12px;
+    }
+    
+    .header-logo i {
+        font-size: 1.5rem;
+    }
+    
+    .logo-text h1 {
+        font-size: 1rem;
+    }
+    
+    .logo-text span {
+        display: none;
+    }
+    
+    .icon-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .header-actions {
+        gap: 10px;
+    }
+    
+    .mobile-menu-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    
+    /* Main content */
+    .main-content {
+        padding: 15px;
+    }
+    
+    /* Page header */
+    .page-title h2 {
+        font-size: 1.3rem;
+    }
+    
+    .page-title i {
+        font-size: 1.3rem;
+    }
+    
+    /* Welcome card */
+    .welcome-card {
+        padding: 20px;
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .welcome-icon {
+        font-size: 2.5rem;
+    }
+    
+    .welcome-text h2 {
+        font-size: 1.5rem;
+    }
+    
+    .welcome-text p {
+        font-size: 1rem;
+    }
+    
+    /* Stats */
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .stat-card {
+        padding: 18px;
+        gap: 15px;
+    }
+    
+    .stat-icon {
         width: 55px;
         height: 55px;
-        font-size: 1.5rem;
+        font-size: 1.6rem;
     }
     
     .stat-info h3 {
         font-size: 1.8rem;
+    }
+    
+    .stat-info p {
+        font-size: 0.9rem;
+    }
+    
+    /* Actions grid */
+    .actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .action-card {
+        padding: 15px;
+        gap: 8px;
+    }
+    
+    .action-card i {
+        font-size: 1.8rem;
+    }
+    
+    .action-card span {
+        font-size: 0.85rem;
+    }
+    
+    /* Buttons */
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    /* Cards */
+    .card-header {
+        padding: 12px 15px;
+        font-size: 1rem;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+    
+    /* Tables */
+    .data-table thead th {
+        font-size: 0.8rem;
+        padding: 10px 8px;
+    }
+    
+    .data-table tbody td {
+        font-size: 0.8rem;
+        padding: 8px 6px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 3px;
+    }
+    
+    .btn-icon {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .btn-icon i {
+        font-size: 0.8rem;
+    }
+    
+    /* Footer */
+    .dashboard-footer {
+        padding: 10px 15px;
+    }
+    
+    .footer-content {
+        font-size: 0.75rem;
+    }
+    
+    .footer-logo i {
+        font-size: 1rem;
+    }
+    
+    .footer-logo span {
+        font-size: 0.8rem;
+    }
+}
+
+/* Very Small Mobile (360px and below) */
+@media (max-width: 360px) {
+    :root {
+        --sidebar-width: 90%;
+    }
+    
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .actions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-actions {
+        flex-direction: column;
+    }
+    
+    .page-actions .btn {
+        width: 100%;
     }
 }
 

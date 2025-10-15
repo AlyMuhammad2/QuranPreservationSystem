@@ -32,32 +32,67 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Sidebar Active State (for mobile)
+    // Mobile Sidebar Toggle
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const sidebar = document.querySelector('.dashboard-sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    
+    // Open sidebar on mobile
+    if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleSidebar();
+        });
+    }
+    
+    // Close sidebar when clicking overlay
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', function() {
+            closeSidebar();
+        });
+    }
+    
+    // Function to toggle sidebar
+    function toggleSidebar() {
+        if (sidebar) {
+            sidebar.classList.toggle('show');
+        }
+        if (sidebarOverlay) {
+            sidebarOverlay.classList.toggle('show');
+        }
+        // Prevent body scroll when sidebar is open
+        document.body.style.overflow = sidebar.classList.contains('show') ? 'hidden' : '';
+    }
+    
+    // Function to close sidebar
+    function closeSidebar() {
+        if (sidebar) {
+            sidebar.classList.remove('show');
+        }
+        if (sidebarOverlay) {
+            sidebarOverlay.classList.remove('show');
+        }
+        document.body.style.overflow = '';
+    }
+    
+    // Close sidebar when clicking a sidebar item on mobile
     const sidebarItems = document.querySelectorAll('.sidebar-item');
     
     sidebarItems.forEach(item => {
         item.addEventListener('click', function() {
-            // Remove active from all items
-            sidebarItems.forEach(i => i.classList.remove('active'));
-            // Add active to clicked item
-            this.classList.add('active');
+            // Close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                closeSidebar();
+            }
         });
     });
     
-    // Auto-hide mobile sidebar after click
-    if (window.innerWidth <= 768) {
-        sidebarItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const sidebar = document.querySelector('.dashboard-sidebar');
-                if (sidebar) {
-                    sidebar.style.display = 'none';
-                    setTimeout(() => {
-                        sidebar.style.display = 'block';
-                    }, 100);
-                }
-            });
-        });
-    }
+    // Close sidebar on window resize to desktop
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            closeSidebar();
+        }
+    });
     
     // Smooth scroll for page transitions
     window.addEventListener('beforeunload', function() {
