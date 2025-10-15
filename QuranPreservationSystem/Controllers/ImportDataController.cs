@@ -588,6 +588,383 @@ namespace QuranPreservationSystem.Controllers
 
         #endregion
 
+        #region Students Import
+
+        // GET: ImportData/Students
+        public async Task<IActionResult> Students()
+        {
+            var tempRecords = await _unitOfWork.TempStudentImports.GetAllAsync();
+            ViewBag.TempRecords = tempRecords.OrderByDescending(t => t.UploadedDate).Take(50);
+            
+            return View();
+        }
+
+        // GET: ImportData/DownloadStudentsTemplate
+        public IActionResult DownloadStudentsTemplate()
+        {
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("الطلاب");
+
+            // ============ HEADER ROW (12 Columns - مطابق لـ Student Entity) ============
+            var headers = new[]
+            {
+                "الاسم الأول *",
+                "اسم العائلة *",
+                "رقم الهاتف *",
+                "المركز *",
+                "تاريخ الميلاد (dd/mm/yyyy) *",
+                "الجنس (ذكر/أنثى) *",
+                "البريد الإلكتروني",
+                "العنوان",
+                "تاريخ التسجيل (dd/mm/yyyy)",
+                "المستوى التعليمي",
+                "ملاحظات",
+                "نشط (نعم/لا)"
+            };
+
+            for (int i = 0; i < headers.Length; i++)
+            {
+                worksheet.Cell(1, i + 1).Value = headers[i];
+            }
+
+            // ============ HEADER STYLING ============
+            var headerRange = worksheet.Range(1, 1, 1, headers.Length);
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#1976d2");
+            headerRange.Style.Font.FontColor = XLColor.White;
+            headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            headerRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
+            worksheet.Row(1).Height = 25;
+
+            // ============ SAMPLE DATA ROW 1 ============
+            worksheet.Cell(2, 1).Value = "أحمد";
+            worksheet.Cell(2, 2).Value = "محمد";
+            worksheet.Cell(2, 3).Value = "0123456789";
+            worksheet.Cell(2, 4).Value = "مركز كفرأبيل القرآني";
+            worksheet.Cell(2, 5).Value = "15/03/2010";
+            worksheet.Cell(2, 6).Value = "ذكر";
+            worksheet.Cell(2, 7).Value = "ahmad@example.com";
+            worksheet.Cell(2, 8).Value = "القاهرة - المعادي";
+            worksheet.Cell(2, 9).Value = "01/09/2024";
+            worksheet.Cell(2, 10).Value = "ابتدائي";
+            worksheet.Cell(2, 11).Value = "طالب متميز";
+            worksheet.Cell(2, 12).Value = "نعم";
+
+            // ============ SAMPLE DATA ROW 2 ============
+            worksheet.Cell(3, 1).Value = "فاطمة";
+            worksheet.Cell(3, 2).Value = "علي";
+            worksheet.Cell(3, 3).Value = "0111222333";
+            worksheet.Cell(3, 4).Value = "مركز كفرأبيل القرآني";
+            worksheet.Cell(3, 5).Value = "20/07/2012";
+            worksheet.Cell(3, 6).Value = "أنثى";
+            worksheet.Cell(3, 7).Value = "fatima@example.com";
+            worksheet.Cell(3, 8).Value = "الجيزة - الدقي";
+            worksheet.Cell(3, 9).Value = "15/09/2024";
+            worksheet.Cell(3, 10).Value = "إعدادي";
+            worksheet.Cell(3, 11).Value = "محافظة على المواعيد";
+            worksheet.Cell(3, 12).Value = "نعم";
+
+            // ============ INSTRUCTIONS SECTION ============
+            worksheet.Cell(5, 1).Value = "📋 تعليمات مهمة:";
+            worksheet.Cell(5, 1).Style.Font.Bold = true;
+            worksheet.Cell(5, 1).Style.Font.FontSize = 12;
+            worksheet.Cell(5, 1).Style.Font.FontColor = XLColor.FromHtml("#d32f2f");
+
+            var instructions = new[]
+            {
+                "✅ الحقول المطلوبة (6 حقول): الاسم الأول، اسم العائلة، رقم الهاتف، المركز، تاريخ الميلاد، الجنس",
+                "📅 التواريخ بصيغة: dd/mm/yyyy (مثال: 15/03/2010)",
+                "👤 الجنس: اكتب 'ذكر' أو 'أنثى' فقط",
+                "✔️ نشط: اكتب 'نعم' أو 'لا'",
+                "🏢 المركز: يجب أن يكون اسم مركز موجود في النظام",
+                "🗑️ احذف الصفوف النموذجية (2 و 3) قبل رفع الملف",
+                "💡 الحقول الاختيارية (6 حقول) يمكن تركها فارغة"
+            };
+
+            for (int i = 0; i < instructions.Length; i++)
+            {
+                worksheet.Cell(6 + i, 1).Value = instructions[i];
+                worksheet.Range(6 + i, 1, 6 + i, 4).Merge();
+                worksheet.Cell(6 + i, 1).Style.Font.FontSize = 10;
+            }
+
+            // ============ COLUMN WIDTHS ============
+            worksheet.Column(1).Width = 15;  // الاسم الأول
+            worksheet.Column(2).Width = 15;  // اسم العائلة
+            worksheet.Column(3).Width = 15;  // رقم الهاتف
+            worksheet.Column(4).Width = 25;  // المركز
+            worksheet.Column(5).Width = 20;  // تاريخ الميلاد
+            worksheet.Column(6).Width = 15;  // الجنس
+            worksheet.Column(7).Width = 25;  // البريد
+            worksheet.Column(8).Width = 30;  // العنوان
+            worksheet.Column(9).Width = 20;  // تاريخ التسجيل
+            worksheet.Column(10).Width = 18; // المستوى التعليمي
+            worksheet.Column(11).Width = 30; // ملاحظات
+            worksheet.Column(12).Width = 12; // نشط
+
+            // ============ DATA ROWS STYLING ============
+            var dataRange = worksheet.Range(2, 1, 3, headers.Length);
+            dataRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#e3f2fd");
+            dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            var content = stream.ToArray();
+
+            var fileName = $"قالب_الطلاب_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+
+        // POST: ImportData/UploadStudents
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadStudents(IFormFile excelFile)
+        {
+            if (excelFile == null || excelFile.Length == 0)
+            {
+                TempData["Error"] = "الرجاء اختيار ملف Excel";
+                return RedirectToAction(nameof(Students));
+            }
+
+            if (!excelFile.FileName.EndsWith(".xlsx") && !excelFile.FileName.EndsWith(".xls"))
+            {
+                TempData["Error"] = "يجب أن يكون الملف بصيغة Excel (.xlsx أو .xls)";
+                return RedirectToAction(nameof(Students));
+            }
+
+            try
+            {
+                var batchId = Guid.NewGuid().ToString();
+                var uploadedBy = User.Identity?.Name ?? "Unknown";
+                int rowNumber = 0;
+                int successCount = 0;
+                int errorCount = 0;
+
+                using (var stream = new MemoryStream())
+                {
+                    await excelFile.CopyToAsync(stream);
+                    using var workbook = new XLWorkbook(stream);
+                    var worksheet = workbook.Worksheet(1);
+
+                    // البدء من الصف 2 (تخطي الـ Header)
+                    var rows = worksheet.RowsUsed().Skip(1);
+
+                    foreach (var row in rows)
+                    {
+                        rowNumber++;
+
+                        try
+                        {
+                            var firstName = row.Cell(1).GetString().Trim();
+                            var lastName = row.Cell(2).GetString().Trim();
+                            var phoneNumber = row.Cell(3).GetString().Trim();
+                            var centerName = row.Cell(4).GetString().Trim();
+                            
+                            // التحقق من الحقول المطلوبة
+                            if (string.IsNullOrWhiteSpace(firstName) || 
+                                string.IsNullOrWhiteSpace(lastName) || 
+                                string.IsNullOrWhiteSpace(phoneNumber) ||
+                                string.IsNullOrWhiteSpace(centerName))
+                            {
+                                continue; // تخطي الصفوف الناقصة
+                            }
+
+                            var tempStudent = new TempStudentImport
+                            {
+                                // Required Fields (Columns 1-6)
+                                FirstName = firstName,
+                                LastName = lastName,
+                                PhoneNumber = phoneNumber,
+                                CenterName = centerName,
+                                DateOfBirth = TryParseDate(row.Cell(5).GetString().Trim()), // مطلوب
+                                Gender = row.Cell(6).GetString().Trim(), // مطلوب
+                                
+                                // Optional Fields (Columns 7-12)
+                                Email = row.Cell(7).GetString().Trim(),
+                                Address = row.Cell(8).GetString().Trim(),
+                                EnrollmentDate = TryParseDate(row.Cell(9).GetString().Trim()),
+                                EducationLevel = row.Cell(10).GetString().Trim(),
+                                Notes = row.Cell(11).GetString().Trim(),
+                                IsActive = row.Cell(12).GetString().Trim().Equals("نعم", StringComparison.OrdinalIgnoreCase),
+                                
+                                // Processing Fields
+                                Status = ImportStatus.Pending,
+                                UploadedBy = uploadedBy,
+                                UploadedDate = DateTime.Now,
+                                BatchId = batchId,
+                                RowNumber = rowNumber
+                            };
+
+                            await _unitOfWork.TempStudentImports.AddAsync(tempStudent);
+                            successCount++;
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "خطأ في معالجة الصف {RowNumber}", rowNumber);
+                            errorCount++;
+                        }
+                    }
+                }
+
+                await _unitOfWork.SaveChangesAsync();
+
+                // بدء معالجة البيانات في Background
+                _ = Task.Run(async () => await ProcessPendingStudentsAsync(batchId));
+
+                TempData["Success"] = $"تم رفع {successCount} طالب بنجاح. جاري المعالجة...";
+                if (errorCount > 0)
+                {
+                    TempData["Warning"] = $"فشل في قراءة {errorCount} سجل";
+                }
+
+                return RedirectToAction(nameof(Students));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطأ في رفع ملف Excel");
+                TempData["Error"] = "حدث خطأ أثناء معالجة الملف";
+                return RedirectToAction(nameof(Students));
+            }
+        }
+
+        // Background Processing for Students
+        private async Task ProcessPendingStudentsAsync(string batchId)
+        {
+            using var scope = _serviceScopeFactory.CreateScope();
+            var scopedUnitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+            try
+            {
+                await Task.Delay(2000);
+
+                var pendingRecords = await scopedUnitOfWork.TempStudentImports.GetByBatchIdAsync(batchId);
+
+                foreach (var tempRecord in pendingRecords.Where(r => r.Status == ImportStatus.Pending))
+                {
+                    await scopedUnitOfWork.BeginTransactionAsync();
+                    
+                    try
+                    {
+                        tempRecord.Status = ImportStatus.Processing;
+                        await scopedUnitOfWork.TempStudentImports.UpdateAsync(tempRecord);
+                        await scopedUnitOfWork.SaveChangesAsync();
+
+                        // البحث عن المركز
+                        var center = await scopedUnitOfWork.Centers.GetFirstOrDefaultAsync(c => c.Name == tempRecord.CenterName);
+                        
+                        if (center == null)
+                        {
+                            tempRecord.Status = ImportStatus.Failed;
+                            tempRecord.ErrorMessage = $"المركز '{tempRecord.CenterName}' غير موجود";
+                            tempRecord.ProcessedDate = DateTime.Now;
+                            await scopedUnitOfWork.TempStudentImports.UpdateAsync(tempRecord);
+                            await scopedUnitOfWork.SaveChangesAsync();
+                            await scopedUnitOfWork.CommitTransactionAsync();
+                            continue;
+                        }
+
+                        // التحقق من عدم التكرار
+                        var exists = await scopedUnitOfWork.Students.ExistsAsync(s => 
+                            s.FirstName == tempRecord.FirstName && 
+                            s.LastName == tempRecord.LastName && 
+                            s.PhoneNumber == tempRecord.PhoneNumber);
+                        
+                        if (exists)
+                        {
+                            tempRecord.Status = ImportStatus.Duplicate;
+                            tempRecord.ErrorMessage = "الطالب موجود بالفعل";
+                            tempRecord.ProcessedDate = DateTime.Now;
+                            await scopedUnitOfWork.TempStudentImports.UpdateAsync(tempRecord);
+                            await scopedUnitOfWork.SaveChangesAsync();
+                            await scopedUnitOfWork.CommitTransactionAsync();
+                            continue;
+                        }
+
+                        // تحديد الجنس (مطلوب في Student Entity)
+                        Domain.Enums.Gender gender = Domain.Enums.Gender.Male; // Default
+                        if (!string.IsNullOrWhiteSpace(tempRecord.Gender))
+                        {
+                            if (tempRecord.Gender.Equals("ذكر", StringComparison.OrdinalIgnoreCase))
+                                gender = Domain.Enums.Gender.Male;
+                            else if (tempRecord.Gender.Equals("أنثى", StringComparison.OrdinalIgnoreCase))
+                                gender = Domain.Enums.Gender.Female;
+                        }
+
+                        // التحقق من وجود تاريخ الميلاد (مطلوب في Student Entity)
+                        if (!tempRecord.DateOfBirth.HasValue)
+                        {
+                            tempRecord.Status = ImportStatus.Failed;
+                            tempRecord.ErrorMessage = "تاريخ الميلاد مطلوب";
+                            tempRecord.ProcessedDate = DateTime.Now;
+                            await scopedUnitOfWork.TempStudentImports.UpdateAsync(tempRecord);
+                            await scopedUnitOfWork.SaveChangesAsync();
+                            await scopedUnitOfWork.CommitTransactionAsync();
+                            continue;
+                        }
+
+                        // إضافة الطالب الجديد
+                        var student = new Student
+                        {
+                            FirstName = tempRecord.FirstName,
+                            LastName = tempRecord.LastName,
+                            PhoneNumber = tempRecord.PhoneNumber,
+                            Email = tempRecord.Email,
+                            Address = tempRecord.Address,
+                            DateOfBirth = tempRecord.DateOfBirth.Value,
+                            Gender = gender,
+                            EducationLevel = tempRecord.EducationLevel,
+                            EnrollmentDate = tempRecord.EnrollmentDate ?? DateTime.Now,
+                            Notes = tempRecord.Notes,
+                            CenterId = center.CenterId,
+                            IsActive = tempRecord.IsActive
+                        };
+
+                        await scopedUnitOfWork.Students.AddAsync(student);
+                        await scopedUnitOfWork.SaveChangesAsync();
+
+                        // تحديث الحالة إلى Completed
+                        var addedStudent = await scopedUnitOfWork.Students.GetFirstOrDefaultAsync(s => 
+                            s.FirstName == tempRecord.FirstName && 
+                            s.LastName == tempRecord.LastName && 
+                            s.PhoneNumber == tempRecord.PhoneNumber);
+                        
+                        tempRecord.ProcessedStudentId = addedStudent?.StudentId;
+                        tempRecord.Status = ImportStatus.Completed;
+                        tempRecord.ProcessedDate = DateTime.Now;
+                        tempRecord.ErrorMessage = null;
+                        await scopedUnitOfWork.TempStudentImports.UpdateAsync(tempRecord);
+                        await scopedUnitOfWork.SaveChangesAsync();
+
+                        await scopedUnitOfWork.CommitTransactionAsync();
+
+                        _logger.LogInformation("تمت معالجة الطالب {TempId} - {Name}", 
+                            tempRecord.TempId, $"{tempRecord.FirstName} {tempRecord.LastName}");
+                    }
+                    catch (Exception ex)
+                    {
+                        await scopedUnitOfWork.RollbackTransactionAsync();
+
+                        _logger.LogError(ex, "خطأ في معالجة السجل {TempId}", tempRecord.TempId);
+                        
+                        tempRecord.Status = ImportStatus.Failed;
+                        tempRecord.ErrorMessage = ex.Message.Length > 500 ? ex.Message.Substring(0, 500) : ex.Message;
+                        tempRecord.ProcessedDate = DateTime.Now;
+                        await scopedUnitOfWork.TempStudentImports.UpdateAsync(tempRecord);
+                        await scopedUnitOfWork.SaveChangesAsync();
+                    }
+                }
+
+                _logger.LogInformation("تمت معالجة دفعة الطلاب {BatchId}", batchId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطأ عام في معالجة دفعة الطلاب {BatchId}", batchId);
+            }
+        }
+
+        #endregion
+
         #region Helper Methods
 
         private DateTime? TryParseDate(string dateStr)

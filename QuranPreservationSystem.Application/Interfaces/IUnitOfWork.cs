@@ -17,6 +17,7 @@ namespace QuranPreservationSystem.Application.Interfaces
         IHafizRegistryRepository HafizRegistry { get; }
         ITempCenterImportRepository TempCenterImports { get; }
         ITempTeacherImportRepository TempTeacherImports { get; }
+        ITempStudentImportRepository TempStudentImports { get; }
 
         // حفظ التغييرات
         Task<int> SaveChangesAsync();

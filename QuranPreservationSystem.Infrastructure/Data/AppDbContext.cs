@@ -23,6 +23,7 @@ namespace QuranPreservationSystem.Infrastructure.Data
         public DbSet<HafizRegistry> HafizRegistry { get; set; }
         public DbSet<TempCenterImport> TempCenterImports { get; set; }
         public DbSet<TempTeacherImport> TempTeacherImports { get; set; }
+        public DbSet<TempStudentImport> TempStudentImports { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -140,6 +141,13 @@ namespace QuranPreservationSystem.Infrastructure.Data
             modelBuilder.Entity<TempTeacherImport>()
                 .HasIndex(t => t.BatchId);
 
+            // Indexes للـ TempStudentImport
+            modelBuilder.Entity<TempStudentImport>()
+                .HasIndex(t => t.Status);
+
+            modelBuilder.Entity<TempStudentImport>()
+                .HasIndex(t => t.BatchId);
+
             // تكوين الأنواع العددية
             modelBuilder.Entity<StudentCourse>()
                 .Property(sc => sc.Grade)
@@ -167,6 +175,10 @@ namespace QuranPreservationSystem.Infrastructure.Data
                 .HasConversion<int>();
 
             modelBuilder.Entity<TempTeacherImport>()
+                .Property(t => t.Status)
+                .HasConversion<int>();
+
+            modelBuilder.Entity<TempStudentImport>()
                 .Property(t => t.Status)
                 .HasConversion<int>();
 
