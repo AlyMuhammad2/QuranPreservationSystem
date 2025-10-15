@@ -1,11 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QuranPreservationSystem.Application.Interfaces;
 using QuranPreservationSystem.Application.Interfaces.IRepositories;
+using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Infrastructure.Data;
 using QuranPreservationSystem.Infrastructure.Identity;
 using QuranPreservationSystem.Infrastructure.Repositories;
 using QuranPreservationSystem.Infrastructure.UnitOfWork;
+using QuranPreservationSystem.Services;
 
 namespace QuranPreservationSystem
 {
@@ -68,6 +71,11 @@ namespace QuranPreservationSystem
 
             // تسجيل Unit of Work
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            // تسجيل خدمات الصلاحيات
+            builder.Services.AddScoped<IPermissionService, PermissionService>();
+            builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
+            builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
             var app = builder.Build();
 

@@ -1,0 +1,217 @@
+@model QuranPreservationSystem.Application.DTOs.EditUserDto
+@{
+    ViewData["Title"] = "تعديل مستخدم";
+    Layout = "_DashboardLayout";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-edit"></i>
+        <h2>تعديل مستخدم</h2>
+    </div>
+    <div class="page-actions">
+        <a href="@Url.Action("Index")" class="btn btn-outline">
+            <i class="fas fa-arrow-right"></i> العودة للقائمة
+        </a>
+    </div>
+</div>
+
+<!-- Edit Form -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-edit"></i>
+        <span>تعديل بيانات المستخدم</span>
+    </div>
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input asp-for="UserId" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+            
+            <h4 class="section-title"><i class="fas fa-user"></i> المعلومات الأساسية</h4>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label asp-for="FullName" class="form-label"></label>
+                    <input asp-for="FullName" class="form-control" placeholder="أدخل الاسم الكامل" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="UserName" class="form-label"></label>
+                    <input asp-for="UserName" class="form-control" placeholder="أدخل اسم المستخدم" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" type="email" class="form-control" placeholder="example@domain.com" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="form-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="0791234567" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Role" class="form-label"></label>
+                    <select asp-for="Role" class="form-control" asp-items="ViewBag.Roles">
+                        <option value="">اختر الدور</option>
+                    </select>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+            </div>
+
+            <h4 class="section-title"><i class="fas fa-lock"></i> تغيير كلمة المرور (اختياري)</h4>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label asp-for="NewPassword" class="form-label"></label>
+                    <input asp-for="NewPassword" type="password" class="form-control" placeholder="••••••••" />
+                    <span asp-validation-for="NewPassword" class="text-danger"></span>
+                    <small class="form-text">اتركها فارغة إذا لم ترغب في تغيير كلمة المرور</small>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ConfirmNewPassword" class="form-label"></label>
+                    <input asp-for="ConfirmNewPassword" type="password" class="form-control" placeholder="••••••••" />
+                    <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input asp-for="IsActive" type="checkbox" class="form-check-input" id="IsActive" />
+                    <label asp-for="IsActive" for="IsActive" class="form-check-label">مستخدم نشط</label>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> حفظ التعديلات
+                </button>
+                <a href="@Url.Action("Index")" class="btn btn-outline">
+                    <i class="fas fa-times"></i> إلغاء
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .section-title {
+            color: var(--primary-dark);
+            margin: 25px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .section-title i {
+            color: var(--primary-color);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-light);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+            background-color: white;
+        }
+        
+        select.form-control {
+            cursor: pointer;
+        }
+        
+        .form-text {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: var(--light-bg);
+            border-radius: 8px;
+        }
+        
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .form-check-label {
+            cursor: pointer;
+            font-weight: 500;
+            margin: 0;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .text-danger {
+            color: var(--danger-color);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-danger {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef5350;
+        }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.Interfaces;
 using QuranPreservationSystem.Application.DTOs;
+using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Helpers;
 using ClosedXML.Excel;
 
@@ -11,6 +12,7 @@ namespace QuranPreservationSystem.Controllers
     /// التسجيلات - إدارة تسجيل الطلاب في الدورات
     /// </summary>
     [Authorize]
+    [PermissionAuthorize("Enrollments", "View")]
     public class EnrollmentsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

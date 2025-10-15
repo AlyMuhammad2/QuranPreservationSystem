@@ -25,6 +25,8 @@ namespace QuranPreservationSystem.Infrastructure.UnitOfWork
         public ITempCenterImportRepository TempCenterImports { get; private set; }
         public ITempTeacherImportRepository TempTeacherImports { get; private set; }
         public ITempStudentImportRepository TempStudentImports { get; private set; }
+        public IPermissionRepository Permissions { get; private set; }
+        public IRolePermissionRepository RolePermissions { get; private set; }
 
         public UnitOfWork(AppDbContext context)
         {
@@ -41,6 +43,8 @@ namespace QuranPreservationSystem.Infrastructure.UnitOfWork
             TempCenterImports = new TempCenterImportRepository(_context);
             TempTeacherImports = new TempTeacherImportRepository(_context);
             TempStudentImports = new TempStudentImportRepository(_context);
+            Permissions = new PermissionRepository(_context);
+            RolePermissions = new RolePermissionRepository(_context);
         }
 
         // حفظ التغييرات

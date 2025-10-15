@@ -18,6 +18,8 @@ namespace QuranPreservationSystem.Application.Interfaces
         ITempCenterImportRepository TempCenterImports { get; }
         ITempTeacherImportRepository TempTeacherImports { get; }
         ITempStudentImportRepository TempStudentImports { get; }
+        IPermissionRepository Permissions { get; }
+        IRolePermissionRepository RolePermissions { get; }
 
         // حفظ التغييرات
         Task<int> SaveChangesAsync();

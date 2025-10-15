@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace QuranPreservationSystem.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreateWithIdentity : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,6 +46,113 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Permissions",
+                columns: table => new
+                {
+                    PermissionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PermissionName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    DisplayName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Icon = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Permissions", x => x.PermissionId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TempCenterImports",
+                columns: table => new
+                {
+                    TempId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    ErrorMessage = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    UploadedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UploadedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProcessedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ProcessedCenterId = table.Column<int>(type: "int", nullable: true),
+                    RowNumber = table.Column<int>(type: "int", nullable: false),
+                    BatchId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TempCenterImports", x => x.TempId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TempStudentImports",
+                columns: table => new
+                {
+                    TempId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    CenterName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    EnrollmentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EducationLevel = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    ErrorMessage = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    UploadedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UploadedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProcessedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ProcessedStudentId = table.Column<int>(type: "int", nullable: true),
+                    RowNumber = table.Column<int>(type: "int", nullable: false),
+                    BatchId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TempStudentImports", x => x.TempId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TempTeacherImports",
+                columns: table => new
+                {
+                    TempId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    Qualification = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Specialization = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    HireDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CenterName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    ErrorMessage = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    UploadedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UploadedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProcessedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ProcessedTeacherId = table.Column<int>(type: "int", nullable: true),
+                    RowNumber = table.Column<int>(type: "int", nullable: false),
+                    BatchId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TempTeacherImports", x => x.TempId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -64,6 +171,37 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HafizRegistry",
+                columns: table => new
+                {
+                    HafizId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StudentName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    CenterId = table.Column<int>(type: "int", nullable: true),
+                    CompletionYear = table.Column<int>(type: "int", nullable: false),
+                    CompletedCourses = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    CertificatePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    CertificateFileName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    CertificateFileSize = table.Column<long>(type: "bigint", nullable: true),
+                    CertificateFileType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    PhotoPath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    MemorizationLevel = table.Column<int>(type: "int", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HafizRegistry", x => x.HafizId);
+                    table.ForeignKey(
+                        name: "FK_HafizRegistry_Centers_CenterId",
+                        column: x => x.CenterId,
+                        principalTable: "Centers",
+                        principalColumn: "CenterId",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -131,12 +269,36 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RolePermissions",
+                columns: table => new
+                {
+                    RolePermissionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    PermissionId = table.Column<int>(type: "int", nullable: false),
+                    CanView = table.Column<bool>(type: "bit", nullable: false),
+                    CanCreate = table.Column<bool>(type: "bit", nullable: false),
+                    CanEdit = table.Column<bool>(type: "bit", nullable: false),
+                    CanDelete = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RolePermissions", x => x.RolePermissionId);
+                    table.ForeignKey(
+                        name: "FK_RolePermissions_Permissions_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "Permissions",
+                        principalColumn: "PermissionId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUsers",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastLoginDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -300,6 +462,50 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Exams",
+                columns: table => new
+                {
+                    ExamId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ExamName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    ExamType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Level = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    TotalMarks = table.Column<int>(type: "int", nullable: true),
+                    PassingMarks = table.Column<int>(type: "int", nullable: true),
+                    StartTime = table.Column<TimeSpan>(type: "time", nullable: true),
+                    EndTime = table.Column<TimeSpan>(type: "time", nullable: true),
+                    Location = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Instructions = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    PdfFilePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    PdfFileName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    PdfFileType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    PdfFileSize = table.Column<long>(type: "bigint", nullable: true),
+                    CenterId = table.Column<int>(type: "int", nullable: false),
+                    CourseId = table.Column<int>(type: "int", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Exams", x => x.ExamId);
+                    table.ForeignKey(
+                        name: "FK_Exams_Centers_CenterId",
+                        column: x => x.CenterId,
+                        principalTable: "Centers",
+                        principalColumn: "CenterId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Exams_Courses_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
+                        principalColumn: "CourseId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "StudentCourses",
                 columns: table => new
                 {
@@ -342,10 +548,7 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                 values: new object[,]
                 {
                     { "1", "c8554266-b401-4519-9aeb-ff6d5f3c4b61", "Admin", "ADMIN" },
-                    { "2", "c8554266-b401-4519-9aeb-ff6d5f3c4b62", "Supervisor", "SUPERVISOR" },
-                    { "3", "c8554266-b401-4519-9aeb-ff6d5f3c4b63", "Teacher", "TEACHER" },
-                    { "4", "c8554266-b401-4519-9aeb-ff6d5f3c4b64", "CenterManager", "CENTERMANAGER" },
-                    { "5", "c8554266-b401-4519-9aeb-ff6d5f3c4b65", "User", "USER" }
+                    { "3", "c8554266-b401-4519-9aeb-ff6d5f3c4b63", "Teacher", "TEACHER" }
                 });
 
             migrationBuilder.InsertData(
@@ -370,6 +573,26 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                     { 15, "الريان", new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, true, "مركز الريان القرآني", null },
                     { 16, "طلحة بن عبيد الله", new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, true, "مركز طلحة بن عبيد الله القرآني", null },
                     { 17, "كفرراكب", new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, true, "مركز كفرراكب القرآن", null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Permissions",
+                columns: new[] { "PermissionId", "Description", "DisplayName", "DisplayOrder", "Icon", "IsActive", "PermissionName" },
+                values: new object[,]
+                {
+                    { 1, "الوصول إلى لوحة التحكم الرئيسية", "لوحة التحكم", 1, "fa-tachometer-alt", true, "Dashboard" },
+                    { 2, "إدارة المراكز القرآنية", "المراكز القرآنية", 2, "fa-mosque", true, "Centers" },
+                    { 3, "إدارة المدرسين", "المدرسين", 3, "fa-chalkboard-teacher", true, "Teachers" },
+                    { 4, "إدارة الطلاب", "الطلاب", 4, "fa-user-graduate", true, "Students" },
+                    { 5, "إدارة ديوان الحفاظ", "ديوان الحفاظ", 5, "fa-book-quran", true, "HafizRegistry" },
+                    { 6, "إدارة الدورات", "الدورات", 6, "fa-book-open", true, "Courses" },
+                    { 7, "إدارة تسجيلات الطلاب", "التسجيلات", 7, "fa-user-plus", true, "Enrollments" },
+                    { 8, "إدارة الاختبارات", "الاختبارات", 8, "fa-file-alt", true, "Exams" },
+                    { 9, "عرض التقارير والإحصائيات", "التقارير والإحصائيات", 9, "fa-chart-bar", true, "Reports" },
+                    { 10, "استيراد البيانات من ملفات Excel", "استيراد البيانات", 10, "fa-file-import", true, "ImportData" },
+                    { 11, "إدارة المستخدمين والصلاحيات", "المستخدمين", 11, "fa-users-cog", true, "Users" },
+                    { 12, "إدارة إعدادات النظام", "الإعدادات", 12, "fa-sliders-h", true, "Settings" },
+                    { 13, "عرض سجل النشاطات", "سجل النشاطات", 13, "fa-history", true, "Logs" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -442,6 +665,47 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                 column: "TeacherId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Exams_CenterId",
+                table: "Exams",
+                column: "CenterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Exams_CourseId",
+                table: "Exams",
+                column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Exams_ExamName",
+                table: "Exams",
+                column: "ExamName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HafizRegistry_CenterId",
+                table: "HafizRegistry",
+                column: "CenterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HafizRegistry_CompletionYear",
+                table: "HafizRegistry",
+                column: "CompletionYear");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HafizRegistry_StudentName",
+                table: "HafizRegistry",
+                column: "StudentName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePermissions_PermissionId",
+                table: "RolePermissions",
+                column: "PermissionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePermissions_RoleId_PermissionId",
+                table: "RolePermissions",
+                columns: new[] { "RoleId", "PermissionId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_StudentCourses_CourseId",
                 table: "StudentCourses",
                 column: "CourseId");
@@ -471,6 +735,36 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                 name: "IX_Teachers_PhoneNumber",
                 table: "Teachers",
                 column: "PhoneNumber");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TempCenterImports_BatchId",
+                table: "TempCenterImports",
+                column: "BatchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TempCenterImports_Status",
+                table: "TempCenterImports",
+                column: "Status");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TempStudentImports_BatchId",
+                table: "TempStudentImports",
+                column: "BatchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TempStudentImports_Status",
+                table: "TempStudentImports",
+                column: "Status");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TempTeacherImports_BatchId",
+                table: "TempTeacherImports",
+                column: "BatchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TempTeacherImports_Status",
+                table: "TempTeacherImports",
+                column: "Status");
         }
 
         /// <inheritdoc />
@@ -492,13 +786,34 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Exams");
+
+            migrationBuilder.DropTable(
+                name: "HafizRegistry");
+
+            migrationBuilder.DropTable(
+                name: "RolePermissions");
+
+            migrationBuilder.DropTable(
                 name: "StudentCourses");
+
+            migrationBuilder.DropTable(
+                name: "TempCenterImports");
+
+            migrationBuilder.DropTable(
+                name: "TempStudentImports");
+
+            migrationBuilder.DropTable(
+                name: "TempTeacherImports");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Permissions");
 
             migrationBuilder.DropTable(
                 name: "Courses");

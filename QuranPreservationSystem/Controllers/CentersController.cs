@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.DTOs;
 using QuranPreservationSystem.Application.Interfaces;
+using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Domain.Entities;
 
 namespace QuranPreservationSystem.Controllers
@@ -24,6 +25,7 @@ namespace QuranPreservationSystem.Controllers
         }
 
         // GET: Centers
+        [PermissionAuthorize("Centers", "View")]
         public async Task<IActionResult> Index()
         {
             var centers = await _unitOfWork.Centers.GetAllAsync();
@@ -47,6 +49,7 @@ namespace QuranPreservationSystem.Controllers
         }
 
         // GET: Centers/Details/5
+        [PermissionAuthorize("Centers", "View")]
         public async Task<IActionResult> Details(int id)
         {
             var center = await _unitOfWork.Centers.GetCenterWithDetailsAsync(id);
@@ -75,6 +78,7 @@ namespace QuranPreservationSystem.Controllers
         }
 
         // GET: Centers/Create
+        [PermissionAuthorize("Centers", "Create")]
         public IActionResult Create()
         {
             return View(new CreateCenterDto());
@@ -83,6 +87,7 @@ namespace QuranPreservationSystem.Controllers
         // POST: Centers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [PermissionAuthorize("Centers", "Create")]
         public async Task<IActionResult> Create(CreateCenterDto dto)
         {
             if (ModelState.IsValid)
@@ -109,6 +114,7 @@ namespace QuranPreservationSystem.Controllers
         }
 
         // GET: Centers/Edit/5
+        [PermissionAuthorize("Centers", "Edit")]
         public async Task<IActionResult> Edit(int id)
         {
             var center = await _unitOfWork.Centers.GetByIdAsync(id);
@@ -135,6 +141,7 @@ namespace QuranPreservationSystem.Controllers
         // POST: Centers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [PermissionAuthorize("Centers", "Edit")]
         public async Task<IActionResult> Edit(int id, UpdateCenterDto dto)
         {
             if (id != dto.CenterId)
@@ -170,6 +177,7 @@ namespace QuranPreservationSystem.Controllers
         }
 
         // GET: Centers/Delete/5
+        [PermissionAuthorize("Centers", "Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             var center = await _unitOfWork.Centers.GetByIdAsync(id);
@@ -197,6 +205,7 @@ namespace QuranPreservationSystem.Controllers
         // POST: Centers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [PermissionAuthorize("Centers", "Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var center = await _unitOfWork.Centers.GetByIdAsync(id);

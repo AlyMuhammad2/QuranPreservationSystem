@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using QuranPreservationSystem.Authorization;
 
 namespace QuranPreservationSystem.Controllers
 {
@@ -7,6 +8,7 @@ namespace QuranPreservationSystem.Controllers
     /// سجل النشاطات
     /// </summary>
     [Authorize(Roles = "Admin")]
+    [PermissionAuthorize("Logs", "View")]
     public class LogsController : Controller
     {
         private readonly ILogger<LogsController> _logger;

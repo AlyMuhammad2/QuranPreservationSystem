@@ -49,8 +49,7 @@ namespace QuranPreservationSystem.Infrastructure.Data
                     UserName = "admin",
                     Email = "admin@quransystem.com",
                     EmailConfirmed = true,
-                    FirstName = "مدير",
-                    LastName = "النظام",
+                    FullName = "مدير النظام",
                     IsActive = true,
                     CreatedDate = DateTime.Now
                 };
@@ -63,26 +62,25 @@ namespace QuranPreservationSystem.Infrastructure.Data
                 }
             }
 
-            // إنشاء مستخدم Supervisor
-            var supervisorUser = await userManager.FindByNameAsync("supervisor");
-            if (supervisorUser == null)
+            // إنشاء مستخدم Teacher
+            var teacherUser = await userManager.FindByNameAsync("teacher");
+            if (teacherUser == null)
             {
-                supervisorUser = new ApplicationUser
+                teacherUser = new ApplicationUser
                 {
-                    UserName = "supervisor",
-                    Email = "supervisor@quransystem.com",
+                    UserName = "teacher",
+                    Email = "teacher@quransystem.com",
                     EmailConfirmed = true,
-                    FirstName = "المشرف",
-                    LastName = "العام",
+                    FullName = "مدرس تجريبي",
                     IsActive = true,
                     CreatedDate = DateTime.Now
                 };
 
-                var result = await userManager.CreateAsync(supervisorUser, "Supervisor@123");
+                var result = await userManager.CreateAsync(teacherUser, "Teacher@123");
                 
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(supervisorUser, UserRole.Supervisor);
+                    await userManager.AddToRoleAsync(teacherUser, UserRole.Teacher);
                 }
             }
         }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.DTOs;
 using QuranPreservationSystem.Application.Interfaces;
+using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Domain.Entities;
 using QuranPreservationSystem.Helpers;
 using ClosedXML.Excel;
@@ -26,6 +27,7 @@ namespace QuranPreservationSystem.Controllers
         }
 
         // GET: Teachers
+        [PermissionAuthorize("Teachers", "View")]
         public async Task<IActionResult> Index(string searchTerm, int? centerId)
         {
             var teachers = await _unitOfWork.Teachers.GetActiveTeachersAsync();
@@ -76,6 +78,7 @@ namespace QuranPreservationSystem.Controllers
         }
 
         // GET: Teachers/ExportToExcel
+        [PermissionAuthorize("Teachers", "View")]
         public async Task<IActionResult> ExportToExcel(string searchTerm, int? centerId)
         {
             var teachers = await _unitOfWork.Teachers.GetActiveTeachersAsync();
@@ -144,6 +147,7 @@ namespace QuranPreservationSystem.Controllers
         }
 
         // GET: Teachers/Details/5
+        [PermissionAuthorize("Teachers", "View")]
         public async Task<IActionResult> Details(int id)
         {
             var teacher = await _unitOfWork.Teachers.GetTeacherWithCoursesAsync(id);
@@ -178,6 +182,7 @@ namespace QuranPreservationSystem.Controllers
         }
 
         // GET: Teachers/Create
+        [PermissionAuthorize("Teachers", "Create")]
         public async Task<IActionResult> Create()
         {
             ViewBag.Centers = await _unitOfWork.Centers.GetActiveCentersAsync();
@@ -187,6 +192,7 @@ namespace QuranPreservationSystem.Controllers
         // POST: Teachers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [PermissionAuthorize("Teachers", "Create")]
         public async Task<IActionResult> Create(CreateTeacherDto dto)
         {
             if (ModelState.IsValid)
@@ -221,6 +227,7 @@ namespace QuranPreservationSystem.Controllers
         }
 
         // GET: Teachers/Edit/5
+        [PermissionAuthorize("Teachers", "Edit")]
         public async Task<IActionResult> Edit(int id)
         {
             var teacher = await _unitOfWork.Teachers.GetByIdAsync(id);
@@ -255,6 +262,7 @@ namespace QuranPreservationSystem.Controllers
         // POST: Teachers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [PermissionAuthorize("Teachers", "Edit")]
         public async Task<IActionResult> Edit(int id, UpdateTeacherDto dto)
         {
             if (id != dto.TeacherId)
@@ -298,6 +306,7 @@ namespace QuranPreservationSystem.Controllers
         }
 
         // GET: Teachers/Delete/5
+        [PermissionAuthorize("Teachers", "Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             var teacher = await _unitOfWork.Teachers.GetByIdAsync(id);
@@ -328,6 +337,7 @@ namespace QuranPreservationSystem.Controllers
         // POST: Teachers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [PermissionAuthorize("Teachers", "Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var teacher = await _unitOfWork.Teachers.GetByIdAsync(id);

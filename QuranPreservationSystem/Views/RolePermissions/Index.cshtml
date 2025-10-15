@@ -1,0 +1,139 @@
+@model IEnumerable<QuranPreservationSystem.Application.DTOs.RolePermissionDto>
+@{
+    ViewData["Title"] = "إدارة الصلاحيات";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-shield-alt"></i>
+        <h2>إدارة صلاحيات الأدوار</h2>
+    </div>
+</div>
+
+<!-- Roles Overview -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-users-cog"></i> الأدوار المتاحة
+    </div>
+    <div class="card-body">
+        <div class="actions-grid">
+            @foreach (var role in ViewBag.Roles as List<Microsoft.AspNetCore.Identity.IdentityRole>)
+            {
+                <a href="@Url.Action("Manage", "RolePermissions", new { roleId = role.Id })" class="action-card">
+                    <i class="fas @(role.Name == "Admin" ? "fa-user-shield" : "fa-chalkboard-teacher")"></i>
+                    <span>@(role.Name == "Admin" ? "مدير النظام" : "مدرس")</span>
+                    <small>إدارة الصلاحيات</small>
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Permissions Table -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-list"></i> الصلاحيات الحالية
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">#</th>
+                            <th>الدور</th>
+                            <th>الصلاحية</th>
+                            <th style="text-align: center">عرض</th>
+                            <th style="text-align: center">إنشاء</th>
+                            <th style="text-align: center">تعديل</th>
+                            <th style="text-align: center">حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int counter = 1; }
+                        @foreach (var item in Model.GroupBy(x => x.RoleName))
+                        {
+                            var roleClass = item.Key == "Admin" ? "badge-danger" : "badge-info";
+                            var roleDisplay = item.Key == "Admin" ? "مدير النظام" : "مدرس";
+                            
+                            @foreach (var permission in item)
+                            {
+                                <tr>
+                                    <td>@counter</td>
+                                    <td>
+                                        <span class="badge @roleClass">@roleDisplay</span>
+                                    </td>
+                                    <td>
+                                        <strong>@permission.DisplayName</strong>
+                                    </td>
+                                    <td style="text-align: center">
+                                        @if (permission.CanView)
+                                        {
+                                            <i class="fas fa-check-circle" style="color: var(--success-color)"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-times-circle" style="color: var(--danger-color)"></i>
+                                        }
+                                    </td>
+                                    <td style="text-align: center">
+                                        @if (permission.CanCreate)
+                                        {
+                                            <i class="fas fa-check-circle" style="color: var(--success-color)"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-times-circle" style="color: var(--danger-color)"></i>
+                                        }
+                                    </td>
+                                    <td style="text-align: center">
+                                        @if (permission.CanEdit)
+                                        {
+                                            <i class="fas fa-check-circle" style="color: var(--success-color)"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-times-circle" style="color: var(--danger-color)"></i>
+                                        }
+                                    </td>
+                                    <td style="text-align: center">
+                                        @if (permission.CanDelete)
+                                        {
+                                            <i class="fas fa-check-circle" style="color: var(--success-color)"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-times-circle" style="color: var(--danger-color)"></i>
+                                        }
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-shield-alt"></i>
+                <h3>لا توجد صلاحيات</h3>
+                <p>لم يتم تعيين أي صلاحيات للأدوار بعد</p>
+            </div>
+        }
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showToast('@TempData["SuccessMessage"]', 'success');
+        });
+    </script>
+}
+

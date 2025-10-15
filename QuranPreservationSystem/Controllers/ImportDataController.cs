@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.Interfaces;
+using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Domain.Entities;
 using ClosedXML.Excel;
 using System.Data;
@@ -11,6 +12,7 @@ namespace QuranPreservationSystem.Controllers
     /// استيراد البيانات - Import Data
     /// </summary>
     [Authorize]
+    [PermissionAuthorize("ImportData", "View")]
     public class ImportDataController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

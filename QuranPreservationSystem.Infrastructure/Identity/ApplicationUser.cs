@@ -9,16 +9,8 @@ namespace QuranPreservationSystem.Infrastructure.Identity
     /// </summary>
     public class ApplicationUser : IdentityUser
     {
-        [Required(ErrorMessage = "الاسم الأول مطلوب")]
-        [StringLength(100, ErrorMessage = "الاسم الأول يجب أن لا يتجاوز 100 حرف")]
-        public string FirstName { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "اسم العائلة مطلوب")]
-        [StringLength(100, ErrorMessage = "اسم العائلة يجب أن لا يتجاوز 100 حرف")]
-        public string LastName { get; set; } = string.Empty;
-
-        [StringLength(200)]
-        public string FullName => $"{FirstName} {LastName}";
+        [StringLength(200, ErrorMessage = "الاسم الكامل يجب أن لا يتجاوز 200 حرف")]
+        public string FullName { get; set; } = string.Empty;
 
         public bool IsActive { get; set; } = true;
 

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.Interfaces;
+using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Application.DTOs;
 using QuranPreservationSystem.Domain.Entities;
 using QuranPreservationSystem.Helpers;
@@ -12,6 +13,7 @@ namespace QuranPreservationSystem.Controllers
     /// ديوان الحفاظ - إدارة سجل حفاظ القرآن الكريم
     /// </summary>
     [Authorize]
+    [PermissionAuthorize("HafizRegistry", "View")]
     public class HafizRegistryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

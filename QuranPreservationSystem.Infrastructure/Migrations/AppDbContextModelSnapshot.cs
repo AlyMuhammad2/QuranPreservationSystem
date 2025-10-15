@@ -58,31 +58,10 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = "2",
-                            ConcurrencyStamp = "c8554266-b401-4519-9aeb-ff6d5f3c4b62",
-                            Name = "Supervisor",
-                            NormalizedName = "SUPERVISOR"
-                        },
-                        new
-                        {
                             Id = "3",
                             ConcurrencyStamp = "c8554266-b401-4519-9aeb-ff6d5f3c4b63",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
-                        },
-                        new
-                        {
-                            Id = "4",
-                            ConcurrencyStamp = "c8554266-b401-4519-9aeb-ff6d5f3c4b64",
-                            Name = "CenterManager",
-                            NormalizedName = "CENTERMANAGER"
-                        },
-                        new
-                        {
-                            Id = "5",
-                            ConcurrencyStamp = "c8554266-b401-4519-9aeb-ff6d5f3c4b65",
-                            Name = "User",
-                            NormalizedName = "USER"
                         });
                 });
 
@@ -592,6 +571,216 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                     b.ToTable("HafizRegistry");
                 });
 
+            modelBuilder.Entity("QuranPreservationSystem.Domain.Entities.Permission", b =>
+                {
+                    b.Property<int>("PermissionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PermissionId"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Icon")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PermissionName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("PermissionId");
+
+                    b.ToTable("Permissions");
+
+                    b.HasData(
+                        new
+                        {
+                            PermissionId = 1,
+                            Description = "الوصول إلى لوحة التحكم الرئيسية",
+                            DisplayName = "لوحة التحكم",
+                            DisplayOrder = 1,
+                            Icon = "fa-tachometer-alt",
+                            IsActive = true,
+                            PermissionName = "Dashboard"
+                        },
+                        new
+                        {
+                            PermissionId = 2,
+                            Description = "إدارة المراكز القرآنية",
+                            DisplayName = "المراكز القرآنية",
+                            DisplayOrder = 2,
+                            Icon = "fa-mosque",
+                            IsActive = true,
+                            PermissionName = "Centers"
+                        },
+                        new
+                        {
+                            PermissionId = 3,
+                            Description = "إدارة المدرسين",
+                            DisplayName = "المدرسين",
+                            DisplayOrder = 3,
+                            Icon = "fa-chalkboard-teacher",
+                            IsActive = true,
+                            PermissionName = "Teachers"
+                        },
+                        new
+                        {
+                            PermissionId = 4,
+                            Description = "إدارة الطلاب",
+                            DisplayName = "الطلاب",
+                            DisplayOrder = 4,
+                            Icon = "fa-user-graduate",
+                            IsActive = true,
+                            PermissionName = "Students"
+                        },
+                        new
+                        {
+                            PermissionId = 5,
+                            Description = "إدارة ديوان الحفاظ",
+                            DisplayName = "ديوان الحفاظ",
+                            DisplayOrder = 5,
+                            Icon = "fa-book-quran",
+                            IsActive = true,
+                            PermissionName = "HafizRegistry"
+                        },
+                        new
+                        {
+                            PermissionId = 6,
+                            Description = "إدارة الدورات",
+                            DisplayName = "الدورات",
+                            DisplayOrder = 6,
+                            Icon = "fa-book-open",
+                            IsActive = true,
+                            PermissionName = "Courses"
+                        },
+                        new
+                        {
+                            PermissionId = 7,
+                            Description = "إدارة تسجيلات الطلاب",
+                            DisplayName = "التسجيلات",
+                            DisplayOrder = 7,
+                            Icon = "fa-user-plus",
+                            IsActive = true,
+                            PermissionName = "Enrollments"
+                        },
+                        new
+                        {
+                            PermissionId = 8,
+                            Description = "إدارة الاختبارات",
+                            DisplayName = "الاختبارات",
+                            DisplayOrder = 8,
+                            Icon = "fa-file-alt",
+                            IsActive = true,
+                            PermissionName = "Exams"
+                        },
+                        new
+                        {
+                            PermissionId = 9,
+                            Description = "عرض التقارير والإحصائيات",
+                            DisplayName = "التقارير والإحصائيات",
+                            DisplayOrder = 9,
+                            Icon = "fa-chart-bar",
+                            IsActive = true,
+                            PermissionName = "Reports"
+                        },
+                        new
+                        {
+                            PermissionId = 10,
+                            Description = "استيراد البيانات من ملفات Excel",
+                            DisplayName = "استيراد البيانات",
+                            DisplayOrder = 10,
+                            Icon = "fa-file-import",
+                            IsActive = true,
+                            PermissionName = "ImportData"
+                        },
+                        new
+                        {
+                            PermissionId = 11,
+                            Description = "إدارة المستخدمين والصلاحيات",
+                            DisplayName = "المستخدمين",
+                            DisplayOrder = 11,
+                            Icon = "fa-users-cog",
+                            IsActive = true,
+                            PermissionName = "Users"
+                        },
+                        new
+                        {
+                            PermissionId = 12,
+                            Description = "إدارة إعدادات النظام",
+                            DisplayName = "الإعدادات",
+                            DisplayOrder = 12,
+                            Icon = "fa-sliders-h",
+                            IsActive = true,
+                            PermissionName = "Settings"
+                        },
+                        new
+                        {
+                            PermissionId = 13,
+                            Description = "عرض سجل النشاطات",
+                            DisplayName = "سجل النشاطات",
+                            DisplayOrder = 13,
+                            Icon = "fa-history",
+                            IsActive = true,
+                            PermissionName = "Logs"
+                        });
+                });
+
+            modelBuilder.Entity("QuranPreservationSystem.Domain.Entities.RolePermission", b =>
+                {
+                    b.Property<int>("RolePermissionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RolePermissionId"));
+
+                    b.Property<bool>("CanCreate")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanEdit")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanView")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("RolePermissionId");
+
+                    b.HasIndex("PermissionId");
+
+                    b.HasIndex("RoleId", "PermissionId")
+                        .IsUnique();
+
+                    b.ToTable("RolePermissions");
+                });
+
             modelBuilder.Entity("QuranPreservationSystem.Domain.Entities.Student", b =>
                 {
                     b.Property<int>("StudentId")
@@ -1065,21 +1254,16 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("FullName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastLoginDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -1241,6 +1425,17 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
                     b.Navigation("Center");
                 });
 
+            modelBuilder.Entity("QuranPreservationSystem.Domain.Entities.RolePermission", b =>
+                {
+                    b.HasOne("QuranPreservationSystem.Domain.Entities.Permission", "Permission")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Permission");
+                });
+
             modelBuilder.Entity("QuranPreservationSystem.Domain.Entities.Student", b =>
                 {
                     b.HasOne("QuranPreservationSystem.Domain.Entities.Center", "Center")
@@ -1311,6 +1506,11 @@ namespace QuranPreservationSystem.Infrastructure.Migrations
             modelBuilder.Entity("QuranPreservationSystem.Domain.Entities.Course", b =>
                 {
                     b.Navigation("StudentCourses");
+                });
+
+            modelBuilder.Entity("QuranPreservationSystem.Domain.Entities.Permission", b =>
+                {
+                    b.Navigation("RolePermissions");
                 });
 
             modelBuilder.Entity("QuranPreservationSystem.Domain.Entities.Student", b =>

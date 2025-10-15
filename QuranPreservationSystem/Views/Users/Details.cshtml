@@ -1,0 +1,177 @@
+@model QuranPreservationSystem.Application.DTOs.UserDto
+@{
+    ViewData["Title"] = "تفاصيل المستخدم";
+    Layout = "_DashboardLayout";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-user"></i>
+        <h2>تفاصيل المستخدم</h2>
+    </div>
+    <div class="page-actions">
+        <a href="@Url.Action("Edit", new { id = Model.UserId })" class="btn btn-warning">
+            <i class="fas fa-edit"></i> تعديل
+        </a>
+        <a href="@Url.Action("Index")" class="btn btn-outline">
+            <i class="fas fa-arrow-right"></i> العودة للقائمة
+        </a>
+    </div>
+</div>
+
+<!-- User Info Card -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-user"></i>
+        <span>المعلومات الأساسية</span>
+    </div>
+    <div class="card-body">
+        <div class="details-grid">
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-user"></i>
+                    <span>الاسم الكامل</span>
+                </div>
+                <div class="detail-value"><strong>@Model.FullName</strong></div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-user-circle"></i>
+                    <span>اسم المستخدم</span>
+                </div>
+                <div class="detail-value">@Model.UserName</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-envelope"></i>
+                    <span>البريد الإلكتروني</span>
+                </div>
+                <div class="detail-value">@Model.Email</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-phone"></i>
+                    <span>رقم الهاتف</span>
+                </div>
+                <div class="detail-value">@(Model.PhoneNumber ?? "-")</div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-user-shield"></i>
+                    <span>الدور</span>
+                </div>
+                <div class="detail-value">
+                    <span class="badge @(Model.Role == "Admin" ? "badge-danger" : "badge-info")">
+                        @Model.RoleDisplayName
+                    </span>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-toggle-on"></i>
+                    <span>الحالة</span>
+                </div>
+                <div class="detail-value">
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge badge-success">نشط</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-danger">غير نشط</span>
+                    }
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-calendar"></i>
+                    <span>تاريخ الإنشاء</span>
+                </div>
+                <div class="detail-value">
+                    @(Model.CreatedDate?.ToString("dd/MM/yyyy - hh:mm tt") ?? "-")
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>آخر تسجيل دخول</span>
+                </div>
+                <div class="detail-value">
+                    @(Model.LastLoginDate?.ToString("dd/MM/yyyy - hh:mm tt") ?? "لم يسجل دخول بعد")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .detail-item {
+            padding: 15px;
+            background: var(--light-bg);
+            border-radius: 8px;
+            border-right: 3px solid var(--primary-light);
+        }
+        
+        .detail-item.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .detail-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .detail-label i {
+            color: var(--primary-color);
+            width: 20px;
+        }
+        
+        .detail-value {
+            font-size: 1.05rem;
+            color: var(--dark-text);
+            padding-right: 30px;
+        }
+        
+        .badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background: rgba(67, 160, 71, 0.15);
+            color: var(--success-color);
+        }
+        
+        .badge-danger {
+            background: rgba(229, 57, 53, 0.15);
+            color: var(--danger-color);
+        }
+        
+        .badge-info {
+            background: rgba(33, 150, 243, 0.15);
+            color: #1976d2;
+        }
+    </style>
+}

@@ -13,7 +13,6 @@ namespace QuranPreservationSystem.Infrastructure.Data
         {
         }
 
-        // DbSets - الجداول
         public DbSet<Center> Centers { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Student> Students { get; set; }
@@ -24,10 +23,11 @@ namespace QuranPreservationSystem.Infrastructure.Data
         public DbSet<TempCenterImport> TempCenterImports { get; set; }
         public DbSet<TempTeacherImport> TempTeacherImports { get; set; }
         public DbSet<TempStudentImport> TempStudentImports { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // تجاهل warning الـ pending model changes
             optionsBuilder.ConfigureWarnings(warnings => 
                 warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
         }
@@ -199,9 +199,21 @@ namespace QuranPreservationSystem.Infrastructure.Data
                 .HasForeignKey(u => u.TeacherId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            // إضافة البيانات الأولية (Seed Data)
+            // تكوين RolePermission
+            modelBuilder.Entity<RolePermission>()
+                .HasOne(rp => rp.Permission)
+                .WithMany(p => p.RolePermissions)
+                .HasForeignKey(rp => rp.PermissionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<RolePermission>()
+                .HasIndex(rp => new { rp.RoleId, rp.PermissionId })
+                .IsUnique();
+
+
             CenterSeedData.SeedCenters(modelBuilder);
             IdentitySeedData.SeedRolesAndUsers(modelBuilder);
+            PermissionSeedData.SeedPermissions(modelBuilder);
         }
     }
 }

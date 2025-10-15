@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.Interfaces;
 using QuranPreservationSystem.Application.DTOs;
+using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Helpers;
 using ClosedXML.Excel;
 
@@ -11,6 +12,7 @@ namespace QuranPreservationSystem.Controllers
     /// الطلاب - إدارة الطلاب
     /// </summary>
     [Authorize]
+    [PermissionAuthorize("Students", "View")]
     public class StudentsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -25,6 +27,7 @@ namespace QuranPreservationSystem.Controllers
         }
 
         // GET: Students
+        [PermissionAuthorize("Students", "View")]
         public async Task<IActionResult> Index(string searchTerm, int? centerId)
         {
             var students = await _unitOfWork.Students.GetActiveStudentsAsync();
@@ -75,6 +78,7 @@ namespace QuranPreservationSystem.Controllers
         }
 
         // GET: Students/ExportToExcel
+        [PermissionAuthorize("Students", "View")]
         public async Task<IActionResult> ExportToExcel(string searchTerm, int? centerId)
         {
             var students = await _unitOfWork.Students.GetActiveStudentsAsync();

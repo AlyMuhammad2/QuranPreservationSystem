@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.Interfaces;
 using QuranPreservationSystem.Application.DTOs;
+using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Domain.Entities;
 using QuranPreservationSystem.Helpers;
 using ClosedXML.Excel;
@@ -12,6 +13,7 @@ namespace QuranPreservationSystem.Controllers
     /// الاختبارات - إدارة اختبارات التجويد
     /// </summary>
     [Authorize]
+    [PermissionAuthorize("Exams", "View")]
     public class ExamsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

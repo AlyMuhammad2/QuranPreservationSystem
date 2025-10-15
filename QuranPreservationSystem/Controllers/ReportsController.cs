@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.Interfaces;
+using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Helpers;
 using ClosedXML.Excel;
 
@@ -10,6 +11,7 @@ namespace QuranPreservationSystem.Controllers
     /// التقارير والإحصائيات
     /// </summary>
     [Authorize]
+    [PermissionAuthorize("Reports", "View")]
     public class ReportsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

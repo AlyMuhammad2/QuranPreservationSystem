@@ -1,0 +1,268 @@
+@model IEnumerable<QuranPreservationSystem.Application.DTOs.UserDto>
+@{
+    ViewData["Title"] = "إدارة المستخدمين";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-users-cog"></i>
+        <h2>إدارة المستخدمين</h2>
+    </div>
+    <div class="page-actions">
+        <a href="@Url.Action("Create", "Users")" class="btn btn-primary">
+            <i class="fas fa-plus"></i> إضافة مستخدم جديد
+        </a>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-container">
+    <div class="stat-card stat-primary">
+        <div class="stat-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@ViewBag.TotalUsers</h3>
+            <p>إجمالي المستخدمين</p>
+        </div>
+    </div>
+
+    <div class="stat-card stat-success">
+        <div class="stat-icon">
+            <i class="fas fa-user-check"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@ViewBag.ActiveUsers</h3>
+            <p>المستخدمين النشطين</p>
+        </div>
+    </div>
+
+    <div class="stat-card stat-warning">
+        <div class="stat-icon">
+            <i class="fas fa-user-times"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@ViewBag.InactiveUsers</h3>
+            <p>المستخدمين غير النشطين</p>
+        </div>
+    </div>
+
+    <div class="stat-card stat-info">
+        <div class="stat-icon">
+            <i class="fas fa-user-shield"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@ViewBag.AdminUsers</h3>
+            <p>المديرين</p>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Filter Section -->
+<div class="card" style="margin-bottom: 20px;">
+    <div class="card-body" style="padding: 20px;">
+        <form method="get" asp-action="Index" class="search-filter-form">
+            <div class="filter-grid">
+                <div class="search-box">
+                    <label for="searchTerm" class="filter-label">
+                        <i class="fas fa-search"></i> البحث بالاسم أو البريد
+                    </label>
+                    <input type="text" 
+                           id="searchTerm" 
+                           name="searchTerm" 
+                           class="form-control" 
+                           placeholder="ابحث باسم المستخدم، البريد، أو الاسم الكامل..."
+                           value="@ViewBag.SearchTerm" />
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-filter"></i> تطبيق
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-outline">
+                        <i class="fas fa-redo"></i> إعادة تعيين
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Users Table -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-list"></i> قائمة المستخدمين
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">#</th>
+                            <th>الاسم الكامل</th>
+                            <th>اسم المستخدم</th>
+                            <th>البريد الإلكتروني</th>
+                            <th>رقم الهاتف</th>
+                            <th>الدور</th>
+                            <th>الحالة</th>
+                            <th>تاريخ الإنشاء</th>
+                            <th style="width: 120px">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int counter = 1; }
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@counter</td>
+                                <td>
+                                    <strong>@user.FullName</strong>
+                                </td>
+                                <td>@user.UserName</td>
+                                <td>@user.Email</td>
+                                <td>@(user.PhoneNumber ?? "-")</td>
+                                <td>
+                                    <span class="badge @(user.Role == "Admin" ? "badge-danger" : "badge-info")">
+                                        @user.RoleDisplayName
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (user.IsActive)
+                                    {
+                                        <span class="badge badge-success">نشط</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">غير نشط</span>
+                                    }
+                                </td>
+                                <td>@(user.CreatedDate?.ToString("dd/MM/yyyy") ?? "-")</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="@Url.Action("Details", "Users", new { id = user.UserId })" 
+                                           class="btn-icon btn-info" 
+                                           title="التفاصيل">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="@Url.Action("Edit", "Users", new { id = user.UserId })" 
+                                           class="btn-icon btn-warning" 
+                                           title="تعديل">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        @if (user.UserName != "admin")
+                                        {
+                                            <a href="@Url.Action("Delete", "Users", new { id = user.UserId })" 
+                                               class="btn-icon btn-danger" 
+                                               title="حذف">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                            counter++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-users"></i>
+                <h3>لا توجد بيانات</h3>
+                <p>لم يتم العثور على أي مستخدمين</p>
+                <a href="@Url.Action("Create", "Users")" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> إضافة مستخدم جديد
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <style>
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            align-items: end;
+        }
+        
+        .search-box, .filter-box {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-label i {
+            color: var(--primary-color);
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-filter-form .form-control {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-filter-form .form-control:focus {
+            border-color: var(--primary-light);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+        }
+        
+        @@media (max-width: 992px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-actions {
+                width: 100%;
+            }
+            
+            .filter-actions .btn {
+                flex: 1;
+            }
+        }
+    </style>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showToast('@TempData["SuccessMessage"]', 'success');
+        });
+    </script>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showToast('@TempData["ErrorMessage"]', 'error');
+        });
+    </script>
+}
+
