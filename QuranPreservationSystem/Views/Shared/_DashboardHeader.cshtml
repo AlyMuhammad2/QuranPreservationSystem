@@ -27,13 +27,7 @@
 
         <!-- User Info & Actions -->
         <div class="header-actions">
-            <!-- Notifications -->
-            <div class="header-item notifications">
-                <button class="icon-btn" id="notificationsBtn">
-                    <i class="fas fa-bell"></i>
-                    <span class="badge">3</span>
-                </button>
-            </div>
+           
 
             <!-- User Menu -->
             <div class="header-item user-menu">
@@ -48,12 +42,10 @@
                 
                 <!-- Dropdown Menu -->
                 <div class="dropdown-menu" id="userDropdown">
-                    <a href="#" class="dropdown-item">
+                    <a asp-controller="Profile" asp-action="Index" class="dropdown-item">
                         <i class="fas fa-user"></i> الملف الشخصي
                     </a>
-                    <a href="#" class="dropdown-item">
-                        <i class="fas fa-cog"></i> الإعدادات
-                    </a>
+
                     <div class="dropdown-divider"></div>
                     <form asp-action="Logout" asp-controller="Account" method="post" class="dropdown-form">
                         @Html.AntiForgeryToken()

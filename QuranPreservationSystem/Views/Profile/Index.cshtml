@@ -1,0 +1,506 @@
+@model QuranPreservationSystem.Application.DTOs.ProfileDto
+@{
+    ViewData["Title"] = "الملف الشخصي";
+    Layout = "_DashboardLayout";
+}
+
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-user-circle"></i>
+        <h2>الملف الشخصي</h2>
+    </div>
+    <div class="page-actions">
+        <a href="@Url.Action("Edit")" class="btn btn-primary">
+            <i class="fas fa-edit"></i> تعديل البيانات
+        </a>
+        <a href="@Url.Action("ChangePassword")" class="btn btn-warning">
+            <i class="fas fa-key"></i> تغيير كلمة المرور
+        </a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i>
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card profile-card">
+            <div class="card-body text-center">
+                <div class="profile-avatar-wrapper">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <span class="avatar-badge">
+                        <i class="fas fa-check-circle"></i>
+                    </span>
+                </div>
+                <h3 class="profile-name">@Model.FullName</h3>
+                <p class="profile-username">@@@Model.UserName</p>
+                <p class="profile-role">
+                    <span class="badge-role">
+                        <i class="fas fa-shield-alt"></i>
+                        @Model.Role
+                    </span>
+                </p>
+                <div class="profile-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-calendar-plus"></i>
+                        <div>
+                            <span class="meta-label">عضو منذ</span>
+                            <strong class="meta-value">@Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-info-circle"></i>
+                <span>معلومات الحساب</span>
+            </div>
+            <div class="card-body">
+                <div class="profile-details">
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <div class="detail-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span>اسم المستخدم</span>
+                        </div>
+                        <div class="detail-value">
+                            <strong>@Model.UserName</strong>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <div class="detail-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <span>البريد الإلكتروني</span>
+                        </div>
+                        <div class="detail-value">
+                            <strong>@Model.Email</strong>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <div class="detail-icon">
+                                <i class="fas fa-id-card"></i>
+                            </div>
+                            <span>الاسم الكامل</span>
+                        </div>
+                        <div class="detail-value">
+                            <strong>@Model.FullName</strong>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <div class="detail-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <span>رقم الهاتف</span>
+                        </div>
+                        <div class="detail-value">
+                            <strong>@(Model.PhoneNumber ?? "غير محدد")</strong>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <div class="detail-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <span>الدور</span>
+                        </div>
+                        <div class="detail-value">
+                            <span class="badge-role">
+                                <i class="fas fa-shield-alt"></i>
+                                @Model.Role
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <div class="detail-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <span>تاريخ الإنشاء</span>
+                        </div>
+                        <div class="detail-value">
+                            <div class="timestamp">
+                                <span>@Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</span>
+                                <small>@Model.CreatedAt.ToLocalTime().ToString("hh:mm tt")</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 20px;">
+            <div class="card-header">
+                <i class="fas fa-cog"></i>
+                <span>إجراءات سريعة</span>
+            </div>
+            <div class="card-body">
+                <div class="quick-actions">
+                    <a href="@Url.Action("Edit")" class="quick-action-item">
+                        <div class="action-icon edit">
+                            <i class="fas fa-user-edit"></i>
+                        </div>
+                        <div class="action-content">
+                            <h5>تعديل البيانات الشخصية</h5>
+                            <p>قم بتحديث معلومات ملفك الشخصي</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                    </a>
+
+                    <a href="@Url.Action("ChangePassword")" class="quick-action-item">
+                        <div class="action-icon password">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <div class="action-content">
+                            <h5>تغيير كلمة المرور</h5>
+                            <p>قم بتحديث كلمة مرور حسابك</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <style>
+        .profile-card {
+            border: none;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .profile-avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 30px auto 20px;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+            position: relative;
+        }
+
+        .profile-avatar i {
+            font-size: 80px;
+            color: white;
+        }
+
+        .avatar-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            background: #4caf50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .avatar-badge i {
+            font-size: 18px;
+            color: white;
+        }
+
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+
+        .profile-username {
+            color: #7f8c8d;
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+
+        .profile-role {
+            margin-bottom: 20px;
+        }
+
+        .badge-role {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .profile-meta {
+            border-top: 1px solid #e8eef3;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: center;
+            color: #7f8c8d;
+        }
+
+        .meta-item i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .meta-item div {
+            text-align: right;
+        }
+
+        .meta-label {
+            display: block;
+            font-size: 0.85rem;
+        }
+
+        .meta-value {
+            display: block;
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+        }
+
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #f0f3f5;
+            transition: all 0.3s ease;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-row:hover {
+            background: #f8fafb;
+        }
+
+        .detail-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #7f8c8d;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .detail-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .detail-icon i {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+
+        .detail-value {
+            color: var(--primary-dark);
+            font-size: 1rem;
+        }
+
+        .detail-value strong {
+            font-weight: 600;
+        }
+
+        .timestamp {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+        }
+
+        .timestamp span {
+            font-weight: 600;
+        }
+
+        .timestamp small {
+            color: #95a5a6;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .quick-action-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: #f8fafb;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .quick-action-item:hover {
+            background: white;
+            border-color: var(--primary-color);
+            transform: translateX(-5px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .action-icon.edit {
+            background: linear-gradient(135deg, #66bb6a, #43a047);
+        }
+
+        .action-icon.password {
+            background: linear-gradient(135deg, #ffc107, #ffa726);
+        }
+
+        .action-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .action-content {
+            flex: 1;
+        }
+
+        .action-content h5 {
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .action-content p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .action-arrow {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .quick-action-item:hover .action-arrow {
+            opacity: 1;
+            transform: translateX(-5px);
+        }
+
+        @@media (max-width: 992px) {
+            .page-header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .page-actions {
+                width: 100%;
+                display: flex;
+                gap: 8px;
+            }
+
+            .page-actions .btn {
+                flex: 1;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .profile-avatar {
+                width: 120px;
+                height: 120px;
+            }
+
+            .profile-avatar i {
+                font-size: 60px;
+            }
+
+            .profile-name {
+                font-size: 1.4rem;
+            }
+
+            .detail-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .quick-action-item {
+                padding: 16px;
+            }
+
+            .action-icon {
+                width: 50px;
+                height: 50px;
+            }
+
+            .action-icon i {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+}

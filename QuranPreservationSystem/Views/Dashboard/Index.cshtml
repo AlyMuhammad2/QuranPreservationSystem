@@ -1,170 +1,669 @@
 @{
     ViewData["Title"] = "لوحة التحكم";
     Layout = "_DashboardLayout";
+    var stats = ViewBag.Stats;
+    var userName = ViewBag.UserName;
+    var userRole = ViewBag.UserRole;
+    var ongoingCourses = ViewBag.OngoingCourses as IEnumerable<QuranPreservationSystem.Domain.Entities.Course>;
+    var recentStudents = ViewBag.RecentStudents as IEnumerable<QuranPreservationSystem.Domain.Entities.Student>;
+    var recentHafizes = ViewBag.RecentHafizes as IEnumerable<QuranPreservationSystem.Domain.Entities.HafizRegistry>;
+    var recentLogs = ViewBag.RecentLogs as List<dynamic>;
 }
 
-<!-- Page Header -->
-<div class="page-header">
-    <div class="page-title">
-        <i class="fas fa-tachometer-alt"></i>
-        <h2>لوحة التحكم</h2>
-    </div>
-    <div class="page-actions">
-        <button class="btn btn-outline" id="refreshBtn">
-            <i class="fas fa-sync-alt"></i> تحديث
-        </button>
+<!-- Hero Welcome Section -->
+<div class="hero-welcome">
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1>السلام عليكم، <span class="hero-name">@userName</span></h1>
+            <p>مرحباً بك في نظام إدارة لجنة التلاوة - فرع الكورة</p>
+            <div class="hero-meta">
+                <span class="meta-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    @userRole
+                </span>
+                <span class="meta-date">
+                    <i class="fas fa-calendar-day"></i>
+                    @DateTime.Now.ToString("dddd، dd MMMM yyyy", new System.Globalization.CultureInfo("ar-SA"))
+                </span>
+            </div>
+        </div>
+        <div class="hero-illustration">
+            <i class="fas fa-quran"></i>
+        </div>
     </div>
 </div>
 
-<!-- Welcome Card -->
-<div class="welcome-card">
-    <div class="welcome-icon">
-        <i class="fas fa-hand-holding-heart"></i>
-    </div>
-    <div class="welcome-text">
-        <h2>مرحباً @ViewBag.UserName 👋</h2>
-        <p>أهلاً بك في منصة لجنة التلاوة - فرع الكورة</p>
-    </div>
-</div>
-
-<!-- Stats Cards -->
-<div class="stats-container">
+<!-- Main Statistics -->
+<div class="stats-grid">
     <div class="stat-card stat-primary">
-        <div class="stat-icon">
-            <i class="fas fa-mosque"></i>
+        <div class="stat-header">
+            <div class="stat-icon">
+                <i class="fas fa-mosque"></i>
+            </div>
+            <div class="stat-badge">
+                <i class="fas fa-check-circle"></i>
+            </div>
         </div>
-        <div class="stat-info">
-            <h3>@ViewBag.Stats.TotalCenters</h3>
-            <p>المراكز القرآنية</p>
-        </div>
-        <div class="stat-badge">
-            <i class="fas fa-arrow-up"></i>
+        <div class="stat-body">
+            <h3 class="stat-number">@stats.TotalCenters</h3>
+            <p class="stat-label">المراكز القرآنية</p>
+            <div class="stat-footer">
+                <a href="@Url.Action("Index", "Centers")" class="stat-link">
+                    عرض الكل
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
         </div>
     </div>
 
     <div class="stat-card stat-success">
-        <div class="stat-icon">
-            <i class="fas fa-chalkboard-teacher"></i>
+        <div class="stat-header">
+            <div class="stat-icon">
+                <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <div class="stat-badge">
+                <span class="badge-number">@stats.ActiveTeachers</span>
+            </div>
         </div>
-        <div class="stat-info">
-            <h3>@ViewBag.Stats.TotalTeachers</h3>
-            <p>المدرسين</p>
-        </div>
-        <div class="stat-badge">
-            <i class="fas fa-check-circle"></i>
+        <div class="stat-body">
+            <h3 class="stat-number">@stats.TotalTeachers</h3>
+            <p class="stat-label">المدرسين</p>
+            <div class="stat-footer">
+                <span class="stat-note">@stats.ActiveTeachers نشط</span>
+                <a href="@Url.Action("Index", "Teachers")" class="stat-link">
+                    عرض الكل
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
         </div>
     </div>
 
     <div class="stat-card stat-info">
-        <div class="stat-icon">
-            <i class="fas fa-user-graduate"></i>
+        <div class="stat-header">
+            <div class="stat-icon">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="stat-badge trending-up">
+                <i class="fas fa-arrow-up"></i>
+                <span>@stats.StudentsThisMonth</span>
+            </div>
         </div>
-        <div class="stat-info">
-            <h3>@ViewBag.Stats.TotalStudents</h3>
-            <p>الطلاب</p>
-        </div>
-        <div class="stat-badge">
-            <i class="fas fa-users"></i>
+        <div class="stat-body">
+            <h3 class="stat-number">@stats.TotalStudents</h3>
+            <p class="stat-label">الطلاب</p>
+            <div class="stat-footer">
+                <span class="stat-note">@stats.StudentsThisMonth جديد هذا الشهر</span>
+                <a href="@Url.Action("Index", "Students")" class="stat-link">
+                    عرض الكل
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
         </div>
     </div>
 
     <div class="stat-card stat-warning">
-        <div class="stat-icon">
-            <i class="fas fa-book"></i>
+        <div class="stat-header">
+            <div class="stat-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <div class="stat-badge">
+                <span class="badge-number">@stats.ActiveCourses</span>
+            </div>
         </div>
-        <div class="stat-info">
-            <h3>@ViewBag.Stats.TotalCourses</h3>
-            <p>الدورات</p>
+        <div class="stat-body">
+            <h3 class="stat-number">@stats.TotalCourses</h3>
+            <p class="stat-label">الدورات</p>
+            <div class="stat-footer">
+                <span class="stat-note">@stats.ActiveCourses دورة نشطة</span>
+                <a href="@Url.Action("Index", "Courses")" class="stat-link">
+                    عرض الكل
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
         </div>
-        <div class="stat-badge">
-            <i class="fas fa-graduation-cap"></i>
+    </div>
+
+    <div class="stat-card stat-purple">
+        <div class="stat-header">
+            <div class="stat-icon">
+                <i class="fas fa-book-quran"></i>
+            </div>
+            <div class="stat-badge">
+                <i class="fas fa-crown"></i>
+            </div>
+        </div>
+        <div class="stat-body">
+            <h3 class="stat-number">@stats.TotalHafizes</h3>
+            <p class="stat-label">ديوان الحفاظ</p>
+            <div class="stat-footer">
+                <a href="@Url.Action("Index", "HafizRegistry")" class="stat-link">
+                    عرض الكل
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card stat-danger">
+        <div class="stat-header">
+            <div class="stat-icon">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <div class="stat-badge">
+                <span class="badge-number">@stats.ActiveExams</span>
+            </div>
+        </div>
+        <div class="stat-body">
+            <h3 class="stat-number">@stats.TotalExams</h3>
+            <p class="stat-label">الاختبارات</p>
+            <div class="stat-footer">
+                <span class="stat-note">@stats.ActiveExams نشط</span>
+                <a href="@Url.Action("Index", "Exams")" class="stat-link">
+                    عرض الكل
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card stat-teal">
+        <div class="stat-header">
+            <div class="stat-icon">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <div class="stat-badge">
+                <i class="fas fa-check-double"></i>
+            </div>
+        </div>
+        <div class="stat-body">
+            <h3 class="stat-number">@stats.TotalEnrollments</h3>
+            <p class="stat-label">التسجيلات</p>
+            <div class="stat-footer">
+                <a href="@Url.Action("Index", "Enrollments")" class="stat-link">
+                    عرض الكل
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card stat-gradient">
+        <div class="stat-header">
+            <div class="stat-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-badge trending-up">
+                <i class="fas fa-trending-up"></i>
+            </div>
+        </div>
+        <div class="stat-body">
+            <h3 class="stat-number">@((stats.TotalStudents > 0 ? (stats.TotalEnrollments * 100.0 / stats.TotalStudents) : 0).ToString("F1"))%</h3>
+            <p class="stat-label">نسبة الالتحاق</p>
+            <div class="stat-footer">
+                <span class="stat-note">معدل التسجيل في الدورات</span>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Quick Actions -->
-<div class="quick-actions">
-    <h3><i class="fas fa-bolt"></i> إجراءات سريعة</h3>
+<div class="quick-actions-section">
+    <div class="section-header">
+        <h3>
+            <i class="fas fa-bolt"></i>
+            إجراءات سريعة
+        </h3>
+    </div>
     <div class="actions-grid">
-        <a href="@Url.Action("Create", "Students")" class="action-card">
-            <i class="fas fa-user-plus"></i>
-            <span>إضافة طالب جديد</span>
+        <a href="@Url.Action("Create", "Students")" class="action-card action-students">
+            <div class="action-icon">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <div class="action-content">
+                <h5>إضافة طالب</h5>
+                <p>تسجيل طالب جديد</p>
+            </div>
         </a>
         
-        <a href="@Url.Action("Create", "Teachers")" class="action-card">
-            <i class="fas fa-chalkboard-teacher"></i>
-            <span>إضافة مدرس جديد</span>
+        <a href="@Url.Action("Create", "Teachers")" class="action-card action-teachers">
+            <div class="action-icon">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <div class="action-content">
+                <h5>إضافة مدرس</h5>
+                <p>تسجيل مدرس جديد</p>
+            </div>
         </a>
         
-        <a href="@Url.Action("Create", "Courses")" class="action-card">
-            <i class="fas fa-book-open"></i>
-            <span>إنشاء دورة جديدة</span>
+        <a href="@Url.Action("Create", "Courses")" class="action-card action-courses">
+            <div class="action-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <div class="action-content">
+                <h5>إنشاء دورة</h5>
+                <p>دورة تعليمية جديدة</p>
+            </div>
         </a>
         
-        <a href="@Url.Action("Create", "Enrollments")" class="action-card">
-            <i class="fas fa-user-check"></i>
-            <span>تسجيل طالب في دورة</span>
+        <a href="@Url.Action("Create", "Enrollments")" class="action-card action-enrollments">
+            <div class="action-icon">
+                <i class="fas fa-clipboard-check"></i>
+            </div>
+            <div class="action-content">
+                <h5>تسجيل طالب</h5>
+                <p>في دورة جديدة</p>
+            </div>
         </a>
         
-        <a href="@Url.Action("Index", "Reports")" class="action-card">
-            <i class="fas fa-chart-bar"></i>
-            <span>عرض التقارير</span>
+        <a href="@Url.Action("Create", "HafizRegistry")" class="action-card action-hafiz">
+            <div class="action-icon">
+                <i class="fas fa-award"></i>
+            </div>
+            <div class="action-content">
+                <h5>تسجيل حافظ</h5>
+                <p>إضافة لديوان الحفاظ</p>
+            </div>
         </a>
         
-        <a href="@Url.Action("Export", "Reports")" class="action-card">
-            <i class="fas fa-file-excel"></i>
-            <span>تصدير البيانات</span>
+        <a href="@Url.Action("Index", "Reports")" class="action-card action-reports">
+            <div class="action-icon">
+                <i class="fas fa-chart-pie"></i>
+            </div>
+            <div class="action-content">
+                <h5>التقارير</h5>
+                <p>عرض التقارير والإحصائيات</p>
+            </div>
         </a>
     </div>
 </div>
 
-<!-- Recent Activities -->
-<div class="card">
-    <div class="card-header">
-        <i class="fas fa-clock"></i>
-        <span>النشاطات الأخيرة</span>
+<!-- Content Sections -->
+<div class="row">
+    <!-- Ongoing Courses -->
+    <div class="col-lg-6">
+        <div class="card dashboard-card">
+            <div class="card-header dashboard-card-header">
+                <div class="header-title">
+                    <i class="fas fa-chalkboard"></i>
+                    <span>الدورات الجارية</span>
+                </div>
+                <a href="@Url.Action("Index", "Courses")" class="header-link">
+                    عرض الكل
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                @if (ongoingCourses != null && ongoingCourses.Any())
+                {
+                    <div class="courses-list">
+                        @foreach (var course in ongoingCourses)
+                        {
+                            <div class="course-item">
+                                <div class="course-icon">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <div class="course-info">
+                                    <h6>@course.CourseName</h6>
+                                    <div class="course-meta">
+                                        <span>
+                                            <i class="fas fa-calendar"></i>
+                                            @course.StartDate.ToString("dd/MM/yyyy")
+                                        </span>
+                                        @if (course.MaxStudents.HasValue)
+                                        {
+                                            <span>
+                                                <i class="fas fa-users"></i>
+                                                @course.MaxStudents طالب
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="course-status">
+                                    <span class="status-badge active">
+                                        <i class="fas fa-circle"></i>
+                                        نشطة
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state-small">
+                        <i class="fas fa-inbox"></i>
+                        <p>لا توجد دورات جارية حالياً</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="col-lg-6">
+        <div class="card dashboard-card">
+            <div class="card-header dashboard-card-header">
+                <div class="header-title">
+                    <i class="fas fa-history"></i>
+                    <span>آخر النشاطات</span>
+                </div>
+                <a href="@Url.Action("Index", "Logs")" class="header-link">
+                    عرض الكل
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                @if (recentLogs != null && recentLogs.Any())
+                {
+                    <div class="activities-timeline">
+                        @foreach (var log in recentLogs)
+                        {
+                            <div class="timeline-item">
+                                <div class="timeline-dot @GetTimelineDotClass(log.Action)">
+                                    <i class="@GetActivityIcon(log.Type, log.Action)"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="timeline-header">
+                                        <h6>@GetActivityTitle(log.Type, log.Action)</h6>
+                                        <span class="timeline-time">@GetRelativeTime(log.Timestamp)</span>
+                                    </div>
+                                    <p class="timeline-text">
+                                        <strong>@log.Name</strong>
+                                        <span class="timeline-user">بواسطة @log.UserName</span>
+                                    </p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state-small">
+                        <i class="fas fa-inbox"></i>
+                        <p>لا توجد نشاطات حديثة</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Additions -->
+<div class="row">
+    <!-- Recent Students -->
+    <div class="col-lg-6">
+        <div class="card dashboard-card">
+            <div class="card-header dashboard-card-header">
+                <div class="header-title">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>آخر الطلاب المسجلين</span>
+                </div>
+                <a href="@Url.Action("Index", "Students")" class="header-link">
+                    عرض الكل
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                @if (recentStudents != null && recentStudents.Any())
+                {
+                    <div class="entity-list">
+                        @foreach (var student in recentStudents)
+                        {
+                            <div class="entity-item">
+                                <div class="entity-avatar">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <div class="entity-info">
+                                    <h6>@student.FullName</h6>
+                                    <p>
+                                        <i class="fas fa-phone"></i>
+                                        @student.PhoneNumber
+                                    </p>
+                                </div>
+                                <div class="entity-date">
+                                    <i class="fas fa-calendar-plus"></i>
+                                    @student.EnrollmentDate.ToString("dd/MM")
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state-small">
+                        <i class="fas fa-inbox"></i>
+                        <p>لا توجد طلاب مسجلين حديثاً</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Hafizes -->
+    <div class="col-lg-6">
+        <div class="card dashboard-card">
+            <div class="card-header dashboard-card-header hafiz-header">
+                <div class="header-title">
+                    <i class="fas fa-book-quran"></i>
+                    <span>آخر المسجلين في ديوان الحفاظ</span>
+                </div>
+                <a href="@Url.Action("Index", "HafizRegistry")" class="header-link">
+                    عرض الكل
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                @if (recentHafizes != null && recentHafizes.Any())
+                {
+                    <div class="entity-list hafiz-list">
+                        @foreach (var hafiz in recentHafizes)
+                        {
+                            <div class="entity-item hafiz-item">
+                                <div class="entity-avatar hafiz-avatar">
+                                    <i class="fas fa-award"></i>
+                                </div>
+                                <div class="entity-info">
+                                    <h6>@hafiz.StudentName</h6>
+                                    <p>
+                                        <i class="fas fa-book-quran"></i>
+                                        @(hafiz.MemorizationLevel?.ToString() ?? "حفظ كامل") - @hafiz.CompletionYear
+                                    </p>
+                                </div>
+                                <div class="entity-date">
+                                    <i class="fas fa-calendar-check"></i>
+                                    @hafiz.CreatedDate.ToString("dd/MM")
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state-small">
+                        <i class="fas fa-inbox"></i>
+                        <p>لا توجد تسجيلات حديثة</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Monthly Progress -->
+<div class="card dashboard-card">
+    <div class="card-header dashboard-card-header">
+        <div class="header-title">
+            <i class="fas fa-chart-bar"></i>
+            <span>إنجازات هذا الشهر</span>
+        </div>
+        <span class="header-badge">
+            @DateTime.Now.ToString("MMMM yyyy", new System.Globalization.CultureInfo("ar-SA"))
+        </span>
     </div>
     <div class="card-body">
-        <div class="activity-list">
-            <div class="activity-item">
-                <div class="activity-icon activity-success">
-                    <i class="fas fa-user-plus"></i>
+        <div class="progress-grid">
+            <div class="progress-item">
+                <div class="progress-header">
+                    <div class="progress-icon students-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="progress-info">
+                        <h4>@stats.StudentsThisMonth</h4>
+                        <p>طالب جديد</p>
+                    </div>
                 </div>
-                <div class="activity-content">
-                    <p class="activity-title">تم إضافة طالب جديد</p>
-                    <p class="activity-time">منذ 5 دقائق</p>
-                </div>
-            </div>
-            
-            <div class="activity-item">
-                <div class="activity-icon activity-info">
-                    <i class="fas fa-book"></i>
-                </div>
-                <div class="activity-content">
-                    <p class="activity-title">تم إنشاء دورة جديدة</p>
-                    <p class="activity-time">منذ ساعة</p>
+                <div class="progress-bar-wrapper">
+                    <div class="progress-bar">
+                        <div class="progress-fill students-progress" style="width: @(stats.StudentsThisMonth > 0 ? Math.Min(100, stats.StudentsThisMonth * 10) : 0)%"></div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="activity-item">
-                <div class="activity-icon activity-warning">
-                    <i class="fas fa-edit"></i>
+
+            <div class="progress-item">
+                <div class="progress-header">
+                    <div class="progress-icon courses-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="progress-info">
+                        <h4>@stats.CoursesThisMonth</h4>
+                        <p>دورة جديدة</p>
+                    </div>
                 </div>
-                <div class="activity-content">
-                    <p class="activity-title">تم تحديث بيانات مركز</p>
-                    <p class="activity-time">منذ 3 ساعات</p>
+                <div class="progress-bar-wrapper">
+                    <div class="progress-bar">
+                        <div class="progress-fill courses-progress" style="width: @(stats.CoursesThisMonth > 0 ? Math.Min(100, stats.CoursesThisMonth * 20) : 0)%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-item">
+                <div class="progress-header">
+                    <div class="progress-icon active-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="progress-info">
+                        <h4>@stats.ActiveCourses</h4>
+                        <p>دورة نشطة</p>
+                    </div>
+                </div>
+                <div class="progress-bar-wrapper">
+                    <div class="progress-bar">
+                        <div class="progress-fill active-progress" style="width: @(stats.TotalCourses > 0 ? (stats.ActiveCourses * 100.0 / stats.TotalCourses) : 0)%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-item">
+                <div class="progress-header">
+                    <div class="progress-icon hafiz-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="progress-info">
+                        <h4>@stats.TotalHafizes</h4>
+                        <p>حافظ للقرآن</p>
+                    </div>
+                </div>
+                <div class="progress-bar-wrapper">
+                    <div class="progress-bar">
+                        <div class="progress-fill hafiz-progress" style="width: @(stats.TotalStudents > 0 ? (stats.TotalHafizes * 100.0 / stats.TotalStudents) : 0)%"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <link rel="stylesheet" href="~/css/dashboard-home.css" />
+}
+
 @section Scripts {
     <script>
-        // Refresh button
-        document.getElementById('refreshBtn')?.addEventListener('click', function() {
+        // Auto refresh every 5 minutes
+        setTimeout(() => {
             location.reload();
+        }, 300000);
+
+        // Animate numbers on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const numbers = document.querySelectorAll('.stat-number');
+            numbers.forEach(num => {
+                const finalValue = parseInt(num.textContent) || 0;
+                let currentValue = 0;
+                const increment = Math.ceil(finalValue / 50);
+                const timer = setInterval(() => {
+                    currentValue += increment;
+                    if (currentValue >= finalValue) {
+                        num.textContent = finalValue;
+                        clearInterval(timer);
+                    } else {
+                        num.textContent = currentValue;
+                    }
+                }, 30);
+            });
         });
     </script>
 }
 
+@functions {
+    string GetTimelineDotClass(string action)
+    {
+        return action.ToLower() switch
+        {
+            "create" => "dot-success",
+            "update" => "dot-warning",
+            "delete" => "dot-danger",
+            _ => "dot-info"
+        };
+    }
+
+    string GetActivityIcon(string type, string action)
+    {
+        var baseIcon = type.ToLower() switch
+        {
+            "student" => "fa-user-graduate",
+            "teacher" => "fa-chalkboard-teacher",
+            "course" => "fa-book-open",
+            "center" => "fa-mosque",
+            _ => "fa-circle"
+        };
+        return "fas " + baseIcon;
+    }
+
+    string GetActivityTitle(string type, string action)
+    {
+        var typeAr = type.ToLower() switch
+        {
+            "student" => "طالب",
+            "teacher" => "مدرس",
+            "course" => "دورة",
+            "center" => "مركز",
+            _ => "عنصر"
+        };
+
+        var actionAr = action.ToLower() switch
+        {
+            "create" => "إضافة",
+            "update" => "تعديل",
+            "delete" => "حذف",
+            _ => "عملية"
+        };
+
+        return $"{actionAr} {typeAr}";
+    }
+
+    string GetRelativeTime(DateTime timestamp)
+    {
+        var diff = DateTime.Now - timestamp.ToLocalTime();
+        if (diff.TotalMinutes < 1)
+            return "الآن";
+        if (diff.TotalMinutes < 60)
+            return $"منذ {(int)diff.TotalMinutes} دقيقة";
+        if (diff.TotalHours < 24)
+            return $"منذ {(int)diff.TotalHours} ساعة";
+        if (diff.TotalDays < 7)
+            return $"منذ {(int)diff.TotalDays} يوم";
+        return timestamp.ToLocalTime().ToString("dd/MM/yyyy");
+    }
+}

@@ -1,0 +1,255 @@
+@model QuranPreservationSystem.Application.DTOs.SurahDetailDto
+@{
+    ViewData["Title"] = $"سورة {Model.Name}";
+    Layout = "_DashboardLayout";
+    var previousSurah = ViewBag.PreviousSurah as int?;
+    var nextSurah = ViewBag.NextSurah as int?;
+    
+    // Pagination settings
+    int ayahsPerPage = 10;
+    int currentPage = int.TryParse(Context.Request.Query["page"], out int p) ? p : 1;
+    int totalPages = (int)Math.Ceiling(Model.Ayahs.Count / (double)ayahsPerPage);
+    currentPage = Math.Max(1, Math.Min(currentPage, totalPages));
+    
+    var ayahsToDisplay = Model.Ayahs
+        .Skip((currentPage - 1) * ayahsPerPage)
+        .Take(ayahsPerPage)
+        .ToList();
+}
+
+<!-- Compact Surah Header -->
+<div class="surah-compact-header">
+    <div class="compact-header-content">
+        <div class="compact-icon">
+            <i class="fas fa-book-quran"></i>
+        </div>
+        <div class="compact-info">
+            <h2>@Model.Name</h2>
+            <div class="compact-meta">
+                <span class="meta-item">
+                    <i class="fas @(Model.RevelationType.ToLower() == "meccan" ? "fa-kaaba" : "fa-mosque")"></i>
+                    @(Model.RevelationType.ToLower() == "meccan" ? "مكية" : "مدنية")
+                </span>
+                <span class="meta-divider">•</span>
+                <span class="meta-item">
+                    <i class="fas fa-list-ol"></i>
+                    @Model.NumberOfAyahs آية
+                </span>
+                <span class="meta-divider">•</span>
+                <span class="meta-item">
+                    @Model.EnglishName
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="compact-actions">
+        <a href="@Url.Action("Index")" class="compact-btn index-btn">
+            <i class="fas fa-th-large"></i>
+            <span>الفهرس</span>
+        </a>
+        <button class="compact-btn control-btn" id="fontSizeBtn" title="حجم الخط">
+            <i class="fas fa-text-height"></i>
+        </button>
+        <div class="font-size-menu" id="fontSizeMenu" style="display: none;">
+            <button onclick="changeFontSize('small')">صغير</button>
+            <button onclick="changeFontSize('medium')">متوسط</button>
+            <button onclick="changeFontSize('large')">كبير</button>
+            <button onclick="changeFontSize('xlarge')">كبير جداً</button>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation -->
+<div class="surah-navigation">
+    @if (previousSurah.HasValue)
+    {
+        <a href="@Url.Action("Surah", new { id = previousSurah.Value })" class="nav-btn prev-btn">
+            <i class="fas fa-chevron-right"></i>
+            <span>السورة السابقة</span>
+        </a>
+    }
+    else
+    {
+        <span class="nav-btn disabled">
+            <i class="fas fa-chevron-right"></i>
+            <span>السورة السابقة</span>
+        </span>
+    }
+
+    @if (nextSurah.HasValue)
+    {
+        <a href="@Url.Action("Surah", new { id = nextSurah.Value })" class="nav-btn next-btn">
+            <span>السورة التالية</span>
+            <i class="fas fa-chevron-left"></i>
+        </a>
+    }
+    else
+    {
+        <span class="nav-btn disabled">
+            <span>السورة التالية</span>
+            <i class="fas fa-chevron-left"></i>
+        </span>
+    }
+</div>
+
+<!-- Surah Content -->
+<div class="surah-content">
+    <div class="quran-page">
+        <div class="page-number-top">
+            <span>صفحة @ToArabicNumbers(currentPage) من @ToArabicNumbers(totalPages)</span>
+        </div>
+
+        <div class="ayahs-container" id="ayahsContainer">
+            @foreach (var ayah in ayahsToDisplay)
+            {
+                <div class="ayah-wrapper" id="ayah-@ayah.NumberInSurah">
+                    <span class="ayah-text">@ayah.Text</span>
+                    <span class="ayah-number">
+                        <span class="number-inner">@ToArabicNumbers(ayah.NumberInSurah)</span>
+                    </span>
+                </div>
+            }
+        </div>
+
+        <!-- Page Navigation -->
+        <div class="page-navigation">
+            @if (currentPage > 1)
+            {
+                <a href="@Url.Action("Surah", new { id = Model.Number, page = currentPage - 1 })" class="page-btn prev-page">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>الصفحة السابقة</span>
+                </a>
+            }
+            else
+            {
+                <span class="page-btn disabled">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>الصفحة السابقة</span>
+                </span>
+            }
+
+            <div class="page-indicator">
+                <span class="current-page">@ToArabicNumbers(currentPage)</span>
+                <span class="page-separator">/</span>
+                <span class="total-pages">@ToArabicNumbers(totalPages)</span>
+            </div>
+
+            @if (currentPage < totalPages)
+            {
+                <a href="@Url.Action("Surah", new { id = Model.Number, page = currentPage + 1 })" class="page-btn next-page">
+                    <span>الصفحة التالية</span>
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            }
+            else
+            {
+                <span class="page-btn disabled">
+                    <span>الصفحة التالية</span>
+                    <i class="fas fa-chevron-left"></i>
+                </span>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Surah Footer Info -->
+<div class="surah-footer">
+    <div class="footer-info">
+        <div class="info-item">
+            <i class="fas fa-book"></i>
+            <span>سورة @Model.Name</span>
+        </div>
+        <div class="info-item">
+            <i class="fas fa-list-ol"></i>
+            <span>@Model.NumberOfAyahs آية</span>
+        </div>
+        <div class="info-item">
+            <i class="fas @(Model.RevelationType.ToLower() == "meccan" ? "fa-kaaba" : "fa-mosque")"></i>
+            <span>@(Model.RevelationType.ToLower() == "meccan" ? "مكية" : "مدنية")</span>
+        </div>
+        <div class="info-item">
+            <i class="fas fa-file-alt"></i>
+            <span>عرض @ayahsToDisplay.Count من @Model.NumberOfAyahs آية</span>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/quran.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+}
+
+@section Scripts {
+    <script>
+        // Font Size Control
+        const fontSizeBtn = document.getElementById('fontSizeBtn');
+        const fontSizeMenu = document.getElementById('fontSizeMenu');
+        const ayahsContainer = document.getElementById('ayahsContainer');
+
+        if (fontSizeBtn) {
+            fontSizeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                fontSizeMenu.style.display = fontSizeMenu.style.display === 'none' ? 'block' : 'none';
+            });
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (fontSizeMenu && !fontSizeBtn.contains(e.target) && !fontSizeMenu.contains(e.target)) {
+                fontSizeMenu.style.display = 'none';
+            }
+        });
+
+        function changeFontSize(size) {
+            ayahsContainer.className = 'ayahs-container font-' + size;
+            localStorage.setItem('quranFontSize', size);
+            if (fontSizeMenu) {
+                fontSizeMenu.style.display = 'none';
+            }
+        }
+
+        // Load saved font size
+        const savedFontSize = localStorage.getItem('quranFontSize') || 'medium';
+        ayahsContainer.className = 'ayahs-container font-' + savedFontSize;
+
+        // حفظ موضع القراءة عند الخروج
+        window.addEventListener('beforeunload', function() {
+            localStorage.setItem('lastReadSurah', JSON.stringify({
+                surahNumber: @Model.Number,
+                surahName: '@Model.Name',
+                page: @currentPage,
+                timestamp: new Date().toISOString()
+            }));
+        });
+
+        // Scroll to top on page load
+        window.scrollTo(0, 0);
+    </script>
+}
+
+@functions {
+    /// <summary>
+    /// تحويل الأرقام الإنجليزية إلى أرقام عربية هندية
+    /// </summary>
+    string ToArabicNumbers(int number)
+    {
+        var arabicNumbers = new[] { '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩' };
+        var numberString = number.ToString();
+        var result = string.Empty;
+        
+        foreach (var digit in numberString)
+        {
+            if (char.IsDigit(digit))
+            {
+                result += arabicNumbers[digit - '0'];
+            }
+            else
+            {
+                result += digit;
+            }
+        }
+        
+        return result;
+    }
+}

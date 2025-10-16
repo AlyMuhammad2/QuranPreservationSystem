@@ -1,0 +1,162 @@
+@model List<QuranPreservationSystem.Application.DTOs.SurahDto>
+@{
+    ViewData["Title"] = "فهرس القرآن الكريم";
+    Layout = "_DashboardLayout";
+    var currentFilter = ViewBag.CurrentFilter as string;
+    var totalSurahs = ViewBag.TotalSurahs ?? 0;
+    var meccanCount = ViewBag.MeccanCount ?? 0;
+    var medinanCount = ViewBag.MedinanCount ?? 0;
+}
+
+<!-- Page Header -->
+<div class="quran-header">
+    <div class="header-content">
+        <div class="header-icon">
+            <i class="fas fa-quran"></i>
+        </div>
+        <div class="header-text">
+            <h1>القرآن الكريم</h1>
+            <p>فهرس السور - @totalSurahs سورة</p>
+        </div>
+    </div>
+    <div class="header-actions">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="ابحث في أسماء السور..." />
+        </div>
+    </div>
+</div>
+
+<!-- Filter Tabs -->
+<div class="filter-tabs">
+    <a href="@Url.Action("Index")" class="filter-tab @(string.IsNullOrEmpty(currentFilter) ? "active" : "")">
+        <i class="fas fa-book-open"></i>
+        <span>جميع السور</span>
+        <span class="tab-count">@totalSurahs</span>
+    </a>
+    <a href="@Url.Action("Index", new { filter = "meccan" })" class="filter-tab @(currentFilter == "meccan" ? "active" : "")">
+        <i class="fas fa-kaaba"></i>
+        <span>المكية</span>
+        <span class="tab-count">@meccanCount</span>
+    </a>
+    <a href="@Url.Action("Index", new { filter = "medinan" })" class="filter-tab @(currentFilter == "medinan" ? "active" : "")">
+        <i class="fas fa-mosque"></i>
+        <span>المدنية</span>
+        <span class="tab-count">@medinanCount</span>
+    </a>
+</div>
+
+<!-- Surahs Grid -->
+<div class="surahs-grid" id="surahsGrid">
+    @foreach (var surah in Model)
+    {
+        <a href="@Url.Action("Surah", new { id = surah.Number })" class="surah-card" data-name="@surah.Name @surah.EnglishName">
+            <div class="surah-number">
+                <span>@ToArabicNumbers(surah.Number)</span>
+            </div>
+            <div class="surah-info">
+                <h3 class="surah-name-arabic">@surah.Name</h3>
+                <p class="surah-name-english">@surah.EnglishName</p>
+                <div class="surah-meta">
+                    <span class="surah-type @(surah.RevelationType.ToLower() == "meccan" ? "meccan" : "medinan")">
+                        <i class="fas @(surah.RevelationType.ToLower() == "meccan" ? "fa-kaaba" : "fa-mosque")"></i>
+                        @(surah.RevelationType.ToLower() == "meccan" ? "مكية" : "مدنية")
+                    </span>
+                    <span class="surah-ayahs">
+                        <i class="fas fa-list-ol"></i>
+                        @ToArabicNumbers(surah.NumberOfAyahs) آية
+                    </span>
+                </div>
+            </div>
+            <div class="surah-arrow">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+        </a>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <div class="empty-state-quran">
+        <div class="empty-icon">
+            <i class="fas fa-quran"></i>
+        </div>
+        <h3>لا توجد سور</h3>
+        <p>لم يتم العثور على سور تطابق البحث</p>
+        <a href="@Url.Action("Index")" class="btn btn-primary">
+            <i class="fas fa-redo"></i>
+            عرض جميع السور
+        </a>
+    </div>
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/quran.css" />
+}
+
+@section Scripts {
+    <script>
+        // بحث مباشر في أسماء السور
+        const searchInput = document.getElementById('searchInput');
+        const surahCards = document.querySelectorAll('.surah-card');
+
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+
+            surahCards.forEach(card => {
+                const surahName = card.getAttribute('data-name').toLowerCase();
+                if (surahName.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // حفظ آخر قراءة في localStorage
+        surahCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const surahNumber = this.querySelector('.surah-number span').textContent;
+                const surahName = this.querySelector('.surah-name-arabic').textContent;
+                localStorage.setItem('lastReadSurah', JSON.stringify({
+                    number: surahNumber,
+                    name: surahName,
+                    timestamp: new Date().toISOString()
+                }));
+            });
+        });
+
+        // عرض آخر قراءة
+        const lastRead = localStorage.getItem('lastReadSurah');
+        if (lastRead) {
+            const data = JSON.parse(lastRead);
+            console.log('آخر قراءة: سورة ' + data.name);
+        }
+    </script>
+}
+
+@functions {
+    /// <summary>
+    /// تحويل الأرقام الإنجليزية إلى أرقام عربية هندية
+    /// </summary>
+    string ToArabicNumbers(int number)
+    {
+        var arabicNumbers = new[] { '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩' };
+        var numberString = number.ToString();
+        var result = string.Empty;
+        
+        foreach (var digit in numberString)
+        {
+            if (char.IsDigit(digit))
+            {
+                result += arabicNumbers[digit - '0'];
+            }
+            else
+            {
+                result += digit;
+            }
+        }
+        
+        return result;
+    }
+}

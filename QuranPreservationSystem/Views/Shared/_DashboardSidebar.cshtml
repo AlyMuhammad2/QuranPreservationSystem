@@ -61,6 +61,14 @@
             }
         </div>
 
+        <!-- القرآن الكريم -->
+        <div class="sidebar-section">
+            <a href="@Url.Action("Index", "Quran")" class="sidebar-item @(controller == "Quran" ? "active" : "")">
+                <i class="fas fa-quran"></i>
+                <span>القرآن الكريم</span>
+            </a>
+        </div>
+
         <!-- إدارة الدورات -->
         <div class="sidebar-section">
             <div class="sidebar-title">
@@ -148,11 +156,10 @@
                     <i class="fas fa-shield-alt"></i>
                     <span>صلاحيات الأدوار</span>
                 </a>
-                
-                <a href="@Url.Action("Index", "Settings")" class="sidebar-item @(controller == "Settings" ? "active" : "")">
-                    <i class="fas fa-sliders-h"></i>
-                    <span>الإعدادات</span>
-                </a>
+            <a href="@Url.Action("Index", "Profile")" class="sidebar-item @(controller == "Profile" ? "active" : "")">
+                <i class="fas fa-user-circle"></i>
+                <span>الملف الشخصي</span>
+            </a>
                 
                 <a href="@Url.Action("Index", "Logs")" class="sidebar-item @(controller == "Logs" ? "active" : "")">
                     <i class="fas fa-history"></i>
@@ -160,6 +167,8 @@
                 </a>
             </div>
         }
+
+       
     </div>
 </aside>
 

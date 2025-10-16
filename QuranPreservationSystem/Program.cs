@@ -21,6 +21,9 @@ namespace QuranPreservationSystem
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            // إضافة Memory Cache
+            builder.Services.AddMemoryCache();
+
             // إضافة DbContext للتطبيق
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("QuranPreservationSystem")));
@@ -79,6 +82,9 @@ namespace QuranPreservationSystem
 
             // تسجيل خدمة سجلات التدقيق
             builder.Services.AddScoped<IAuditLogService, QuranPreservationSystem.Infrastructure.Services.AuditLogService>();
+
+            // تسجيل خدمة القرآن الكريم
+            builder.Services.AddHttpClient<IQuranService, QuranPreservationSystem.Infrastructure.Services.QuranService>();
 
             var app = builder.Build();
 

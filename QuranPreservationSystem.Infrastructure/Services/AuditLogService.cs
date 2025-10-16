@@ -56,6 +56,30 @@ public class AuditLogService : IAuditLogService
             .AsNoTracking()
             .ToListAsync();
     }
+
+    public async Task<IEnumerable<StudentLog>> GetAllStudentLogsAsync(DateTime? startDate, DateTime? endDate, int pageNumber = 1, int pageSize = 50)
+    {
+        var query = _context.StudentLogs.AsQueryable();
+
+        if (startDate.HasValue)
+        {
+            var start = startDate.Value.Date;
+            query = query.Where(l => l.Timestamp >= start);
+        }
+
+        if (endDate.HasValue)
+        {
+            var end = endDate.Value.Date.AddDays(1);
+            query = query.Where(l => l.Timestamp < end);
+        }
+
+        return await query
+            .OrderByDescending(l => l.Timestamp)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .AsNoTracking()
+            .ToListAsync();
+    }
     #endregion
 
     #region Teacher Logs
@@ -93,6 +117,30 @@ public class AuditLogService : IAuditLogService
     {
         return await _context.TeacherLogs
             .Where(l => l.UserId == userId)
+            .OrderByDescending(l => l.Timestamp)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<TeacherLog>> GetAllTeacherLogsAsync(DateTime? startDate, DateTime? endDate, int pageNumber = 1, int pageSize = 50)
+    {
+        var query = _context.TeacherLogs.AsQueryable();
+
+        if (startDate.HasValue)
+        {
+            var start = startDate.Value.Date;
+            query = query.Where(l => l.Timestamp >= start);
+        }
+
+        if (endDate.HasValue)
+        {
+            var end = endDate.Value.Date.AddDays(1);
+            query = query.Where(l => l.Timestamp < end);
+        }
+
+        return await query
             .OrderByDescending(l => l.Timestamp)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
@@ -142,6 +190,30 @@ public class AuditLogService : IAuditLogService
             .AsNoTracking()
             .ToListAsync();
     }
+
+    public async Task<IEnumerable<CenterLog>> GetAllCenterLogsAsync(DateTime? startDate, DateTime? endDate, int pageNumber = 1, int pageSize = 50)
+    {
+        var query = _context.CenterLogs.AsQueryable();
+
+        if (startDate.HasValue)
+        {
+            var start = startDate.Value.Date;
+            query = query.Where(l => l.Timestamp >= start);
+        }
+
+        if (endDate.HasValue)
+        {
+            var end = endDate.Value.Date.AddDays(1);
+            query = query.Where(l => l.Timestamp < end);
+        }
+
+        return await query
+            .OrderByDescending(l => l.Timestamp)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .AsNoTracking()
+            .ToListAsync();
+    }
     #endregion
 
     #region Course Logs
@@ -179,6 +251,30 @@ public class AuditLogService : IAuditLogService
     {
         return await _context.CourseLogs
             .Where(l => l.UserId == userId)
+            .OrderByDescending(l => l.Timestamp)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<CourseLog>> GetAllCourseLogsAsync(DateTime? startDate, DateTime? endDate, int pageNumber = 1, int pageSize = 50)
+    {
+        var query = _context.CourseLogs.AsQueryable();
+
+        if (startDate.HasValue)
+        {
+            var start = startDate.Value.Date;
+            query = query.Where(l => l.Timestamp >= start);
+        }
+
+        if (endDate.HasValue)
+        {
+            var end = endDate.Value.Date.AddDays(1);
+            query = query.Where(l => l.Timestamp < end);
+        }
+
+        return await query
             .OrderByDescending(l => l.Timestamp)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
@@ -228,6 +324,30 @@ public class AuditLogService : IAuditLogService
             .AsNoTracking()
             .ToListAsync();
     }
+
+    public async Task<IEnumerable<ExamLog>> GetAllExamLogsAsync(DateTime? startDate, DateTime? endDate, int pageNumber = 1, int pageSize = 50)
+    {
+        var query = _context.ExamLogs.AsQueryable();
+
+        if (startDate.HasValue)
+        {
+            var start = startDate.Value.Date;
+            query = query.Where(l => l.Timestamp >= start);
+        }
+
+        if (endDate.HasValue)
+        {
+            var end = endDate.Value.Date.AddDays(1);
+            query = query.Where(l => l.Timestamp < end);
+        }
+
+        return await query
+            .OrderByDescending(l => l.Timestamp)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .AsNoTracking()
+            .ToListAsync();
+    }
     #endregion
 
     #region Enrollment Logs
@@ -265,6 +385,30 @@ public class AuditLogService : IAuditLogService
     {
         return await _context.EnrollmentLogs
             .Where(l => l.UserId == userId)
+            .OrderByDescending(l => l.Timestamp)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<EnrollmentLog>> GetAllEnrollmentLogsAsync(DateTime? startDate, DateTime? endDate, int pageNumber = 1, int pageSize = 50)
+    {
+        var query = _context.EnrollmentLogs.AsQueryable();
+
+        if (startDate.HasValue)
+        {
+            var start = startDate.Value.Date;
+            query = query.Where(l => l.Timestamp >= start);
+        }
+
+        if (endDate.HasValue)
+        {
+            var end = endDate.Value.Date.AddDays(1);
+            query = query.Where(l => l.Timestamp < end);
+        }
+
+        return await query
             .OrderByDescending(l => l.Timestamp)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
@@ -314,6 +458,30 @@ public class AuditLogService : IAuditLogService
             .AsNoTracking()
             .ToListAsync();
     }
+
+    public async Task<IEnumerable<HafizRegistryLog>> GetAllHafizRegistryLogsAsync(DateTime? startDate, DateTime? endDate, int pageNumber = 1, int pageSize = 50)
+    {
+        var query = _context.HafizRegistryLogs.AsQueryable();
+
+        if (startDate.HasValue)
+        {
+            var start = startDate.Value.Date;
+            query = query.Where(l => l.Timestamp >= start);
+        }
+
+        if (endDate.HasValue)
+        {
+            var end = endDate.Value.Date.AddDays(1);
+            query = query.Where(l => l.Timestamp < end);
+        }
+
+        return await query
+            .OrderByDescending(l => l.Timestamp)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .AsNoTracking()
+            .ToListAsync();
+    }
     #endregion
 
     #region User Logs
@@ -356,6 +524,30 @@ public class AuditLogService : IAuditLogService
     {
         return await _context.UserLogs
             .Where(l => l.UserId == userId)
+            .OrderByDescending(l => l.Timestamp)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<UserLog>> GetAllUserLogsAsync(DateTime? startDate, DateTime? endDate, int pageNumber = 1, int pageSize = 50)
+    {
+        var query = _context.UserLogs.AsQueryable();
+
+        if (startDate.HasValue)
+        {
+            var start = startDate.Value.Date;
+            query = query.Where(l => l.Timestamp >= start);
+        }
+
+        if (endDate.HasValue)
+        {
+            var end = endDate.Value.Date.AddDays(1);
+            query = query.Where(l => l.Timestamp < end);
+        }
+
+        return await query
             .OrderByDescending(l => l.Timestamp)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)

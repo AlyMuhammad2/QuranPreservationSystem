@@ -1,0 +1,290 @@
+@model QuranPreservationSystem.Application.DTOs.ProfileDto
+@{
+    ViewData["Title"] = "تعديل الملف الشخصي";
+    Layout = "_DashboardLayout";
+}
+
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-user-edit"></i>
+        <h2>تعديل الملف الشخصي</h2>
+    </div>
+    <div class="page-actions">
+        <a href="@Url.Action("Index")" class="btn btn-outline">
+            <i class="fas fa-arrow-right"></i> العودة
+        </a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-edit"></i>
+                <span>تعديل المعلومات الشخصية</span>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post" class="profile-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>يرجى تصحيح الأخطاء التالية:</strong>
+                            <ul class="error-list">
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <li>@error.ErrorMessage</li>
+                                }
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <div class="form-sections">
+                        <!-- معلومات الحساب -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <i class="fas fa-user-lock"></i>
+                                </div>
+                                <div class="section-info">
+                                    <h5>معلومات تسجيل الدخول</h5>
+                                    <p>اسم المستخدم والبريد الإلكتروني</p>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="UserName" class="form-label">
+                                            <i class="fas fa-user"></i>
+                                            اسم المستخدم
+                                        </label>
+                                        <input asp-for="UserName" class="form-control" placeholder="أدخل اسم المستخدم" />
+                                        <span asp-validation-for="UserName" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="Email" class="form-label">
+                                            <i class="fas fa-envelope"></i>
+                                            البريد الإلكتروني
+                                        </label>
+                                        <input asp-for="Email" type="email" class="form-control" placeholder="أدخل البريد الإلكتروني" />
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- المعلومات الشخصية -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <i class="fas fa-id-card"></i>
+                                </div>
+                                <div class="section-info">
+                                    <h5>المعلومات الشخصية</h5>
+                                    <p>الاسم الكامل ومعلومات الاتصال</p>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="FullName" class="form-label">
+                                            <i class="fas fa-id-card-alt"></i>
+                                            الاسم الكامل
+                                        </label>
+                                        <input asp-for="FullName" class="form-control" placeholder="أدخل الاسم الكامل" />
+                                        <span asp-validation-for="FullName" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="PhoneNumber" class="form-label">
+                                            <i class="fas fa-phone"></i>
+                                            رقم الهاتف
+                                            <span class="optional-badge">اختياري</span>
+                                        </label>
+                                        <input asp-for="PhoneNumber" class="form-control" placeholder="أدخل رقم الهاتف" />
+                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save"></i>
+                            حفظ التغييرات
+                        </button>
+                        <a href="@Url.Action("Index")" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-times"></i>
+                            إلغاء
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <style>
+        .profile-form {
+            padding: 10px 0;
+        }
+
+        .form-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .form-section {
+            padding: 24px;
+            background: #f8fafb;
+            border-radius: 12px;
+            border: 2px solid #e8eef3;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e1e8ed;
+        }
+
+        .section-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #66bb6a, #43a047);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .section-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .section-info h5 {
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .section-info p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-label i {
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        .optional-badge {
+            display: inline-block;
+            background: #fff9c4;
+            color: #f57f17;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: auto;
+        }
+
+        .form-control {
+            padding: 12px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .error-list {
+            margin: 12px 0 0;
+            padding-right: 20px;
+        }
+
+        .error-list li {
+            margin-bottom: 4px;
+        }
+
+        .form-footer {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            padding-top: 30px;
+            border-top: 2px solid #e8eef3;
+            margin-top: 30px;
+        }
+
+        .form-footer .btn {
+            min-width: 180px;
+            padding: 14px 32px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        @@media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .section-info {
+                text-align: center;
+            }
+
+            .form-footer {
+                flex-direction: column;
+            }
+
+            .form-footer .btn {
+                width: 100%;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
