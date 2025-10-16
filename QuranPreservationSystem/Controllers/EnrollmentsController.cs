@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.Interfaces;
 using QuranPreservationSystem.Application.DTOs;
 using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Helpers;
+using QuranPreservationSystem.Infrastructure.Identity;
 using ClosedXML.Excel;
 
 namespace QuranPreservationSystem.Controllers
@@ -17,13 +19,19 @@ namespace QuranPreservationSystem.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<EnrollmentsController> _logger;
+        private readonly IAuditLogService _auditLogService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public EnrollmentsController(
             IUnitOfWork unitOfWork,
-            ILogger<EnrollmentsController> logger)
+            ILogger<EnrollmentsController> logger,
+            IAuditLogService auditLogService,
+            UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _auditLogService = auditLogService;
+            _userManager = userManager;
         }
 
         // GET: Enrollments
@@ -231,6 +239,8 @@ namespace QuranPreservationSystem.Controllers
                 await _unitOfWork.StudentCourses.AddAsync(enrollment);
                 await _unitOfWork.SaveChangesAsync();
                 
+                await _auditLogService.LogCreateAsync(User, _userManager, HttpContext, "enrollment", enrollment.StudentCourseId, enrollment, $"Student {enrollment.StudentId} - Course {enrollment.CourseId}");
+                
                 _logger.LogInformation("تم تسجيل طالب {StudentId} في دورة {CourseId}", 
                     createEnrollmentDto.StudentId, createEnrollmentDto.CourseId);
                 
@@ -292,6 +302,8 @@ namespace QuranPreservationSystem.Controllers
                     return NotFound();
                 }
 
+                var oldEnrollment = new Domain.Entities.StudentCourse { StudentCourseId = enrollment.StudentCourseId, StudentId = enrollment.StudentId, CourseId = enrollment.CourseId, Status = enrollment.Status };
+
                 enrollment.EnrollmentDate = updateEnrollmentDto.EnrollmentDate;
                 enrollment.ExamDate = updateEnrollmentDto.ExamDate;
                 enrollment.Status = updateEnrollmentDto.Status;
@@ -305,6 +317,8 @@ namespace QuranPreservationSystem.Controllers
 
                 await _unitOfWork.StudentCourses.UpdateAsync(enrollment);
                 await _unitOfWork.SaveChangesAsync();
+                
+                await _auditLogService.LogUpdateAsync(User, _userManager, HttpContext, "enrollment", enrollment.StudentCourseId, oldEnrollment, enrollment, $"Student {enrollment.StudentId} - Course {enrollment.CourseId}");
                 
                 _logger.LogInformation("تم تحديث تسجيل الطالب {StudentId} في دورة {CourseId}", 
                     enrollment.StudentId, enrollment.CourseId);
@@ -362,6 +376,8 @@ namespace QuranPreservationSystem.Controllers
             
             if (enrollment != null)
             {
+                await _auditLogService.LogDeleteAsync(User, _userManager, HttpContext, "enrollment", enrollment.StudentCourseId, enrollment, $"Student {enrollment.StudentId} - Course {enrollment.CourseId}");
+                
                 await _unitOfWork.StudentCourses.DeleteAsync(enrollment);
                 await _unitOfWork.SaveChangesAsync();
                 

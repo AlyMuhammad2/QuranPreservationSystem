@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.Interfaces;
 using QuranPreservationSystem.Application.DTOs;
 using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Helpers;
+using QuranPreservationSystem.Infrastructure.Identity;
 using ClosedXML.Excel;
 
 namespace QuranPreservationSystem.Controllers
@@ -17,13 +19,19 @@ namespace QuranPreservationSystem.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CoursesController> _logger;
+        private readonly IAuditLogService _auditLogService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public CoursesController(
             IUnitOfWork unitOfWork,
-            ILogger<CoursesController> logger)
+            ILogger<CoursesController> logger,
+            IAuditLogService auditLogService,
+            UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _auditLogService = auditLogService;
+            _userManager = userManager;
         }
 
         // GET: Courses
@@ -216,6 +224,8 @@ namespace QuranPreservationSystem.Controllers
                 await _unitOfWork.Courses.AddAsync(course);
                 await _unitOfWork.SaveChangesAsync();
                 
+                await _auditLogService.LogCreateAsync(User, _userManager, HttpContext, "course", course.CourseId, course, course.CourseName);
+                
                 _logger.LogInformation("تم إضافة دورة جديدة: {CourseName}", course.CourseName);
                 
                 return RedirectToAction(nameof(Index));
@@ -277,6 +287,8 @@ namespace QuranPreservationSystem.Controllers
                     return NotFound();
                 }
 
+                var oldCourse = new Domain.Entities.Course { CourseId = course.CourseId, CourseName = course.CourseName, CourseType = course.CourseType, IsActive = course.IsActive };
+
                 course.CourseName = updateCourseDto.CourseName;
                 course.Description = updateCourseDto.Description;
                 course.CourseType = updateCourseDto.CourseType;
@@ -293,6 +305,8 @@ namespace QuranPreservationSystem.Controllers
 
                 await _unitOfWork.Courses.UpdateAsync(course);
                 await _unitOfWork.SaveChangesAsync();
+                
+                await _auditLogService.LogUpdateAsync(User, _userManager, HttpContext, "course", course.CourseId, oldCourse, course, course.CourseName);
                 
                 _logger.LogInformation("تم تحديث دورة: {CourseName}", course.CourseName);
                 
@@ -349,6 +363,8 @@ namespace QuranPreservationSystem.Controllers
             
             if (course != null)
             {
+                await _auditLogService.LogDeleteAsync(User, _userManager, HttpContext, "course", course.CourseId, course, course.CourseName);
+                
                 await _unitOfWork.Courses.DeleteAsync(course);
                 await _unitOfWork.SaveChangesAsync();
                 

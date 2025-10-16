@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.DTOs;
 using QuranPreservationSystem.Application.Interfaces;
 using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Domain.Entities;
 using QuranPreservationSystem.Helpers;
+using QuranPreservationSystem.Infrastructure.Identity;
 using ClosedXML.Excel;
 
 namespace QuranPreservationSystem.Controllers
@@ -17,13 +19,19 @@ namespace QuranPreservationSystem.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<TeachersController> _logger;
+        private readonly IAuditLogService _auditLogService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public TeachersController(
             IUnitOfWork unitOfWork,
-            ILogger<TeachersController> logger)
+            ILogger<TeachersController> logger,
+            IAuditLogService auditLogService,
+            UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _auditLogService = auditLogService;
+            _userManager = userManager;
         }
 
         // GET: Teachers
@@ -217,6 +225,9 @@ namespace QuranPreservationSystem.Controllers
                 await _unitOfWork.Teachers.AddAsync(teacher);
                 await _unitOfWork.SaveChangesAsync();
                 
+                // Audit Log
+                await _auditLogService.LogCreateAsync(User, _userManager, HttpContext, "teacher", teacher.TeacherId, teacher, teacher.FullName);
+                
                 _logger.LogInformation("تم إضافة مدرس جديد: {TeacherName}", teacher.FullName);
                 
                 return RedirectToAction(nameof(Index));
@@ -279,6 +290,24 @@ namespace QuranPreservationSystem.Controllers
                     return NotFound();
                 }
                 
+                // حفظ البيانات القديمة للـ Audit Log
+                var oldTeacher = new Teacher
+                {
+                    TeacherId = teacher.TeacherId,
+                    FirstName = teacher.FirstName,
+                    LastName = teacher.LastName,
+                    PhoneNumber = teacher.PhoneNumber,
+                    Email = teacher.Email,
+                    Address = teacher.Address,
+                    DateOfBirth = teacher.DateOfBirth,
+                    Gender = teacher.Gender,
+                    Qualification = teacher.Qualification,
+                    Specialization = teacher.Specialization,
+                    IsActive = teacher.IsActive,
+                    Notes = teacher.Notes,
+                    CenterId = teacher.CenterId
+                };
+                
                 // تحديث البيانات
                 teacher.FirstName = dto.FirstName;
                 teacher.LastName = dto.LastName;
@@ -295,6 +324,9 @@ namespace QuranPreservationSystem.Controllers
                 
                 await _unitOfWork.Teachers.UpdateAsync(teacher);
                 await _unitOfWork.SaveChangesAsync();
+                
+                // Audit Log
+                await _auditLogService.LogUpdateAsync(User, _userManager, HttpContext, "teacher", teacher.TeacherId, oldTeacher, teacher, teacher.FullName);
                 
                 _logger.LogInformation("تم تحديث بيانات مدرس: {TeacherName}", teacher.FullName);
                 
@@ -344,6 +376,9 @@ namespace QuranPreservationSystem.Controllers
             
             if (teacher != null)
             {
+                // Audit Log قبل الحذف
+                await _auditLogService.LogDeleteAsync(User, _userManager, HttpContext, "teacher", teacher.TeacherId, teacher, teacher.FullName);
+                
                 await _unitOfWork.Teachers.DeleteAsync(teacher);
                 await _unitOfWork.SaveChangesAsync();
                 

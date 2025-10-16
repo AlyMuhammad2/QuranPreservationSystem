@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.Interfaces;
 using QuranPreservationSystem.Application.DTOs;
 using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Helpers;
+using QuranPreservationSystem.Infrastructure.Identity;
 using ClosedXML.Excel;
 
 namespace QuranPreservationSystem.Controllers
@@ -17,13 +19,19 @@ namespace QuranPreservationSystem.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<StudentsController> _logger;
+        private readonly IAuditLogService _auditLogService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public StudentsController(
             IUnitOfWork unitOfWork,
-            ILogger<StudentsController> logger)
+            ILogger<StudentsController> _logger,
+            IAuditLogService auditLogService,
+            UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
-            _logger = logger;
+            this._logger = _logger;
+            _auditLogService = auditLogService;
+            _userManager = userManager;
         }
 
         // GET: Students
@@ -226,6 +234,17 @@ namespace QuranPreservationSystem.Controllers
                 await _unitOfWork.Students.AddAsync(student);
                 await _unitOfWork.SaveChangesAsync();
                 
+                // تسجيل العملية في Audit Log
+                await _auditLogService.LogCreateAsync(
+                    User,
+                    _userManager,
+                    HttpContext,
+                    "student",
+                    student.StudentId,
+                    student,
+                    student.FullName
+                );
+                
                 _logger.LogInformation("تم إضافة طالب جديد: {StudentName}", student.FullName);
                 
                 return RedirectToAction(nameof(Index));
@@ -283,6 +302,8 @@ namespace QuranPreservationSystem.Controllers
                     return NotFound();
                 }
 
+                var oldStudent = new Domain.Entities.Student { StudentId = student.StudentId, FirstName = student.FirstName, LastName = student.LastName, PhoneNumber = student.PhoneNumber, Gender = student.Gender, IsActive = student.IsActive };
+
                 student.FirstName = updateStudentDto.FirstName;
                 student.LastName = updateStudentDto.LastName;
                 student.PhoneNumber = updateStudentDto.PhoneNumber;
@@ -296,6 +317,8 @@ namespace QuranPreservationSystem.Controllers
 
                 await _unitOfWork.Students.UpdateAsync(student);
                 await _unitOfWork.SaveChangesAsync();
+                
+                await _auditLogService.LogUpdateAsync(User, _userManager, HttpContext, "student", student.StudentId, oldStudent, student, student.FullName);
                 
                 _logger.LogInformation("تم تحديث بيانات طالب: {StudentName}", student.FullName);
                 
@@ -349,6 +372,8 @@ namespace QuranPreservationSystem.Controllers
             
             if (student != null)
             {
+                await _auditLogService.LogDeleteAsync(User, _userManager, HttpContext, "student", student.StudentId, student, student.FullName);
+                
                 await _unitOfWork.Students.DeleteAsync(student);
                 await _unitOfWork.SaveChangesAsync();
                 

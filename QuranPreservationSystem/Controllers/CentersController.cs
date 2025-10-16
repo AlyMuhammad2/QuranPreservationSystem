@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.DTOs;
 using QuranPreservationSystem.Application.Interfaces;
 using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Domain.Entities;
+using QuranPreservationSystem.Helpers;
+using QuranPreservationSystem.Infrastructure.Identity;
 
 namespace QuranPreservationSystem.Controllers
 {
@@ -15,13 +18,19 @@ namespace QuranPreservationSystem.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CentersController> _logger;
+        private readonly IAuditLogService _auditLogService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public CentersController(
             IUnitOfWork unitOfWork,
-            ILogger<CentersController> logger)
+            ILogger<CentersController> logger,
+            IAuditLogService auditLogService,
+            UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _auditLogService = auditLogService;
+            _userManager = userManager;
         }
 
         // GET: Centers
@@ -105,6 +114,8 @@ namespace QuranPreservationSystem.Controllers
                 await _unitOfWork.Centers.AddAsync(center);
                 await _unitOfWork.SaveChangesAsync();
                 
+                await _auditLogService.LogCreateAsync(User, _userManager, HttpContext, "center", center.CenterId, center, center.Name);
+                
                 _logger.LogInformation("تم إضافة مركز جديد: {CenterName}", center.Name);
                 
                 return RedirectToAction(nameof(Index));
@@ -158,6 +169,8 @@ namespace QuranPreservationSystem.Controllers
                     return NotFound();
                 }
                 
+                var oldCenter = new Center { CenterId = center.CenterId, Name = center.Name, Address = center.Address, PhoneNumber = center.PhoneNumber, Description = center.Description, IsActive = center.IsActive };
+                
                 // تحديث البيانات
                 center.Name = dto.Name;
                 center.Address = dto.Address;
@@ -167,6 +180,8 @@ namespace QuranPreservationSystem.Controllers
                 
                 await _unitOfWork.Centers.UpdateAsync(center);
                 await _unitOfWork.SaveChangesAsync();
+                
+                await _auditLogService.LogUpdateAsync(User, _userManager, HttpContext, "center", center.CenterId, oldCenter, center, center.Name);
                 
                 _logger.LogInformation("تم تحديث مركز: {CenterName}", center.Name);
                 
@@ -212,6 +227,8 @@ namespace QuranPreservationSystem.Controllers
             
             if (center != null)
             {
+                await _auditLogService.LogDeleteAsync(User, _userManager, HttpContext, "center", center.CenterId, center, center.Name);
+                
                 await _unitOfWork.Centers.DeleteAsync(center);
                 await _unitOfWork.SaveChangesAsync();
                 

@@ -77,6 +77,9 @@ namespace QuranPreservationSystem
             builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
             builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
+            // تسجيل خدمة سجلات التدقيق
+            builder.Services.AddScoped<IAuditLogService, QuranPreservationSystem.Infrastructure.Services.AuditLogService>();
+
             var app = builder.Build();
 
             // تهيئة قاعدة البيانات والبيانات الأولية

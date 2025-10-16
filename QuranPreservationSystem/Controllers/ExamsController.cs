@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.Interfaces;
 using QuranPreservationSystem.Application.DTOs;
 using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Domain.Entities;
 using QuranPreservationSystem.Helpers;
+using QuranPreservationSystem.Infrastructure.Identity;
 using ClosedXML.Excel;
 
 namespace QuranPreservationSystem.Controllers
@@ -19,12 +21,21 @@ namespace QuranPreservationSystem.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<ExamsController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IAuditLogService _auditLogService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ExamsController(IUnitOfWork unitOfWork, ILogger<ExamsController> logger, IWebHostEnvironment webHostEnvironment)
+        public ExamsController(
+            IUnitOfWork unitOfWork, 
+            ILogger<ExamsController> logger, 
+            IWebHostEnvironment webHostEnvironment,
+            IAuditLogService auditLogService,
+            UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
+            _auditLogService = auditLogService;
+            _userManager = userManager;
         }
 
         // GET: Exams
@@ -243,6 +254,8 @@ namespace QuranPreservationSystem.Controllers
                 await _unitOfWork.Exams.AddAsync(exam);
                 await _unitOfWork.SaveChangesAsync();
                 
+                await _auditLogService.LogCreateAsync(User, _userManager, HttpContext, "exam", exam.ExamId, exam, exam.ExamName);
+                
                 _logger.LogInformation("تم إنشاء اختبار جديد: {ExamId} - {ExamName}", exam.ExamId, exam.ExamName);
                 return RedirectToAction(nameof(Index));
             }
@@ -304,6 +317,8 @@ namespace QuranPreservationSystem.Controllers
                     return NotFound();
                 }
 
+                var oldExam = new Exam { ExamId = exam.ExamId, ExamName = exam.ExamName, ExamType = exam.ExamType, Level = exam.Level, IsActive = exam.IsActive };
+
                 exam.ExamName = updateExamDto.ExamName;
                 exam.Description = updateExamDto.Description;
                 exam.ExamType = updateExamDto.ExamType;
@@ -348,6 +363,8 @@ namespace QuranPreservationSystem.Controllers
 
                 await _unitOfWork.Exams.UpdateAsync(exam);
                 await _unitOfWork.SaveChangesAsync();
+                
+                await _auditLogService.LogUpdateAsync(User, _userManager, HttpContext, "exam", exam.ExamId, oldExam, exam, exam.ExamName);
                 
                 _logger.LogInformation("تم تحديث اختبار: {ExamId} - {ExamName}", exam.ExamId, exam.ExamName);
                 return RedirectToAction(nameof(Index));
@@ -403,6 +420,8 @@ namespace QuranPreservationSystem.Controllers
             var exam = await _unitOfWork.Exams.GetByIdAsync(id);
             if (exam != null)
             {
+                await _auditLogService.LogDeleteAsync(User, _userManager, HttpContext, "exam", exam.ExamId, exam, exam.ExamName);
+                
                 // Delete PDF file if exists
                 if (!string.IsNullOrEmpty(exam.PdfFilePath))
                 {

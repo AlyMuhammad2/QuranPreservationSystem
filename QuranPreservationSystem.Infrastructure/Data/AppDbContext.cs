@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using QuranPreservationSystem.Domain.Entities;
+using QuranPreservationSystem.Domain.Entities.AuditLogs;
 using QuranPreservationSystem.Infrastructure.Data.SeedData;
 using QuranPreservationSystem.Infrastructure.Identity;
 
@@ -13,6 +14,7 @@ namespace QuranPreservationSystem.Infrastructure.Data
         {
         }
 
+        // Main Tables
         public DbSet<Center> Centers { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Student> Students { get; set; }
@@ -20,11 +22,25 @@ namespace QuranPreservationSystem.Infrastructure.Data
         public DbSet<StudentCourse> StudentCourses { get; set; }
         public DbSet<Exam> Exams { get; set; }
         public DbSet<HafizRegistry> HafizRegistry { get; set; }
+        
+        // Temp Import Tables
         public DbSet<TempCenterImport> TempCenterImports { get; set; }
         public DbSet<TempTeacherImport> TempTeacherImports { get; set; }
         public DbSet<TempStudentImport> TempStudentImports { get; set; }
+        
+        // Permissions Tables
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
+        
+        // Audit Log Tables
+        public DbSet<StudentLog> StudentLogs { get; set; }
+        public DbSet<TeacherLog> TeacherLogs { get; set; }
+        public DbSet<CenterLog> CenterLogs { get; set; }
+        public DbSet<CourseLog> CourseLogs { get; set; }
+        public DbSet<ExamLog> ExamLogs { get; set; }
+        public DbSet<EnrollmentLog> EnrollmentLogs { get; set; }
+        public DbSet<HafizRegistryLog> HafizRegistryLogs { get; set; }
+        public DbSet<UserLog> UserLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

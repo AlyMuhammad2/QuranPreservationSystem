@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuranPreservationSystem.Application.Interfaces;
 using QuranPreservationSystem.Authorization;
 using QuranPreservationSystem.Application.DTOs;
 using QuranPreservationSystem.Domain.Entities;
 using QuranPreservationSystem.Helpers;
+using QuranPreservationSystem.Infrastructure.Identity;
 using ClosedXML.Excel;
 
 namespace QuranPreservationSystem.Controllers
@@ -19,16 +21,22 @@ namespace QuranPreservationSystem.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<HafizRegistryController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IAuditLogService _auditLogService;
+        private readonly UserManager<ApplicationUser> _userManager;
         private const int PageSize = 10; // عدد السجلات في كل صفحة
 
         public HafizRegistryController(
             IUnitOfWork unitOfWork,
             ILogger<HafizRegistryController> logger,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            IAuditLogService auditLogService,
+            UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
+            _auditLogService = auditLogService;
+            _userManager = userManager;
         }
 
         // GET: HafizRegistry
@@ -164,6 +172,8 @@ namespace QuranPreservationSystem.Controllers
                 await _unitOfWork.HafizRegistry.AddAsync(hafiz);
                 await _unitOfWork.SaveChangesAsync();
 
+                await _auditLogService.LogCreateAsync(User, _userManager, HttpContext, "hafizregistry", hafiz.HafizId, hafiz, hafiz.StudentName);
+
                 _logger.LogInformation("تم إضافة حافظ جديد: {StudentName}", hafiz.StudentName);
                 return RedirectToAction(nameof(Index));
             }
@@ -272,6 +282,8 @@ namespace QuranPreservationSystem.Controllers
                 await _unitOfWork.HafizRegistry.UpdateAsync(hafiz);
                 await _unitOfWork.SaveChangesAsync();
 
+                await _auditLogService.LogUpdateAsync(User, _userManager, HttpContext, "hafizregistry", hafiz.HafizId, hafiz, hafiz, hafiz.StudentName);
+
                 _logger.LogInformation("تم تحديث بيانات الحافظ: {StudentName}", hafiz.StudentName);
                 return RedirectToAction(nameof(Index));
             }
@@ -311,6 +323,8 @@ namespace QuranPreservationSystem.Controllers
             var hafiz = await _unitOfWork.HafizRegistry.GetByIdAsync(id);
             if (hafiz != null)
             {
+                await _auditLogService.LogDeleteAsync(User, _userManager, HttpContext, "hafizregistry", hafiz.HafizId, hafiz, hafiz.StudentName);
+                
                 // Delete Files
                 if (!string.IsNullOrEmpty(hafiz.CertificatePath))
                 {

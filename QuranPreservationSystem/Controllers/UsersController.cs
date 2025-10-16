@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuranPreservationSystem.Application.DTOs;
 using QuranPreservationSystem.Application.Interfaces;
+using QuranPreservationSystem.Helpers;
 using QuranPreservationSystem.Infrastructure.Identity;
 
 namespace QuranPreservationSystem.Controllers;
@@ -15,17 +16,20 @@ public class UsersController : Controller
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UsersController> _logger;
+    private readonly IAuditLogService _auditLogService;
 
     public UsersController(
         UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,
         IUnitOfWork unitOfWork,
-        ILogger<UsersController> logger)
+        ILogger<UsersController> logger,
+        IAuditLogService auditLogService)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _auditLogService = auditLogService;
     }
 
     // GET: Users
@@ -153,6 +157,8 @@ public class UsersController : Controller
             // إضافة الدور للمستخدم
             await _userManager.AddToRoleAsync(user, model.Role);
 
+            await _auditLogService.LogCreateAsync(User, _userManager, HttpContext, "user", 0, user, user.FullName);
+
             _logger.LogInformation($"User {user.UserName} created successfully with role {model.Role}");
             TempData["SuccessMessage"] = "تم إنشاء المستخدم بنجاح";
             return RedirectToAction(nameof(Index));
@@ -209,6 +215,8 @@ public class UsersController : Controller
         var user = await _userManager.FindByIdAsync(model.UserId);
         if (user == null)
             return NotFound();
+
+        var oldUser = new ApplicationUser { Id = user.Id, FullName = user.FullName, UserName = user.UserName, Email = user.Email, IsActive = user.IsActive };
 
         // التحقق من عدم تكرار اسم المستخدم
         var existingUser = await _userManager.Users
@@ -273,6 +281,8 @@ public class UsersController : Controller
                     return View(model);
                 }
             }
+
+            await _auditLogService.LogUpdateAsync(User, _userManager, HttpContext, "user", 0, oldUser, user, user.FullName);
 
             _logger.LogInformation($"User {user.UserName} updated successfully");
             TempData["SuccessMessage"] = "تم تحديث المستخدم بنجاح";
@@ -341,6 +351,8 @@ public class UsersController : Controller
             return RedirectToAction(nameof(Index));
         }
 
+        await _auditLogService.LogDeleteAsync(User, _userManager, HttpContext, "user", 0, user, user.FullName);
+        
         var result = await _userManager.DeleteAsync(user);
 
         if (result.Succeeded)
