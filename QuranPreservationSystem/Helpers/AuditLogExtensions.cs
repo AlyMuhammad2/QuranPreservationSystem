@@ -5,6 +5,7 @@ using QuranPreservationSystem.Domain.Enums;
 using QuranPreservationSystem.Infrastructure.Identity;
 using System.Security.Claims;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace QuranPreservationSystem.Helpers;
 
@@ -34,7 +35,7 @@ public static class AuditLogExtensions
             UserId = currentUser?.Id,
             UserName = currentUser?.FullName,
             IpAddress = httpContext.Connection.RemoteIpAddress?.ToString(),
-            NewData = JsonSerializer.Serialize(newData, new JsonSerializerOptions { WriteIndented = false }),
+            NewData = JsonSerializer.Serialize(newData, GetJsonSerializerOptions()),
             EntityName = entityName
         };
 
@@ -63,8 +64,8 @@ public static class AuditLogExtensions
             UserId = currentUser?.Id,
             UserName = currentUser?.FullName,
             IpAddress = httpContext.Connection.RemoteIpAddress?.ToString(),
-            OldData = JsonSerializer.Serialize(oldData, new JsonSerializerOptions { WriteIndented = false }),
-            NewData = JsonSerializer.Serialize(newData, new JsonSerializerOptions { WriteIndented = false }),
+            OldData = JsonSerializer.Serialize(oldData, GetJsonSerializerOptions()),
+            NewData = JsonSerializer.Serialize(newData, GetJsonSerializerOptions()),
             EntityName = entityName
         };
 
@@ -92,7 +93,7 @@ public static class AuditLogExtensions
             UserId = currentUser?.Id,
             UserName = currentUser?.FullName,
             IpAddress = httpContext.Connection.RemoteIpAddress?.ToString(),
-            OldData = JsonSerializer.Serialize(oldData, new JsonSerializerOptions { WriteIndented = false }),
+            OldData = JsonSerializer.Serialize(oldData, GetJsonSerializerOptions()),
             EntityName = entityName
         };
 
@@ -148,6 +149,20 @@ public static class AuditLogExtensions
         };
 
         await ExecuteLogAsync(auditLogService, entityType, command);
+    }
+
+    /// <summary>
+    /// الحصول على إعدادات JSON Serializer مع معالجة المراجع الدائرية
+    /// </summary>
+    private static JsonSerializerOptions GetJsonSerializerOptions()
+    {
+        return new JsonSerializerOptions
+        {
+            WriteIndented = false,
+            ReferenceHandler = ReferenceHandler.IgnoreCycles,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            MaxDepth = 32
+        };
     }
 
     private static async Task ExecuteLogAsync(IAuditLogService auditLogService, string entityType, LogCommand command)
