@@ -1,0 +1,275 @@
+@model IEnumerable<QuranPreservationSystem.Application.DTOs.CenterLogDto>
+@{
+    ViewData["Title"] = "سجلات المراكز";
+    Layout = "_DashboardLayout";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-mosque"></i>
+        <h2>سجلات المراكز</h2>
+    </div>
+    <div class="page-actions">
+        <a href="@Url.Action("Index")" class="btn btn-outline">
+            <i class="fas fa-arrow-right"></i> العودة للسجلات
+        </a>
+    </div>
+</div>
+
+<!-- Date Filter Section -->
+<div class="card" style="margin-bottom: 20px;">
+    <div class="card-body" style="padding: 20px;">
+        <form method="get" asp-action="Centers" class="search-filter-form">
+            <div class="filter-grid">
+                <div class="filter-box">
+                    <label for="startDate" class="filter-label">
+                        <i class="fas fa-calendar-alt"></i> من تاريخ
+                    </label>
+                    <input type="date" 
+                           id="startDate" 
+                           name="startDate" 
+                           class="form-control" 
+                           value="@ViewBag.StartDate" />
+                </div>
+
+                <div class="filter-box">
+                    <label for="endDate" class="filter-label">
+                        <i class="fas fa-calendar-check"></i> إلى تاريخ
+                    </label>
+                    <input type="date" 
+                           id="endDate" 
+                           name="endDate" 
+                           class="form-control" 
+                           value="@ViewBag.EndDate" />
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-filter"></i> تطبيق
+                    </button>
+                    <a href="@Url.Action("Centers")" class="btn btn-outline">
+                        <i class="fas fa-redo"></i> إعادة تعيين
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Stats Summary -->
+<div class="stats-container" style="margin-bottom: 25px;">
+    <div class="stat-card stat-primary">
+        <div class="stat-icon">
+            <i class="fas fa-clipboard-list"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@Model.Count()</h3>
+            <p>إجمالي السجلات</p>
+        </div>
+    </div>
+    
+    <div class="stat-card stat-success">
+        <div class="stat-icon">
+            <i class="fas fa-plus-circle"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@Model.Count(l => l.ActionType == QuranPreservationSystem.Domain.Enums.ActionType.Create)</h3>
+            <p>عمليات الإضافة</p>
+        </div>
+    </div>
+    
+    <div class="stat-card stat-warning">
+        <div class="stat-icon">
+            <i class="fas fa-edit"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@Model.Count(l => l.ActionType == QuranPreservationSystem.Domain.Enums.ActionType.Update)</h3>
+            <p>عمليات التعديل</p>
+        </div>
+    </div>
+    
+    <div class="stat-card stat-danger">
+        <div class="stat-icon">
+            <i class="fas fa-trash"></i>
+        </div>
+        <div class="stat-info">
+            <h3>@Model.Count(l => l.ActionType == QuranPreservationSystem.Domain.Enums.ActionType.Delete)</h3>
+            <p>عمليات الحذف</p>
+        </div>
+    </div>
+</div>
+
+<!-- Logs Table -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-list"></i>
+        <span>سجلات نشاطات المراكز</span>
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="data-table logs-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم المركز</th>
+                            <th>نوع العملية</th>
+                            <th>المستخدم</th>
+                            <th>التاريخ والوقت</th>
+                            <th>عنوان IP</th>
+                            <th>الملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = 1;
+                        }
+                        @foreach (var log in Model)
+                        {
+                            <tr>
+                                <td>@index</td>
+                                <td><strong>@log.CenterName</strong></td>
+                                <td>
+                                    @if (log.ActionType == QuranPreservationSystem.Domain.Enums.ActionType.Create)
+                                    {
+                                        <span class="badge badge-success">
+                                            <i class="fas fa-plus-circle"></i> @log.ActionTypeDisplay
+                                        </span>
+                                    }
+                                    else if (log.ActionType == QuranPreservationSystem.Domain.Enums.ActionType.Update)
+                                    {
+                                        <span class="badge badge-warning">
+                                            <i class="fas fa-edit"></i> @log.ActionTypeDisplay
+                                        </span>
+                                    }
+                                    else if (log.ActionType == QuranPreservationSystem.Domain.Enums.ActionType.Delete)
+                                    {
+                                        <span class="badge badge-danger">
+                                            <i class="fas fa-trash"></i> @log.ActionTypeDisplay
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-info">
+                                            <i class="fas fa-info-circle"></i> @log.ActionTypeDisplay
+                                        </span>
+                                    }
+                                </td>
+                                <td>@log.UserName</td>
+                                <td>
+                                    <div class="timestamp-cell">
+                                        <div><i class="fas fa-calendar"></i> @log.Timestamp.ToString("yyyy/MM/dd")</div>
+                                        <div><i class="fas fa-clock"></i> @log.Timestamp.ToString("HH:mm:ss")</div>
+                                    </div>
+                                </td>
+                                <td>@(log.IpAddress ?? "-")</td>
+                                <td>@(log.Notes ?? "-")</td>
+                            </tr>
+                            index++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <h3>لا توجد سجلات</h3>
+                <p>لا توجد سجلات نشاطات للمراكز في الفترة المحددة</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <style>
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 20px;
+            align-items: end;
+        }
+        
+        .filter-box {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-label i {
+            color: var(--primary-color);
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-filter-form .form-control {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-filter-form .form-control:focus {
+            border-color: var(--primary-light);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+        }
+
+        .timestamp-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            font-size: 0.85rem;
+        }
+
+        .timestamp-cell i {
+            font-size: 0.75rem;
+            margin-left: 5px;
+            color: var(--primary-color);
+        }
+
+        .logs-table .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .logs-table .badge i {
+            font-size: 0.9rem;
+        }
+        
+        @@media (max-width: 992px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-actions {
+                width: 100%;
+            }
+            
+            .filter-actions .btn {
+                flex: 1;
+            }
+        }
+    </style>
+}
+

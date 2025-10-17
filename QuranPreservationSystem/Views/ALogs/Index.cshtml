@@ -1,0 +1,279 @@
+@{
+    ViewData["Title"] = "سجلات النشاطات";
+    Layout = "_DashboardLayout";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <i class="fas fa-clipboard-list"></i>
+        <h2>سجلات النشاطات</h2>
+    </div>
+</div>
+
+<!-- Stats Summary -->
+<div class="stats-container" style="margin-bottom: 25px;">
+    <div class="stat-card stat-primary">
+        <div class="stat-icon">
+            <i class="fas fa-clipboard-list"></i>
+        </div>
+        <div class="stat-info">
+            <h3>جميع السجلات</h3>
+            <p>سجلات جميع النشاطات في النظام</p>
+        </div>
+    </div>
+</div>
+
+<!-- Log Categories Grid -->
+<div class="logs-grid">
+    <a href="@Url.Action("Students")" class="log-category-card">
+        <div class="log-icon log-icon-students">
+            <i class="fas fa-user-graduate"></i>
+        </div>
+        <div class="log-content">
+            <h3>سجلات الطلاب</h3>
+            <p>جميع العمليات المتعلقة بالطلاب</p>
+        </div>
+        <div class="log-arrow">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+    </a>
+
+    <a href="@Url.Action("Teachers")" class="log-category-card">
+        <div class="log-icon log-icon-teachers">
+            <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        <div class="log-content">
+            <h3>سجلات المدرسين</h3>
+            <p>جميع العمليات المتعلقة بالمدرسين</p>
+        </div>
+        <div class="log-arrow">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+    </a>
+
+    <a href="@Url.Action("Centers")" class="log-category-card">
+        <div class="log-icon log-icon-centers">
+            <i class="fas fa-mosque"></i>
+        </div>
+        <div class="log-content">
+            <h3>سجلات المراكز</h3>
+            <p>جميع العمليات المتعلقة بالمراكز</p>
+        </div>
+        <div class="log-arrow">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+    </a>
+
+    <a href="@Url.Action("Courses")" class="log-category-card">
+        <div class="log-icon log-icon-courses">
+            <i class="fas fa-book-open"></i>
+        </div>
+        <div class="log-content">
+            <h3>سجلات الدورات</h3>
+            <p>جميع العمليات المتعلقة بالدورات</p>
+        </div>
+        <div class="log-arrow">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+    </a>
+
+    <a href="@Url.Action("Exams")" class="log-category-card">
+        <div class="log-icon log-icon-exams">
+            <i class="fas fa-file-alt"></i>
+        </div>
+        <div class="log-content">
+            <h3>سجلات الاختبارات</h3>
+            <p>جميع العمليات المتعلقة بالاختبارات</p>
+        </div>
+        <div class="log-arrow">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+    </a>
+
+    <a href="@Url.Action("Enrollments")" class="log-category-card">
+        <div class="log-icon log-icon-enrollments">
+            <i class="fas fa-user-plus"></i>
+        </div>
+        <div class="log-content">
+            <h3>سجلات التسجيلات</h3>
+            <p>جميع العمليات المتعلقة بالتسجيلات</p>
+        </div>
+        <div class="log-arrow">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+    </a>
+
+    <a href="@Url.Action("HafizRegistry")" class="log-category-card">
+        <div class="log-icon log-icon-hafiz">
+            <i class="fas fa-award"></i>
+        </div>
+        <div class="log-content">
+            <h3>سجلات ديوان الحفاظ</h3>
+            <p>جميع العمليات المتعلقة بديوان الحفاظ</p>
+        </div>
+        <div class="log-arrow">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+    </a>
+
+    <a href="@Url.Action("Users")" class="log-category-card">
+        <div class="log-icon log-icon-users">
+            <i class="fas fa-users-cog"></i>
+        </div>
+        <div class="log-content">
+            <h3>سجلات المستخدمين</h3>
+            <p>جميع العمليات المتعلقة بالمستخدمين</p>
+        </div>
+        <div class="log-arrow">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+    </a>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <style>
+        .logs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .log-category-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            border-right: 4px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .log-category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(46, 125, 50, 0.03) 100%);
+            pointer-events: none;
+        }
+
+        .log-category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .log-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .log-icon-students {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4caf50;
+        }
+
+        .log-icon-teachers {
+            background: rgba(33, 150, 243, 0.1);
+            color: #2196f3;
+        }
+
+        .log-icon-centers {
+            background: rgba(156, 39, 176, 0.1);
+            color: #9c27b0;
+        }
+
+        .log-icon-courses {
+            background: rgba(255, 152, 0, 0.1);
+            color: #ff9800;
+        }
+
+        .log-icon-exams {
+            background: rgba(233, 30, 99, 0.1);
+            color: #e91e63;
+        }
+
+        .log-icon-enrollments {
+            background: rgba(0, 188, 212, 0.1);
+            color: #00bcd4;
+        }
+
+        .log-icon-hafiz {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        .log-icon-users {
+            background: rgba(103, 58, 183, 0.1);
+            color: #673ab7;
+        }
+
+        .log-content {
+            flex: 1;
+        }
+
+        .log-content h3 {
+            font-size: 1.3rem;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .log-content p {
+            font-size: 0.95rem;
+            color: #666;
+            margin: 0;
+        }
+
+        .log-arrow {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .log-category-card:hover .log-arrow {
+            transform: translateX(-5px);
+        }
+
+        @@media (max-width: 768px) {
+            .logs-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .log-category-card {
+                padding: 20px;
+            }
+
+            .log-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.8rem;
+            }
+
+            .log-content h3 {
+                font-size: 1.1rem;
+            }
+
+            .log-content p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+}
+
