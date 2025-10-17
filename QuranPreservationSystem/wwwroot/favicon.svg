@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4caf50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2e7d32;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="50" cy="50" r="48" fill="url(#grad1)" />
+  
+  <!-- Quran Book Icon -->
+  <g transform="translate(50, 50)">
+    <!-- Book base -->
+    <path d="M -20,-25 L -20,25 L 20,25 L 20,-25 Z" fill="#ffffff" opacity="0.95"/>
+    
+    <!-- Book spine -->
+    <rect x="-22" y="-25" width="4" height="50" fill="#ffffff" opacity="0.7"/>
+    
+    <!-- Pages effect -->
+    <rect x="-18" y="-23" width="36" height="46" fill="none" stroke="#2e7d32" stroke-width="1"/>
+    
+    <!-- Center decoration -->
+    <circle cx="0" cy="0" r="8" fill="none" stroke="#2e7d32" stroke-width="2"/>
+    <circle cx="0" cy="0" r="4" fill="#FFD700"/>
+    
+    <!-- Arabic letter decoration (simplified) -->
+    <text x="0" y="5" text-anchor="middle" font-size="12" fill="#2e7d32" font-weight="bold" font-family="Arial">ق</text>
+  </g>
+</svg>
+
