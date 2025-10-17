@@ -12,15 +12,15 @@ namespace QuranPreservationSystem.Controllers
     /// سجل النشاطات
     /// </summary>
     [Authorize(Roles = "Admin")]
-    [PermissionAuthorize("Logs", "View")]
-    public class LogsController : Controller
+    [PermissionAuthorize("AuditLogs", "View")]
+    public class AuditLogsController : Controller
     {
         private readonly IAuditLogService _auditLogService;
-        private readonly ILogger<LogsController> _logger;
+        private readonly ILogger<AuditLogsController> _logger;
 
-        public LogsController(
+        public AuditLogsController(
             IAuditLogService auditLogService,
-            ILogger<LogsController> logger)
+            ILogger<AuditLogsController> logger)
         {
             _auditLogService = auditLogService;
             _logger = logger;
