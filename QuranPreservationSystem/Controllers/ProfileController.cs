@@ -55,27 +55,6 @@ public class ProfileController : Controller
         return View(profile);
     }
 
-    // GET: Profile/Edit
-    public async Task<IActionResult> Edit()
-    {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        var profile = new ProfileDto
-        {
-            Id = user.Id,
-            UserName = user.UserName ?? "",
-            Email = user.Email ?? "",
-            FullName = user.FullName,
-            PhoneNumber = user.PhoneNumber
-        };
-
-        return View(profile);
-    }
-
     // POST: Profile/Edit
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -83,7 +62,8 @@ public class ProfileController : Controller
     {
         if (!ModelState.IsValid)
         {
-            return View(model);
+            TempData["Error"] = "يرجى التأكد من صحة البيانات المدخلة";
+            return RedirectToAction(nameof(Index));
         }
 
         try
@@ -100,8 +80,8 @@ public class ProfileController : Controller
                 var existingUser = await _userManager.FindByNameAsync(model.UserName);
                 if (existingUser != null && existingUser.Id != user.Id)
                 {
-                    ModelState.AddModelError("UserName", "اسم المستخدم مستخدم من قبل مستخدم آخر");
-                    return View(model);
+                    TempData["Error"] = "اسم المستخدم مستخدم من قبل مستخدم آخر";
+                    return RedirectToAction(nameof(Index));
                 }
             }
 
@@ -110,8 +90,8 @@ public class ProfileController : Controller
                 var existingUser = await _userManager.FindByEmailAsync(model.Email);
                 if (existingUser != null && existingUser.Id != user.Id)
                 {
-                    ModelState.AddModelError("Email", "البريد الإلكتروني مستخدم من قبل مستخدم آخر");
-                    return View(model);
+                    TempData["Error"] = "البريد الإلكتروني مستخدم من قبل مستخدم آخر";
+                    return RedirectToAction(nameof(Index));
                 }
             }
 
@@ -134,25 +114,35 @@ public class ProfileController : Controller
 
             if (result.Succeeded)
             {
-                var newUserData = new
+                try
                 {
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    FullName = user.FullName,
-                    PhoneNumber = user.PhoneNumber
-                };
+                    var newUserData = new
+                    {
+                        UserName = user.UserName,
+                        Email = user.Email,
+                        FullName = user.FullName,
+                        PhoneNumber = user.PhoneNumber
+                    };
 
-                // تسجيل في Audit Log
-                await _auditLogService.LogUpdateAsync(
-                    User,
-                    _userManager,
-                    HttpContext,
-                    "user",
-                    int.Parse(user.Id),
-                    oldUserData,
-                    newUserData,
-                    user.FullName
-                );
+                    // تسجيل في Audit Log
+                    if (int.TryParse(user.Id, out int userId))
+                    {
+                        await _auditLogService.LogUpdateAsync(
+                            User,
+                            _userManager,
+                            HttpContext,
+                            "user",
+                            userId,
+                            oldUserData,
+                            newUserData,
+                            user.FullName
+                        );
+                    }
+                }
+                catch (Exception logEx)
+                {
+                    _logger.LogWarning(logEx, "فشل تسجيل تحديث الملف الشخصي في Audit Log");
+                }
 
                 // تحديث الـ Cookie إذا تم تغيير اسم المستخدم أو البريد
                 await _signInManager.RefreshSignInAsync(user);
@@ -162,24 +152,16 @@ public class ProfileController : Controller
                 return RedirectToAction(nameof(Index));
             }
 
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            TempData["Error"] = errors;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "خطأ أثناء تحديث الملف الشخصي");
-            ModelState.AddModelError(string.Empty, "حدث خطأ أثناء تحديث الملف الشخصي");
+            TempData["Error"] = "حدث خطأ أثناء تحديث الملف الشخصي";
         }
 
-        return View(model);
-    }
-
-    // GET: Profile/ChangePassword
-    public IActionResult ChangePassword()
-    {
-        return View();
+        return RedirectToAction(nameof(Index));
     }
 
     // POST: Profile/ChangePassword
@@ -189,7 +171,8 @@ public class ProfileController : Controller
     {
         if (!ModelState.IsValid)
         {
-            return View(model);
+            TempData["Error"] = "يرجى التأكد من صحة البيانات المدخلة";
+            return RedirectToAction(nameof(Index));
         }
 
         try
@@ -204,17 +187,27 @@ public class ProfileController : Controller
 
             if (result.Succeeded)
             {
-                // تسجيل في Audit Log
-                await _auditLogService.LogUpdateAsync(
-                    User,
-                    _userManager,
-                    HttpContext,
-                    "user",
-                    int.Parse(user.Id),
-                    new { Action = "تغيير كلمة المرور" },
-                    new { Action = "تم تغيير كلمة المرور بنجاح" },
-                    user.FullName
-                );
+                try
+                {
+                    // تسجيل في Audit Log
+                    if (int.TryParse(user.Id, out int userId))
+                    {
+                        await _auditLogService.LogUpdateAsync(
+                            User,
+                            _userManager,
+                            HttpContext,
+                            "user",
+                            userId,
+                            new { Action = "تغيير كلمة المرور" },
+                            new { Action = "تم تغيير كلمة المرور بنجاح" },
+                            user.FullName
+                        );
+                    }
+                }
+                catch (Exception logEx)
+                {
+                    _logger.LogWarning(logEx, "فشل تسجيل تغيير كلمة المرور في Audit Log");
+                }
 
                 await _signInManager.RefreshSignInAsync(user);
                 TempData["Success"] = "تم تغيير كلمة المرور بنجاح";
@@ -226,21 +219,21 @@ public class ProfileController : Controller
             {
                 if (error.Code == "PasswordMismatch")
                 {
-                    ModelState.AddModelError("CurrentPassword", "كلمة المرور الحالية غير صحيحة");
+                    TempData["Error"] = "كلمة المرور الحالية غير صحيحة";
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    TempData["Error"] = error.Description;
                 }
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "خطأ أثناء تغيير كلمة المرور");
-            ModelState.AddModelError(string.Empty, "حدث خطأ أثناء تغيير كلمة المرور");
+            TempData["Error"] = "حدث خطأ أثناء تغيير كلمة المرور";
         }
 
-        return View(model);
+        return RedirectToAction(nameof(Index));
     }
 }
 

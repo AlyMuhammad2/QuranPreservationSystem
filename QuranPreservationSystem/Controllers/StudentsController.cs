@@ -245,6 +245,7 @@ namespace QuranPreservationSystem.Controllers
                     student.FullName
                 );
                 
+                TempData["Success"] = $"تم إضافة الطالب '{student.FullName}' بنجاح";
                 _logger.LogInformation("تم إضافة طالب جديد: {StudentName}", student.FullName);
                 
                 return RedirectToAction(nameof(Index));
@@ -320,6 +321,7 @@ namespace QuranPreservationSystem.Controllers
                 
                 await _auditLogService.LogUpdateAsync(User, _userManager, HttpContext, "student", student.StudentId, oldStudent, student, student.FullName);
                 
+                TempData["Success"] = $"تم تحديث بيانات الطالب '{student.FullName}' بنجاح";
                 _logger.LogInformation("تم تحديث بيانات طالب: {StudentName}", student.FullName);
                 
                 return RedirectToAction(nameof(Index));
@@ -377,6 +379,7 @@ namespace QuranPreservationSystem.Controllers
                 await _unitOfWork.Students.DeleteAsync(student);
                 await _unitOfWork.SaveChangesAsync();
                 
+                TempData["Success"] = $"تم حذف الطالب '{student.FullName}' بنجاح";
                 _logger.LogInformation("تم حذف طالب: {StudentName}", student.FullName);
             }
 

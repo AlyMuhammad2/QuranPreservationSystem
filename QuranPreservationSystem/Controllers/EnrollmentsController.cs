@@ -241,6 +241,7 @@ namespace QuranPreservationSystem.Controllers
                 
                 await _auditLogService.LogCreateAsync(User, _userManager, HttpContext, "enrollment", enrollment.StudentCourseId, enrollment, $"Student {enrollment.StudentId} - Course {enrollment.CourseId}");
                 
+                TempData["Success"] = "تم تسجيل الطالب في الدورة بنجاح";
                 _logger.LogInformation("تم تسجيل طالب {StudentId} في دورة {CourseId}", 
                     createEnrollmentDto.StudentId, createEnrollmentDto.CourseId);
                 
@@ -320,6 +321,7 @@ namespace QuranPreservationSystem.Controllers
                 
                 await _auditLogService.LogUpdateAsync(User, _userManager, HttpContext, "enrollment", enrollment.StudentCourseId, oldEnrollment, enrollment, $"Student {enrollment.StudentId} - Course {enrollment.CourseId}");
                 
+                TempData["Success"] = "تم تحديث بيانات التسجيل بنجاح";
                 _logger.LogInformation("تم تحديث تسجيل الطالب {StudentId} في دورة {CourseId}", 
                     enrollment.StudentId, enrollment.CourseId);
                 
@@ -381,6 +383,7 @@ namespace QuranPreservationSystem.Controllers
                 await _unitOfWork.StudentCourses.DeleteAsync(enrollment);
                 await _unitOfWork.SaveChangesAsync();
                 
+                TempData["Success"] = "تم حذف التسجيل بنجاح";
                 _logger.LogInformation("تم حذف تسجيل الطالب {StudentId} من دورة {CourseId}", 
                     enrollment.StudentId, enrollment.CourseId);
             }

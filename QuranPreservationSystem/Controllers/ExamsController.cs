@@ -256,6 +256,7 @@ namespace QuranPreservationSystem.Controllers
                 
                 await _auditLogService.LogCreateAsync(User, _userManager, HttpContext, "exam", exam.ExamId, exam, exam.ExamName);
                 
+                TempData["Success"] = $"تم إضافة الاختبار '{exam.ExamName}' بنجاح";
                 _logger.LogInformation("تم إنشاء اختبار جديد: {ExamId} - {ExamName}", exam.ExamId, exam.ExamName);
                 return RedirectToAction(nameof(Index));
             }
@@ -366,6 +367,7 @@ namespace QuranPreservationSystem.Controllers
                 
                 await _auditLogService.LogUpdateAsync(User, _userManager, HttpContext, "exam", exam.ExamId, oldExam, exam, exam.ExamName);
                 
+                TempData["Success"] = $"تم تحديث الاختبار '{exam.ExamName}' بنجاح";
                 _logger.LogInformation("تم تحديث اختبار: {ExamId} - {ExamName}", exam.ExamId, exam.ExamName);
                 return RedirectToAction(nameof(Index));
             }
@@ -431,6 +433,7 @@ namespace QuranPreservationSystem.Controllers
                 await _unitOfWork.Exams.DeleteAsync(exam);
                 await _unitOfWork.SaveChangesAsync();
                 
+                TempData["Success"] = $"تم حذف الاختبار '{exam.ExamName}' بنجاح";
                 _logger.LogInformation("تم حذف اختبار: {ExamId} - {ExamName}", exam.ExamId, exam.ExamName);
             }
 

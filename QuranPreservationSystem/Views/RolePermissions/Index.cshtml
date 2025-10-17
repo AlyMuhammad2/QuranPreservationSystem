@@ -128,12 +128,4 @@
     </div>
 </div>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            showToast('@TempData["SuccessMessage"]', 'success');
-        });
-    </script>
-}
 

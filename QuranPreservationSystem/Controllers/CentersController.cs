@@ -116,6 +116,7 @@ namespace QuranPreservationSystem.Controllers
                 
                 await _auditLogService.LogCreateAsync(User, _userManager, HttpContext, "center", center.CenterId, center, center.Name);
                 
+                TempData["Success"] = $"تم إضافة المركز '{center.Name}' بنجاح";
                 _logger.LogInformation("تم إضافة مركز جديد: {CenterName}", center.Name);
                 
                 return RedirectToAction(nameof(Index));
@@ -183,6 +184,7 @@ namespace QuranPreservationSystem.Controllers
                 
                 await _auditLogService.LogUpdateAsync(User, _userManager, HttpContext, "center", center.CenterId, oldCenter, center, center.Name);
                 
+                TempData["Success"] = $"تم تحديث المركز '{center.Name}' بنجاح";
                 _logger.LogInformation("تم تحديث مركز: {CenterName}", center.Name);
                 
                 return RedirectToAction(nameof(Index));
@@ -232,6 +234,7 @@ namespace QuranPreservationSystem.Controllers
                 await _unitOfWork.Centers.DeleteAsync(center);
                 await _unitOfWork.SaveChangesAsync();
                 
+                TempData["Success"] = $"تم حذف المركز '{center.Name}' بنجاح";
                 _logger.LogInformation("تم حذف مركز: {CenterName}", center.Name);
             }
 

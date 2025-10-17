@@ -134,7 +134,7 @@ public class RolePermissionsController : Controller
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation($"Permissions updated for role {role.Name}");
-            TempData["SuccessMessage"] = $"تم تحديث صلاحيات دور {role.Name} بنجاح";
+            TempData["Success"] = $"تم تحديث صلاحيات دور {role.Name} بنجاح";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception ex)

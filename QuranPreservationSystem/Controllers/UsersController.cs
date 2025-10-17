@@ -159,8 +159,8 @@ public class UsersController : Controller
 
             await _auditLogService.LogCreateAsync(User, _userManager, HttpContext, "user", 0, user, user.FullName);
 
+            TempData["Success"] = $"تم إضافة المستخدم '{user.FullName}' بنجاح";
             _logger.LogInformation($"User {user.UserName} created successfully with role {model.Role}");
-            TempData["SuccessMessage"] = "تم إنشاء المستخدم بنجاح";
             return RedirectToAction(nameof(Index));
         }
 
@@ -284,8 +284,8 @@ public class UsersController : Controller
 
             await _auditLogService.LogUpdateAsync(User, _userManager, HttpContext, "user", 0, oldUser, user, user.FullName);
 
+            TempData["Success"] = $"تم تحديث بيانات المستخدم '{user.FullName}' بنجاح";
             _logger.LogInformation($"User {user.UserName} updated successfully");
-            TempData["SuccessMessage"] = "تم تحديث المستخدم بنجاح";
             return RedirectToAction(nameof(Index));
         }
 
@@ -311,7 +311,7 @@ public class UsersController : Controller
         // منع حذف الأدمن الافتراضي
         if (user.UserName == "admin")
         {
-            TempData["ErrorMessage"] = "لا يمكن حذف الحساب الإداري الافتراضي";
+            TempData["Error"] = "لا يمكن حذف الحساب الإداري الافتراضي";
             return RedirectToAction(nameof(Index));
         }
 
@@ -347,7 +347,7 @@ public class UsersController : Controller
         // منع حذف الأدمن الافتراضي
         if (user.UserName == "admin")
         {
-            TempData["ErrorMessage"] = "لا يمكن حذف الحساب الإداري الافتراضي";
+            TempData["Error"] = "لا يمكن حذف الحساب الإداري الافتراضي";
             return RedirectToAction(nameof(Index));
         }
 
@@ -357,8 +357,8 @@ public class UsersController : Controller
 
         if (result.Succeeded)
         {
+            TempData["Success"] = $"تم حذف المستخدم '{user.FullName}' بنجاح";
             _logger.LogInformation($"User {user.UserName} deleted successfully");
-            TempData["SuccessMessage"] = "تم حذف المستخدم بنجاح";
             return RedirectToAction(nameof(Index));
         }
 

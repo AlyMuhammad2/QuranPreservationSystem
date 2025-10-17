@@ -174,6 +174,7 @@ namespace QuranPreservationSystem.Controllers
 
                 await _auditLogService.LogCreateAsync(User, _userManager, HttpContext, "hafizregistry", hafiz.HafizId, hafiz, hafiz.StudentName);
 
+                TempData["Success"] = $"تم إضافة الحافظ '{hafiz.StudentName}' إلى ديوان الحفاظ بنجاح";
                 _logger.LogInformation("تم إضافة حافظ جديد: {StudentName}", hafiz.StudentName);
                 return RedirectToAction(nameof(Index));
             }
@@ -284,6 +285,7 @@ namespace QuranPreservationSystem.Controllers
 
                 await _auditLogService.LogUpdateAsync(User, _userManager, HttpContext, "hafizregistry", hafiz.HafizId, hafiz, hafiz, hafiz.StudentName);
 
+                TempData["Success"] = $"تم تحديث بيانات الحافظ '{hafiz.StudentName}' بنجاح";
                 _logger.LogInformation("تم تحديث بيانات الحافظ: {StudentName}", hafiz.StudentName);
                 return RedirectToAction(nameof(Index));
             }
@@ -338,6 +340,7 @@ namespace QuranPreservationSystem.Controllers
                 await _unitOfWork.HafizRegistry.DeleteAsync(hafiz);
                 await _unitOfWork.SaveChangesAsync();
 
+                TempData["Success"] = $"تم حذف الحافظ '{hafiz.StudentName}' من ديوان الحفاظ بنجاح";
                 _logger.LogInformation("تم حذف الحافظ: {StudentName}", hafiz.StudentName);
             }
 

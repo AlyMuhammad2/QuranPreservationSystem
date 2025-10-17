@@ -226,6 +226,7 @@ namespace QuranPreservationSystem.Controllers
                 
                 await _auditLogService.LogCreateAsync(User, _userManager, HttpContext, "course", course.CourseId, course, course.CourseName);
                 
+                TempData["Success"] = $"تم إضافة الدورة '{course.CourseName}' بنجاح";
                 _logger.LogInformation("تم إضافة دورة جديدة: {CourseName}", course.CourseName);
                 
                 return RedirectToAction(nameof(Index));
@@ -308,6 +309,7 @@ namespace QuranPreservationSystem.Controllers
                 
                 await _auditLogService.LogUpdateAsync(User, _userManager, HttpContext, "course", course.CourseId, oldCourse, course, course.CourseName);
                 
+                TempData["Success"] = $"تم تحديث الدورة '{course.CourseName}' بنجاح";
                 _logger.LogInformation("تم تحديث دورة: {CourseName}", course.CourseName);
                 
                 return RedirectToAction(nameof(Index));
@@ -368,6 +370,7 @@ namespace QuranPreservationSystem.Controllers
                 await _unitOfWork.Courses.DeleteAsync(course);
                 await _unitOfWork.SaveChangesAsync();
                 
+                TempData["Success"] = $"تم حذف الدورة '{course.CourseName}' بنجاح";
                 _logger.LogInformation("تم حذف دورة: {CourseName}", course.CourseName);
             }
 
